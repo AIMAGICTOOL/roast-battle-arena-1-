@@ -1,4 +1,5 @@
-const socket = io('https://roast-battle-rena.onrender.com');
+const socket = io(); // ✅ works on both localhost and Render
+
 
 
 
