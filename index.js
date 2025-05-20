@@ -1,36 +1,40 @@
-
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cors from 'cors';
 
 // Enable __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const server = createServer(app);
-const io = new Server(server);
+app.use(cors());
 
-// Serve static files from the 'public' folder
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Start server
-const PORT = 3000;
+// Port for Render
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
 
 // === Socket.io logic ===
-
 let waitingUser = null;
 
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
   if (waitingUser) {
-    // Pair users
     socket.partner = waitingUser;
     waitingUser.partner = socket;
 
@@ -39,7 +43,6 @@ io.on('connection', (socket) => {
 
     waitingUser = null;
   } else {
-    // Put user in waiting
     waitingUser = socket;
     socket.emit('waiting');
   }
