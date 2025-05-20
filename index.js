@@ -1,3 +1,7 @@
+const express = require('express');
+const path = require('path');
+const app = express();
+app.use(express.static(path.join(__dirname, '../frontend')));
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
