@@ -1,4 +1,14 @@
-const socket = io(); // Automatically connects to the host serving the page
+const socket = io("https://your-render-app-name.onrender.com", {
+  reconnectionAttempts: 3, // Retry 3 times on failure
+  reconnectionDelay: 2000, // Wait 2s between retries
+});
+
+// Handle connection errors
+socket.on("connect_error", (err) => {
+  console.error("Connection failed:", err);
+  elements.status.textContent = "❌ Connection failed - refreshing...";
+  setTimeout(() => location.reload(), 3000);
+});
 
 // DOM Elements
 const elements = {
