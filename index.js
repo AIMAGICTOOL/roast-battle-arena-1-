@@ -3,27 +3,24 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import cors from 'cors';
 
-// Enable __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(cors());
-
 const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  }
-});
+const io = new Server(server);
 
+// ✅ Serve static files from /public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Port for Render
-const PORT = process.env.PORT || 3000;
+// ✅ Fallback to index.html for all unknown routes (Render needs this)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/index.html'));
+});
+
+// Start server
+const PORT = process.env.PORT || 10000;
 server.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
