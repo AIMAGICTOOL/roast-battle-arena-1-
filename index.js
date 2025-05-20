@@ -8,6 +8,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// These two lines are needed for __dirname to work in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve the 'public' folder where your index.html and sounds are
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve index.html for all unknown routes (important for frontend)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/index.html'));
+});
 const server = createServer(app);
 const io = new Server(server);
 
