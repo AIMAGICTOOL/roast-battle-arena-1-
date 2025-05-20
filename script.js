@@ -1,7 +1,4 @@
-const socket = io(); // ✅ works on both localhost and Render
-
-
-
+const socket = io(); // Automatically connects to the host serving the page
 
 // DOM Elements
 const elements = {
