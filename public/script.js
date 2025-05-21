@@ -1,16 +1,8 @@
 const socket = io("https://roast-battle-rena.onrender.com", {
   transports: ["websocket"],
-  withCredentials: true
-});
-  reconnectionAttempts: 3, // Retry 3 times on failure
-  reconnectionDelay: 2000, // Wait 2s between retries
-});
-
-// Handle connection errors
-socket.on("connect_error", (err) => {
-  console.error("Connection failed:", err);
-  elements.status.textContent = "❌ Connection failed - refreshing...";
-  setTimeout(() => location.reload(), 3000);
+  withCredentials: true,
+  reconnectionAttempts: 3, // Fixed: Moved inside the options object
+  reconnectionDelay: 2000
 });
 
 // DOM Elements
