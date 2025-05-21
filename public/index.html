@@ -235,8 +235,10 @@
   <audio id="disconnectSound" src="sounds/disconnect.mp3"></audio>
 
   <!-- Only changed the script connection part -->
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script>
+ <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
     // Enhanced connection with error handling
     const socket = io("https://roast-battle-rena.onrender.com", {
       transports: ["websocket"],
