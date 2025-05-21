@@ -1,12 +1,10 @@
 const socket = io("https://roast-battle-rena.onrender.com", {
-  transports: ["polling", "websocket"],
-
+  transports: ["websocket", "polling"],
   withCredentials: true,
-  reconnectionAttempts: 3, // Fixed: Moved inside the options object
-  reconnectionDelay: 2000
+  reconnectionAttempts: 5,
+  reconnectionDelay: 3000
 });
 
-// DOM Elements
 const elements = {
   status: document.getElementById('status'),
   roastQuote: document.getElementById('roast-quote'),
@@ -21,7 +19,6 @@ const elements = {
   disconnectSound: document.getElementById('disconnectSound')
 };
 
-// Quotes
 const QUOTES = {
   waiting: [
     "Training cyber-monkeys to find your match... 🐒💻",
@@ -35,22 +32,9 @@ const QUOTES = {
   ]
 };
 
-// Typing detection
 let typingTimeout;
 const TYPING_DELAY = 1500;
-
-// Initialize UI
-resetUI();
-elements.skipBtn.style.display = 'none';
-
-// Sound initialization
-document.addEventListener('click', initSounds, { once: true });
-
-function initSounds() {
-  elements.messageSound.volume = 0.3;
-  elements.connectSound.volume = 0.3;
-  elements.disconnectSound.volume = 0.3;
-}
+let connectionTimeout;
 
 function resetUI() {
   elements.roastQuote.textContent = '';
@@ -60,10 +44,61 @@ function resetUI() {
   elements.skipBtn.style.display = 'none';
 }
 
-// Socket Events
+function showRandomQuote(type) {
+  const quotes = QUOTES[type];
+  elements.roastQuote.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+}
+
+function addMessage(text, sender) {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${sender}`;
+  msgDiv.textContent = text;
+  elements.chat.appendChild(msgDiv);
+  elements.chat.scrollTop = elements.chat.scrollHeight;
+}
+
+function sendMessage() {
+  const msg = elements.input.value.trim();
+  if (!msg) return;
+  
+  socket.emit('stop_typing');
+  clearTimeout(typingTimeout);
+  
+  socket.emit('send_message', msg);
+  addMessage(msg, 'you');
+  elements.input.value = '';
+}
+
+function checkConnection() {
+  connectionTimeout = setTimeout(() => {
+    if (!socket.connected) {
+      elements.status.textContent = "⌛ Connection taking longer than expected...";
+    }
+  }, 5000);
+}
+
+document.addEventListener('click', () => {
+  elements.messageSound.volume = 0.3;
+  elements.connectSound.volume = 0.3;
+  elements.disconnectSound.volume = 0.3;
+}, { once: true });
+
+resetUI();
+elements.skipBtn.style.display = 'none';
+
 socket.on('connect', () => {
-  elements.status.textContent = '🌌 Connected to neural network...';
+  clearTimeout(connectionTimeout);
+  elements.status.textContent = "⚡ Connected to battle server";
   showRandomQuote('waiting');
+});
+
+socket.on('connect_error', (err) => {
+  elements.status.textContent = "⚠️ Connection failed: " + err.message;
+  console.error("Connection error:", err);
+});
+
+socket.on('disconnect', () => {
+  elements.status.textContent = "⚠️ Disconnected - attempting to reconnect...";
 });
 
 socket.on('waiting', () => {
@@ -101,33 +136,6 @@ socket.on('stop_typing', () => {
   elements.typingIndicator.style.opacity = '0';
 });
 
-// Helper functions
-function showRandomQuote(type) {
-  const quotes = QUOTES[type];
-  elements.roastQuote.textContent = quotes[Math.floor(Math.random() * quotes.length)];
-}
-
-function addMessage(text, sender) {
-  const msgDiv = document.createElement('div');
-  msgDiv.className = `message ${sender}`;
-  msgDiv.textContent = text;
-  elements.chat.appendChild(msgDiv);
-  elements.chat.scrollTop = elements.chat.scrollHeight;
-}
-
-function sendMessage() {
-  const msg = elements.input.value.trim();
-  if (!msg) return;
-  
-  socket.emit('stop_typing');
-  clearTimeout(typingTimeout);
-  
-  socket.emit('send_message', msg);
-  addMessage(msg, 'you');
-  elements.input.value = '';
-}
-
-// Event listeners
 elements.startBtn.addEventListener('click', () => {
   socket.emit('start_chat');
   elements.status.textContent = '🚀 Warping to chat dimension...';
@@ -154,3 +162,5 @@ elements.sendBtn.addEventListener('click', sendMessage);
 elements.input.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') sendMessage();
 });
+
+checkConnection();
