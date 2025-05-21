@@ -1,70 +1,74 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import cors from 'cors';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = createServer(app);
 
-// ✅ CORS Setup
 app.use(cors({
-  origin: "https://roast-battle-rena.onrender.com",
+  origin: [
+    "https://roast-battle-rena.onrender.com",
+    "http://localhost:3000"
+  ],
   credentials: true
 }));
 
-// ✅ Socket.IO Setup
 const io = new Server(server, {
   cors: {
-    origin: "https://roast-battle-rena.onrender.com",
+    origin: [
+      "https://roast-battle-rena.onrender.com",
+      "http://localhost:3000"
+    ],
+    methods: ["GET", "POST"],
     credentials: true
   },
-  transports: ["websocket", "polling"]
+  connectionStateRecovery: {
+    maxDisconnectionDuration: 30000,
+    skipMiddlewares: true
+  }
 });
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// SPA fallback
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/index.html'));
-});
-
-// Start server
-const PORT = process.env.PORT || 10000;
-server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
-
-// Socket.IO Logic
-let waitingUser = null;
+let waitingUsers = new Map();
 
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
-  
-  if (waitingUser) {
-    socket.partner = waitingUser;
-    waitingUser.partner = socket;
+  console.log('🔥 New connection:', socket.id);
+
+  if (waitingUsers.size > 0) {
+    const [firstUserId] = waitingUsers.keys();
+    const partnerSocket = waitingUsers.get(firstUserId);
+    
+    socket.data.partner = partnerSocket.id;
+    partnerSocket.data.partner = socket.id;
+    
     socket.emit('chat_start');
-    waitingUser.emit('chat_start');
-    waitingUser = null;
+    partnerSocket.emit('chat_start');
+    
+    waitingUsers.delete(firstUserId);
   } else {
-    waitingUser = socket;
+    waitingUsers.set(socket.id, socket);
     socket.emit('waiting');
   }
 
   socket.on('send_message', (msg) => {
-    if (socket.partner) socket.partner.emit('receive_message', msg);
+    const partnerId = socket.data.partner;
+    if (partnerId && io.sockets.sockets.get(partnerId)) {
+      io.to(partnerId).emit('receive_message', msg);
+    }
   });
 
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
-    if (waitingUser === socket) waitingUser = null;
-    if (socket.partner) {
-      socket.partner.emit('partner_left');
-      socket.partner.partner = null;
+    const partnerId = socket.data.partner;
+    if (partnerId) {
+      const partnerSocket = io.sockets.sockets.get(partnerId);
+      if (partnerSocket) {
+        partnerSocket.emit('partner_left');
+        partnerSocket.data.partner = null;
+      }
     }
+    waitingUsers.delete(socket.id);
   });
 });
+
+const PORT = process.env.PORT || 10000;
+server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
