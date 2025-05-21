@@ -7,27 +7,18 @@ const elements = {
   input: document.getElementById('messageInput'),
   sendBtn: document.getElementById('sendBtn'),
   startBtn: document.getElementById('startBtn'),
-  skipBtn: document.getElementById('skipBtn'),
-  reconnectBtn: document.getElementById('reconnectBtn')
+  skipBtn: document.getElementById('skipBtn')
 };
 
-// Connection Setup
+// Socket.IO Connection
 const socket = io("https://roast-battle-rena.onrender.com", {
   transports: ["websocket"],
   reconnectionAttempts: 5,
-  reconnectionDelay: 3000,
-  autoConnect: false // We'll connect manually
+  reconnectionDelay: 3000
 });
 
 // Connection Management
-function connectSocket() {
-  socket.connect();
-  elements.status.textContent = "🌌 Connecting to neural network...";
-  elements.status.style.color = "#b8b8ff";
-}
-
-// Initialize connection after slight delay
-setTimeout(connectSocket, 500);
+let currentPartner = null;
 
 // Quotes
 const QUOTES = {
@@ -54,6 +45,7 @@ function resetUI() {
   elements.typingIndicator.style.opacity = '0';
   elements.startBtn.style.display = 'block';
   elements.skipBtn.style.display = 'none';
+  currentPartner = null;
 }
 
 function showRandomQuote(type) {
@@ -71,36 +63,32 @@ function addMessage(text, sender) {
 
 function sendMessage() {
   const msg = elements.input.value.trim();
-  if (!msg) return;
-  
-  socket.emit('stop_typing');
-  clearTimeout(typingTimeout);
+  if (!msg || !currentPartner) return;
   
   socket.emit('send_message', msg);
   addMessage(msg, 'you');
   elements.input.value = '';
+  
+  // Clear typing indicator
+  socket.emit('stop_typing');
+  clearTimeout(typingTimeout);
+  elements.typingIndicator.style.opacity = '0';
 }
 
 // Socket Event Handlers
 socket.on('connection_update', (data) => {
   elements.status.textContent = `⚡ ${data.message}`;
   elements.status.style.color = "#00f5d4";
-  console.log('Connection update:', data.status);
 });
 
 socket.on('connect', () => {
   elements.status.textContent = "⚡ Connected to battle server";
-  elements.status.style.color = "#00f5d4";
   showRandomQuote('waiting');
 });
 
 socket.on('connect_error', (err) => {
   elements.status.textContent = `⚠️ Connection failed: ${err.message}`;
   elements.status.style.color = "#f15bb5";
-  console.error('Connection error:', err);
-  
-  // Auto-reconnect after delay
-  setTimeout(connectSocket, 3000);
 });
 
 socket.on('waiting', () => {
@@ -110,11 +98,11 @@ socket.on('waiting', () => {
 });
 
 socket.on('chat_start', (data) => {
+  currentPartner = data.partnerId;
   elements.status.textContent = "⚡ BATTLE MODE ACTIVATED!";
   showRandomQuote('roasting');
   elements.startBtn.style.display = 'none';
   elements.skipBtn.style.display = 'block';
-  console.log('Matched with partner:', data.partnerId);
 });
 
 socket.on('receive_message', (msg) => {
@@ -128,6 +116,14 @@ socket.on('partner_left', () => {
   resetUI();
 });
 
+socket.on('typing', () => {
+  elements.typingIndicator.style.opacity = '1';
+});
+
+socket.on('stop_typing', () => {
+  elements.typingIndicator.style.opacity = '0';
+});
+
 // Event Listeners
 elements.startBtn.addEventListener('click', () => {
   socket.emit('start_chat');
@@ -137,6 +133,7 @@ elements.startBtn.addEventListener('click', () => {
 elements.skipBtn.addEventListener('click', () => {
   socket.emit('skip_partner');
   elements.status.textContent = "🌀 Finding new opponent...";
+  resetUI();
 });
 
 elements.input.addEventListener('input', () => {
