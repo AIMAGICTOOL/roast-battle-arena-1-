@@ -69,7 +69,6 @@ function sendMessage() {
   addMessage(msg, 'you');
   elements.input.value = '';
   
-  // Clear typing indicator
   socket.emit('stop_typing');
   clearTimeout(typingTimeout);
   elements.typingIndicator.style.opacity = '0';
@@ -110,8 +109,8 @@ socket.on('receive_message', (msg) => {
   elements.typingIndicator.style.opacity = '0';
 });
 
-socket.on('partner_left', () => {
-  elements.status.textContent = "💨 Opponent disconnected";
+socket.on('partner_left', (data) => {
+  elements.status.textContent = data.message;
   showRandomQuote('waiting');
   resetUI();
 });
@@ -133,7 +132,6 @@ elements.startBtn.addEventListener('click', () => {
 elements.skipBtn.addEventListener('click', () => {
   socket.emit('skip_partner');
   elements.status.textContent = "🌀 Finding new opponent...";
-  resetUI();
 });
 
 elements.input.addEventListener('input', () => {
