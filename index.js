@@ -3,7 +3,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import cors from 'cors'; // ✅ Added CORS import
+import cors from 'cors';
 
 // Required to use __dirname with ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -15,16 +15,29 @@ const server = createServer(app);
 // ===== 🔧 CRITICAL FIXES ===== //
 // 1. Enable CORS for Express
 app.use(cors({
-  origin: "*", // Allow all origins (tighten this later for production!)
-  methods: ["GET", "POST"]
+  origin: "https://roast-battle-rena.onrender.com", // Your frontend URL
+  methods: ["GET", "POST"],
+  credentials: true
 }));
 
-// 2. Configure Socket.IO with CORS
+// 2. Configure Socket.IO with CORS and WebSocket settings
 const io = new Server(server, {
   cors: {
-    origin: "*", // Match frontend URL (replace "*" with your Render URL later)
-    methods: ["GET", "POST"]
+    origin: "https://roast-battle-rena.onrender.com", // Your frontend URL
+    methods: ["GET", "POST"],
+    credentials: true
+  },
+  transports: ["websocket", "polling"], // Explicitly enable both
+  allowEIO3: true // For Socket.IO v2/v3 compatibility
+});
+
+// Force HTTPS in production
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production' && 
+      req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect('https://' + req.headers.host + req.url);
   }
+  next();
 });
 
 // ===== 🏗️ Server Setup ===== //
@@ -42,7 +55,7 @@ server.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
 
-// ===== 💬 Socket.IO Logic (Unchanged) ===== //
+// ===== 💬 Socket.IO Logic ===== //
 let waitingUser = null;
 
 io.on('connection', (socket) => {
@@ -75,5 +88,4 @@ io.on('connection', (socket) => {
       socket.partner.partner = null;
     }
   });
-  // ... (keep other socket events as-is)
 });
