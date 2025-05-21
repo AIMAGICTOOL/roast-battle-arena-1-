@@ -10,6 +10,25 @@ const elements = {
   skipBtn: document.getElementById('skipBtn')
 };
 
+// Sound Setup
+const sounds = {
+  message: new Audio('sounds/message.mp3'),
+  connect: new Audio('sounds/connect.mp3'),
+  disconnect: new Audio('sounds/disconnect.mp3')
+};
+
+// Initialize audio (required for autoplay)
+document.addEventListener('click', initSounds, { once: true });
+
+function initSounds() {
+  Object.values(sounds).forEach(sound => {
+    sound.volume = 0.3;
+    sound.muted = false;
+    // Try to play/pause to unlock audio
+    sound.play().then(() => sound.pause()).catch(e => console.log('Audio init error:', e));
+  });
+}
+
 // Socket.IO Connection
 const socket = io("https://roast-battle-rena.onrender.com", {
   transports: ["websocket"],
@@ -17,14 +36,14 @@ const socket = io("https://roast-battle-rena.onrender.com", {
   reconnectionDelay: 3000
 });
 
-// Connection Management
 let currentPartner = null;
+let typingTimeout;
+const TYPING_DELAY = 1500;
 
-// Quotes
 const QUOTES = {
   waiting: [
     "Training cyber-monkeys to find your match... 🐒💻",
-    "Quantum snails routing your connection... 🐌⚛️",
+    "Quantum snails routing your connection... 🐌⚛️", 
     "Banana-powered servers warming up... 🍌🔥"
   ],
   roasting: [
@@ -33,10 +52,6 @@ const QUOTES = {
     "That comeback died faster than my pet rock 🪨💀"
   ]
 };
-
-// Typing detection
-let typingTimeout;
-const TYPING_DELAY = 1500;
 
 // UI Functions
 function resetUI() {
@@ -49,8 +64,8 @@ function resetUI() {
 }
 
 function showRandomQuote(type) {
-  const quotes = QUOTES[type];
-  elements.roastQuote.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+  const quote = QUOTES[type][Math.floor(Math.random() * QUOTES[type].length)];
+  elements.roastQuote.textContent = quote;
 }
 
 function addMessage(text, sender) {
@@ -61,6 +76,15 @@ function addMessage(text, sender) {
   elements.chat.scrollTop = elements.chat.scrollHeight;
 }
 
+function playSound(soundName) {
+  try {
+    sounds[soundName].currentTime = 0;
+    sounds[soundName].play().catch(e => console.log(`${soundName} sound error:`, e));
+  } catch (e) {
+    console.log('Sound play failed:', e);
+  }
+}
+
 function sendMessage() {
   const msg = elements.input.value.trim();
   if (!msg || !currentPartner) return;
@@ -68,26 +92,26 @@ function sendMessage() {
   socket.emit('send_message', msg);
   addMessage(msg, 'you');
   elements.input.value = '';
+  playSound('message');
   
   socket.emit('stop_typing');
   clearTimeout(typingTimeout);
   elements.typingIndicator.style.opacity = '0';
 }
 
-// Socket Event Handlers
+// Socket Events
 socket.on('connection_update', (data) => {
   elements.status.textContent = `⚡ ${data.message}`;
-  elements.status.style.color = "#00f5d4";
 });
 
 socket.on('connect', () => {
   elements.status.textContent = "⚡ Connected to battle server";
   showRandomQuote('waiting');
+  playSound('connect');
 });
 
 socket.on('connect_error', (err) => {
   elements.status.textContent = `⚠️ Connection failed: ${err.message}`;
-  elements.status.style.color = "#f15bb5";
 });
 
 socket.on('waiting', () => {
@@ -102,17 +126,20 @@ socket.on('chat_start', (data) => {
   showRandomQuote('roasting');
   elements.startBtn.style.display = 'none';
   elements.skipBtn.style.display = 'block';
+  playSound('connect');
 });
 
 socket.on('receive_message', (msg) => {
   addMessage(msg, 'stranger');
   elements.typingIndicator.style.opacity = '0';
+  playSound('message');
 });
 
 socket.on('partner_left', (data) => {
   elements.status.textContent = data.message;
   showRandomQuote('waiting');
   resetUI();
+  playSound('disconnect');
 });
 
 socket.on('typing', () => {
