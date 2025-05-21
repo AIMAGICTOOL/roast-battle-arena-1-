@@ -1,4 +1,7 @@
-const socket = io("https://your-render-app-name.onrender.com", {
+const socket = io("https://roast-battle-rena.onrender.com", {
+  transports: ["websocket"],
+  withCredentials: true
+});
   reconnectionAttempts: 3, // Retry 3 times on failure
   reconnectionDelay: 2000, // Wait 2s between retries
 });
