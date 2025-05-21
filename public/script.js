@@ -1,13 +1,4 @@
-const socket = io("https://roast-battle-rena.onrender.com", {
-  transports: ["websocket"],
-  reconnectionAttempts: 5,
-  reconnectionDelay: 3000,
-  autoConnect: false 
-});
-setTimeout(() => {
-  socket.connect();
-  console.log("Manually initiating connection...");
-}, 1000);
+// DOM Elements
 const elements = {
   status: document.getElementById('status'),
   roastQuote: document.getElementById('roast-quote'),
@@ -17,11 +8,28 @@ const elements = {
   sendBtn: document.getElementById('sendBtn'),
   startBtn: document.getElementById('startBtn'),
   skipBtn: document.getElementById('skipBtn'),
-  messageSound: document.getElementById('messageSound'),
-  connectSound: document.getElementById('connectSound'),
-  disconnectSound: document.getElementById('disconnectSound')
+  reconnectBtn: document.getElementById('reconnectBtn')
 };
 
+// Connection Setup
+const socket = io("https://roast-battle-rena.onrender.com", {
+  transports: ["websocket"],
+  reconnectionAttempts: 5,
+  reconnectionDelay: 3000,
+  autoConnect: false // We'll connect manually
+});
+
+// Connection Management
+function connectSocket() {
+  socket.connect();
+  elements.status.textContent = "🌌 Connecting to neural network...";
+  elements.status.style.color = "#b8b8ff";
+}
+
+// Initialize connection after slight delay
+setTimeout(connectSocket, 500);
+
+// Quotes
 const QUOTES = {
   waiting: [
     "Training cyber-monkeys to find your match... 🐒💻",
@@ -35,10 +43,11 @@ const QUOTES = {
   ]
 };
 
+// Typing detection
 let typingTimeout;
 const TYPING_DELAY = 1500;
-let connectionTimeout;
 
+// UI Functions
 function resetUI() {
   elements.roastQuote.textContent = '';
   elements.chat.innerHTML = '';
@@ -72,81 +81,62 @@ function sendMessage() {
   elements.input.value = '';
 }
 
-function checkConnection() {
-  connectionTimeout = setTimeout(() => {
-    if (!socket.connected) {
-      elements.status.textContent = "⌛ Connection taking longer than expected...";
-    }
-  }, 5000);
-}
-
-document.addEventListener('click', () => {
-  elements.messageSound.volume = 0.3;
-  elements.connectSound.volume = 0.3;
-  elements.disconnectSound.volume = 0.3;
-}, { once: true });
-
-resetUI();
-elements.skipBtn.style.display = 'none';
+// Socket Event Handlers
+socket.on('connection_update', (data) => {
+  elements.status.textContent = `⚡ ${data.message}`;
+  elements.status.style.color = "#00f5d4";
+  console.log('Connection update:', data.status);
+});
 
 socket.on('connect', () => {
-  clearTimeout(connectionTimeout);
   elements.status.textContent = "⚡ Connected to battle server";
+  elements.status.style.color = "#00f5d4";
   showRandomQuote('waiting');
 });
 
 socket.on('connect_error', (err) => {
-  elements.status.textContent = "⚠️ Connection failed: " + err.message;
-  console.error("Connection error:", err);
-});
-
-socket.on('disconnect', () => {
-  elements.status.textContent = "⚠️ Disconnected - attempting to reconnect...";
+  elements.status.textContent = `⚠️ Connection failed: ${err.message}`;
+  elements.status.style.color = "#f15bb5";
+  console.error('Connection error:', err);
+  
+  // Auto-reconnect after delay
+  setTimeout(connectSocket, 3000);
 });
 
 socket.on('waiting', () => {
-  elements.status.textContent = '🔍 Scanning the metaverse for worthy opponents...';
+  elements.status.textContent = "🔍 Scanning for opponents...";
   showRandomQuote('waiting');
   resetUI();
 });
 
-socket.on('chat_start', () => {
-  elements.connectSound.play();
-  elements.status.textContent = '⚡ BATTLE MODE ACTIVATED!';
+socket.on('chat_start', (data) => {
+  elements.status.textContent = "⚡ BATTLE MODE ACTIVATED!";
   showRandomQuote('roasting');
   elements.startBtn.style.display = 'none';
   elements.skipBtn.style.display = 'block';
+  console.log('Matched with partner:', data.partnerId);
 });
 
 socket.on('receive_message', (msg) => {
-  elements.messageSound.play();
   addMessage(msg, 'stranger');
   elements.typingIndicator.style.opacity = '0';
 });
 
 socket.on('partner_left', () => {
-  elements.disconnectSound.play();
-  elements.status.textContent = '💨 Poof! Your opponent vanished...';
+  elements.status.textContent = "💨 Opponent disconnected";
   showRandomQuote('waiting');
   resetUI();
 });
 
-socket.on('typing', () => {
-  elements.typingIndicator.style.opacity = '1';
-});
-
-socket.on('stop_typing', () => {
-  elements.typingIndicator.style.opacity = '0';
-});
-
+// Event Listeners
 elements.startBtn.addEventListener('click', () => {
   socket.emit('start_chat');
-  elements.status.textContent = '🚀 Warping to chat dimension...';
+  elements.status.textContent = "🚀 Searching for opponent...";
 });
 
 elements.skipBtn.addEventListener('click', () => {
   socket.emit('skip_partner');
-  elements.status.textContent = '🌀 Creating wormhole to new partner...';
+  elements.status.textContent = "🌀 Finding new opponent...";
 });
 
 elements.input.addEventListener('input', () => {
@@ -166,4 +156,5 @@ elements.input.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') sendMessage();
 });
 
-checkConnection();
+// Initialize
+resetUI();
