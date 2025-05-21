@@ -2,10 +2,17 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import path from 'path'; // 🚨 ADD THIS
+import { fileURLToPath } from 'url'; // 🚨 ADD THIS
 
 const app = express();
 const server = createServer(app);
 
+// 🚨 ADD THIS BLOCK (Fix __dirname for ES modules)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// CORS Setup
 app.use(cors({
   origin: [
     "https://roast-battle-rena.onrender.com",
@@ -14,6 +21,10 @@ app.use(cors({
   credentials: true
 }));
 
+// 🚨 ADD THIS (Serve static files from 'public' folder)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Socket.IO Setup
 const io = new Server(server, {
   cors: {
     origin: [
@@ -29,46 +40,19 @@ const io = new Server(server, {
   }
 });
 
+// [Keep all your existing Socket.IO logic here...]
 let waitingUsers = new Map();
 
 io.on('connection', (socket) => {
   console.log('🔥 New connection:', socket.id);
-
-  if (waitingUsers.size > 0) {
-    const [firstUserId] = waitingUsers.keys();
-    const partnerSocket = waitingUsers.get(firstUserId);
-    
-    socket.data.partner = partnerSocket.id;
-    partnerSocket.data.partner = socket.id;
-    
-    socket.emit('chat_start');
-    partnerSocket.emit('chat_start');
-    
-    waitingUsers.delete(firstUserId);
-  } else {
-    waitingUsers.set(socket.id, socket);
-    socket.emit('waiting');
-  }
-
-  socket.on('send_message', (msg) => {
-    const partnerId = socket.data.partner;
-    if (partnerId && io.sockets.sockets.get(partnerId)) {
-      io.to(partnerId).emit('receive_message', msg);
-    }
-  });
-
-  socket.on('disconnect', () => {
-    const partnerId = socket.data.partner;
-    if (partnerId) {
-      const partnerSocket = io.sockets.sockets.get(partnerId);
-      if (partnerSocket) {
-        partnerSocket.emit('partner_left');
-        partnerSocket.data.partner = null;
-      }
-    }
-    waitingUsers.delete(socket.id);
-  });
+  // ... (rest of your socket event handlers)
 });
 
+// 🚨 ADD THIS (SPA fallback route - MUST BE LAST ROUTE)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Start server (THIS SHOULD BE THE LAST LINE)
 const PORT = process.env.PORT || 10000;
 server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
