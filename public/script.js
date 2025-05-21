@@ -39,7 +39,44 @@ const socket = io("https://roast-battle-rena.onrender.com", {
 let currentPartner = null;
 let typingTimeout;
 const TYPING_DELAY = 1500;
+// Typing indicator elements
+const typingIndicator = document.getElementById('typing-indicator');
+const typingText = document.createElement('div');
+typingText.className = 'typing-text';
+typingText.textContent = 'is typing...';
+typingIndicator.appendChild(typingText);
 
+let isTyping = false;
+let typingTimeout;
+
+// Typing detection
+elements.input.addEventListener('input', () => {
+  if (elements.input.value.trim().length > 0 && !isTyping) {
+    isTyping = true;
+    socket.emit('typing');
+  } else if (elements.input.value.trim().length === 0 && isTyping) {
+    stopTyping();
+  }
+  
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(stopTyping, TYPING_DELAY);
+});
+
+function stopTyping() {
+  if (isTyping) {
+    isTyping = false;
+    socket.emit('stop_typing');
+  }
+}
+
+// Partner typing indicators
+socket.on('partner_typing', () => {
+  typingIndicator.style.opacity = '1';
+});
+
+socket.on('partner_stopped_typing', () => {
+  typingIndicator.style.opacity = '0';
+});
 const QUOTES = {
   waiting: [
     "Training cyber-monkeys to find your match... 🐒💻",
