@@ -77,7 +77,16 @@ io.on('connection', (socket) => {
     waitingUsers.set(socket.id, socket);
     socket.emit('waiting');
   });
+  // Typing indicators
+  socket.on('typing', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) io.to(partnerId).emit('partner_typing');
+  });
 
+  socket.on('stop_typing', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) io.to(partnerId).emit('partner_stopped_typing');
+  });
   // Disconnect handling
   socket.on('disconnect', () => {
     const partnerId = activePairs.get(socket.id);
