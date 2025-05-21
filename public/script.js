@@ -1,5 +1,6 @@
 const socket = io("https://roast-battle-rena.onrender.com", {
-  transports: ["websocket"],
+  transports: ["polling", "websocket"],
+
   withCredentials: true,
   reconnectionAttempts: 3, // Fixed: Moved inside the options object
   reconnectionDelay: 2000
