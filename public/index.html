@@ -6,7 +6,6 @@
   <title>Roast Battle Arena</title>
   <style>
     :root {
-      /* Cyberpunk Neon Theme */
       --bg-dark: #0f0e17;
       --bg-light: #1b1a2e;
       --accent-primary: #00f5d4;
@@ -14,7 +13,6 @@
       --text-primary: #e2f3f5;
       --text-secondary: #b8b8ff;
     }
-
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: var(--bg-dark);
@@ -26,19 +24,16 @@
       min-height: 100vh;
       margin: 0;
     }
-
     h1 {
       color: var(--accent-primary);
       text-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
       margin-bottom: 20px;
     }
-
     #status {
       margin-bottom: 15px;
       color: var(--text-secondary);
       font-size: 14px;
     }
-
     #chat {
       width: 100%;
       max-width: 600px;
@@ -52,8 +47,6 @@
       display: flex;
       flex-direction: column;
     }
-
-    /* Fixed Typing Indicator */
     #typing-indicator {
       height: 20px;
       margin: 10px auto;
@@ -86,14 +79,12 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-5px); }
     }
-
     .input-container {
       width: 100%;
       max-width: 600px;
       display: flex;
       margin-bottom: 15px;
     }
-
     input {
       flex: 1;
       padding: 12px;
@@ -104,7 +95,6 @@
       border-radius: 8px 0 0 8px;
       outline: none;
     }
-
     button {
       padding: 12px 20px;
       font-size: 16px;
@@ -116,7 +106,6 @@
     button:hover {
       transform: scale(1.03);
     }
-
     .action-buttons {
       display: flex;
       gap: 10px;
@@ -125,21 +114,18 @@
       max-width: 600px;
       justify-content: center;
     }
-
     #startBtn, #sendBtn {
       background: var(--accent-primary);
       color: var(--bg-dark);
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
     }
-
     #skipBtn {
       background: var(--accent-secondary);
       color: white;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(241, 91, 181, 0.3);
     }
-
     .message {
       padding: 10px 15px;
       margin-bottom: 10px;
@@ -148,26 +134,22 @@
       word-wrap: break-word;
       animation: slideIn 0.3s ease-out;
     }
-
     .message.you {
       background: linear-gradient(135deg, #00f5d4 0%, #00bbf9 100%);
       color: var(--bg-dark);
       align-self: flex-end;
       border-bottom-right-radius: 5px;
     }
-
     .message.stranger {
       background: #6247aa;
       color: white;
       align-self: flex-start;
       border-bottom-left-radius: 5px;
     }
-
     @keyframes slideIn {
       from { transform: translateY(10px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-
     #roast-quote {
       margin: 15px 0;
       color: var(--text-secondary);
@@ -180,38 +162,14 @@
 <body>
   <h1>Roast Battle Arena</h1>
   <div class="nav-links" style="display: flex; justify-content: center; gap: 15px; margin: 20px 0;">
-    <a href="about.html" style="
-      background: #00f5d4;
-      color: #0f0e17;
-      padding: 8px 15px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-weight: bold;
-    ">About</a>
-    
-    <a href="rules.html" style="
-      background: #f15bb5;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-weight: bold;
-    ">Rules</a>
-    
-    <a href="privacy.html" style="
-      background: #6247aa;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-weight: bold;
-    ">Privacy</a>
+    <a href="about.html" style="background: #00f5d4; color: #0f0e17; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">About</a>
+    <a href="rules.html" style="background: #f15bb5; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Rules</a>
+    <a href="privacy.html" style="background: #6247aa; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Privacy</a>
   </div>
   <div id="status">🌌 Connecting to neural network...</div>
   <div id="roast-quote"></div>
   
   <div id="chat"></div>
-  <!-- Fixed Typing Indicator -->
   <div id="typing-indicator">
     <div class="typing-dots">
       <span></span>
@@ -230,27 +188,7 @@
     <button id="sendBtn">Fire!</button>
   </div>
 
-  <audio id="messageSound" src="sounds/message.mp3"></audio>
-  <audio id="connectSound" src="sounds/connect.mp3"></audio>
-  <audio id="disconnectSound" src="sounds/disconnect.mp3"></audio>
-
-  <!-- Only changed the script connection part -->
- <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
-    // Enhanced connection with error handling
-    const socket = io("https://roast-battle-rena.onrender.com", {
-      transports: ["websocket"],
-      reconnectionAttempts: 5,
-      reconnectionDelay: 3000
-    });
-
-    // [Keep all your existing socket.io event handlers from script.js here]
-    // Make sure to copy the ENTIRE script.js content here or link to it separately
-  </script>
-  
-  <!-- Better to link your script.js separately -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
