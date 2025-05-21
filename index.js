@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
     message: 'Server connection established' 
   });
 
-  // Matchmaking logic
+  // Matchmaking
   if (waitingUsers.size > 0) {
     const [firstUserId] = waitingUsers.keys();
     const partnerSocket = waitingUsers.get(firstUserId);
@@ -52,53 +52,40 @@ io.on('connection', (socket) => {
     partnerSocket.emit('chat_start', { partnerId: socket.id });
     
     waitingUsers.delete(firstUserId);
-    console.log(`🤝 Matched ${socket.id} with ${partnerSocket.id}`);
   } else {
     waitingUsers.set(socket.id, socket);
     socket.emit('waiting');
-    console.log(`⏳ ${socket.id} added to waiting list`);
   }
 
   // Message handling
   socket.on('send_message', (msg) => {
     const partnerId = activePairs.get(socket.id);
-    if (partnerId) {
-      io.to(partnerId).emit('receive_message', msg);
-      console.log(`💬 Message sent to ${partnerId}`);
-    }
+    if (partnerId) io.to(partnerId).emit('receive_message', msg);
   });
 
-  // Skip partner handling
+  // Skip handling
   socket.on('skip_partner', () => {
     const partnerId = activePairs.get(socket.id);
     if (partnerId) {
-      const partnerSocket = io.sockets.sockets.get(partnerId);
-      if (partnerSocket) {
-        partnerSocket.emit('partner_left', {
-          reason: 'skipped',
-          message: '💨 Poof! Your opponent vanished...'
-        });
-      }
+      io.to(partnerId).emit('partner_left', {
+        reason: 'skipped',
+        message: '💨 Poof! Your opponent vanished...'
+      });
       activePairs.delete(partnerId);
-      activePairs.delete(socket.id);
     }
+    activePairs.delete(socket.id);
     waitingUsers.set(socket.id, socket);
     socket.emit('waiting');
-    console.log(`🔄 ${socket.id} skipped partner`);
   });
 
-  // Cleanup on disconnect
+  // Disconnect handling
   socket.on('disconnect', () => {
-    console.log('❌ Disconnected:', socket.id);
     const partnerId = activePairs.get(socket.id);
     if (partnerId) {
-      const partnerSocket = io.sockets.sockets.get(partnerId);
-      if (partnerSocket) {
-        partnerSocket.emit('partner_left', {
-          reason: 'disconnected',
-          message: '💨 Opponent disconnected'
-        });
-      }
+      io.to(partnerId).emit('partner_left', {
+        reason: 'disconnected',
+        message: '💨 Opponent disconnected'
+      });
       activePairs.delete(partnerId);
     }
     activePairs.delete(socket.id);
