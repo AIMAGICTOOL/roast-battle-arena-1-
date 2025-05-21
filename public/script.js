@@ -1,10 +1,13 @@
 const socket = io("https://roast-battle-rena.onrender.com", {
-  transports: ["websocket", "polling"],
-  withCredentials: true,
+  transports: ["websocket"],
   reconnectionAttempts: 5,
-  reconnectionDelay: 3000
+  reconnectionDelay: 3000,
+  autoConnect: false 
 });
-
+setTimeout(() => {
+  socket.connect();
+  console.log("Manually initiating connection...");
+}, 1000);
 const elements = {
   status: document.getElementById('status'),
   roastQuote: document.getElementById('roast-quote'),
