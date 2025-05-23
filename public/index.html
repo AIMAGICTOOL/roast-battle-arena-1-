@@ -48,26 +48,31 @@
       flex-direction: column;
     }
     #typing-indicator {
-      height: 20px;
-      margin: 10px auto;
-      text-align: center;
+      height: 30px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       opacity: 0;
       transition: opacity 0.3s;
     }
-    #typing-indicator.visible {
-      opacity: 1;
+    .typing-text {
+      color: var(--text-secondary);
+      font-size: 14px;
     }
     .typing-dots {
       display: inline-flex;
-      gap: 5px;
+      gap: 4px;
+      height: 10px;
+      align-items: center;
     }
     .typing-dots span {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       background: var(--accent-primary);
       border-radius: 50%;
       display: inline-block;
-      animation: bounce 1s infinite ease-in-out;
+      animation: bounce 1.4s infinite ease-in-out;
     }
     .typing-dots span:nth-child(2) {
       animation-delay: 0.2s;
@@ -76,8 +81,8 @@
       animation-delay: 0.4s;
     }
     @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-4px); }
     }
     .input-container {
       width: 100%;
@@ -157,49 +162,7 @@
       text-align: center;
       min-height: 24px;
     }
-      #typing-indicator {
-    height: 30px;
-    margin: 10px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .typing-text {
-    color: var(--text-secondary);
-    font-size: 14px;
-  }
-
-  .typing-dots {
-    display: inline-flex;
-    gap: 4px;
-    height: 10px;
-    align-items: center;
-  }
-
-  .typing-dots span {
-    width: 6px;
-    height: 6px;
-    background: var(--accent-primary);
-    border-radius: 50%;
-    display: inline-block;
-    animation: bounce 1.4s infinite ease-in-out;
-  }
-
-  .typing-dots span:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-
-  .typing-dots span:nth-child(3) {
-    animation-delay: 0.4s;
-  }
-
-  @keyframes bounce {
-    0%, 60%, 100% { transform: translateY(0); }
-    30% { transform: translateY(-4px); }
-  }  </style>
+  </style>
 </head>
 <body>
   <h1>Roast Battle Arena</h1>
@@ -218,6 +181,7 @@
       <span></span>
       <span></span>
     </div>
+    <div class="typing-text">is typing...</div>
   </div>
 
   <div class="action-buttons">
