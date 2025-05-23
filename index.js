@@ -24,13 +24,14 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
     credentials: true
   },
+  transports: ["websocket", "polling"],
   connectionStateRecovery: {
     maxDisconnectionDuration: 10000
   }
 });
 
-const waitingUsers = new Map();
-const activePairs = new Map();
+let waitingUsers = new Map();
+let activePairs = new Map();
 
 io.on('connection', (socket) => {
   console.log('✅ New connection:', socket.id);
@@ -63,6 +64,17 @@ io.on('connection', (socket) => {
     if (partnerId) io.to(partnerId).emit('receive_message', msg);
   });
 
+  // Typing indicators
+  socket.on('typing', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) io.to(partnerId).emit('partner_typing');
+  });
+
+  socket.on('stop_typing', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) io.to(partnerId).emit('partner_stopped_typing');
+  });
+
   // Skip handling
   socket.on('skip_partner', () => {
     const partnerId = activePairs.get(socket.id);
@@ -77,16 +89,7 @@ io.on('connection', (socket) => {
     waitingUsers.set(socket.id, socket);
     socket.emit('waiting');
   });
-  // Typing indicators
-  socket.on('typing', () => {
-    const partnerId = activePairs.get(socket.id);
-    if (partnerId) io.to(partnerId).emit('partner_typing');
-  });
 
-  socket.on('stop_typing', () => {
-    const partnerId = activePairs.get(socket.id);
-    if (partnerId) io.to(partnerId).emit('partner_stopped_typing');
-  });
   // Disconnect handling
   socket.on('disconnect', () => {
     const partnerId = activePairs.get(socket.id);
