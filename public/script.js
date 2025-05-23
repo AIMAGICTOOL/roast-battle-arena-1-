@@ -17,70 +17,37 @@ const sounds = {
   disconnect: new Audio('sounds/disconnect.mp3')
 };
 
-// Initialize audio (required for autoplay)
-document.addEventListener('click', initSounds, { once: true });
-
-function initSounds() {
+// Initialize audio
+document.addEventListener('click', () => {
   Object.values(sounds).forEach(sound => {
     sound.volume = 0.3;
     sound.muted = false;
-    // Try to play/pause to unlock audio
     sound.play().then(() => sound.pause()).catch(e => console.log('Audio init error:', e));
   });
-}
+}, { once: true });
 
 // Socket.IO Connection
 const socket = io("https://roast-battle-rena.onrender.com", {
   transports: ["websocket"],
   reconnectionAttempts: 5,
-  reconnectionDelay: 3000
+  reconnectionDelay: 3000,
+  timeout: 10000
 });
+
+// Typing elements
+const typingText = document.createElement('div');
+typingText.className = 'typing-text';
+typingText.textContent = 'is typing...';
+elements.typingIndicator.appendChild(typingText);
 
 let currentPartner = null;
 let typingTimeout;
 const TYPING_DELAY = 1500;
-// Typing indicator elements
-const typingIndicator = document.getElementById('typing-indicator');
-const typingText = document.createElement('div');
-typingText.className = 'typing-text';
-typingText.textContent = 'is typing...';
-typingIndicator.appendChild(typingText);
 
-let isTyping = false;
-let typingTimeout;
-
-// Typing detection
-elements.input.addEventListener('input', () => {
-  if (elements.input.value.trim().length > 0 && !isTyping) {
-    isTyping = true;
-    socket.emit('typing');
-  } else if (elements.input.value.trim().length === 0 && isTyping) {
-    stopTyping();
-  }
-  
-  clearTimeout(typingTimeout);
-  typingTimeout = setTimeout(stopTyping, TYPING_DELAY);
-});
-
-function stopTyping() {
-  if (isTyping) {
-    isTyping = false;
-    socket.emit('stop_typing');
-  }
-}
-
-// Partner typing indicators
-socket.on('partner_typing', () => {
-  typingIndicator.style.opacity = '1';
-});
-
-socket.on('partner_stopped_typing', () => {
-  typingIndicator.style.opacity = '0';
-});
 const QUOTES = {
   waiting: [
     "Training cyber-monkeys to find your match... 🐒💻",
-    "Quantum snails routing your connection... 🐌⚛️", 
+    "Quantum snails routing your connection... 🐌⚛️",
     "Banana-powered servers warming up... 🍌🔥"
   ],
   roasting: [
@@ -136,6 +103,19 @@ function sendMessage() {
   elements.typingIndicator.style.opacity = '0';
 }
 
+// Typing detection
+elements.input.addEventListener('input', () => {
+  if (elements.input.value.trim().length > 0) {
+    socket.emit('typing');
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      socket.emit('stop_typing');
+    }, TYPING_DELAY);
+  } else {
+    socket.emit('stop_typing');
+  }
+});
+
 // Socket Events
 socket.on('connection_update', (data) => {
   elements.status.textContent = `⚡ ${data.message}`;
@@ -179,11 +159,11 @@ socket.on('partner_left', (data) => {
   playSound('disconnect');
 });
 
-socket.on('typing', () => {
+socket.on('partner_typing', () => {
   elements.typingIndicator.style.opacity = '1';
 });
 
-socket.on('stop_typing', () => {
+socket.on('partner_stopped_typing', () => {
   elements.typingIndicator.style.opacity = '0';
 });
 
@@ -196,18 +176,6 @@ elements.startBtn.addEventListener('click', () => {
 elements.skipBtn.addEventListener('click', () => {
   socket.emit('skip_partner');
   elements.status.textContent = "🌀 Finding new opponent...";
-});
-
-elements.input.addEventListener('input', () => {
-  if (elements.input.value.trim().length > 0) {
-    socket.emit('typing');
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-      socket.emit('stop_typing');
-    }, TYPING_DELAY);
-  } else {
-    socket.emit('stop_typing');
-  }
 });
 
 elements.sendBtn.addEventListener('click', sendMessage);
