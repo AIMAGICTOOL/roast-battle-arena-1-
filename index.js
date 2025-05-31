@@ -12,7 +12,7 @@ const app = express();
 const server = createServer(app);
 
 app.use(cors({
-  origin: ["https://roast-battle-rena.onrender.com"],
+  origin: ["https://roast-battle-arena-1.onrender.com"],
   credentials: true
 }));
 
@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const io = new Server(server, {
   cors: {
-    origin: ["https://roast-battle-rena.onrender.com"],
+    origin: ["https://roast-battle-arena-1.onrender.com"],
     methods: ["GET", "POST"],
     credentials: true
   },
