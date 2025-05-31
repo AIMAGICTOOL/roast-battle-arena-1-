@@ -130,14 +130,15 @@
     <a href="privacy.html" class="nav-link" style="background: #6247aa; color: white;">Privacy</a>
   </div>
 
-  <script>
-     function enterPrivateRoom() {
-    // Redirect to your WORKING chat arena (index.html)
-    window.location.href = "index.html"; 
+ <!-- Only change the script section at the bottom -->
+<script>
+  function enterPrivateRoom() {
+    // Use this updated path to ensure proper routing
+    window.location.href = "/index.html?mode=private"; 
   }
-    function enterPublicHall() {
-      alert("Public Hall feature arriving soon! Prepare your roasts...");
-    }
-  </script>
+  function enterPublicHall() {
+    alert("Public Hall feature arriving soon! Prepare your roasts...");
+  }
+</script>
 </body>
 </html>
