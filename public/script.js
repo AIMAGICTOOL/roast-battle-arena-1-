@@ -27,7 +27,7 @@ document.addEventListener('click', () => {
 }, { once: true });
 
 // Socket.IO Connection
-const socket = io("https://roast-battle-rena.onrender.com", {
+const socket = io("https://roast-battle-arena-1.onrender.com", {
   transports: ["websocket"],
   reconnectionAttempts: 5,
   reconnectionDelay: 3000,
