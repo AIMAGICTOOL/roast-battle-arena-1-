@@ -162,11 +162,68 @@
       text-align: center;
       min-height: 24px;
     }
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+      align-items: center;
+    }
+    /* GLOWING ORB STYLES */
+    .home-orb {
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, #ff9e00 30%, transparent 70%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 15px #ff9e00;
+      transition: all 0.3s ease;
+      position: relative;
+      animation: pulse 2s infinite;
+    }
+    .home-orb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px #ff9e00;
+    }
+    .home-orb::before {
+      content: "⌂";
+      color: #0f0e17;
+      font-size: 18px;
+      font-weight: bold;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    }
+    .home-orb-tooltip {
+      position: absolute;
+      top: 50px;
+      background: rgba(15, 14, 23, 0.9);
+      color: #ff9e00;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .home-orb:hover .home-orb-tooltip {
+      opacity: 1;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 15px #ff9e00; }
+      50% { box-shadow: 0 0 25px #ff9e00; }
+      100% { box-shadow: 0 0 15px #ff9e00; }
+    }
   </style>
 </head>
 <body>
   <h1>Roast Battle Arena</h1>
-  <div class="nav-links" style="display: flex; justify-content: center; gap: 15px; margin: 20px 0;">
+  <div class="nav-links">
+    <div class="home-orb" onclick="window.location.href='index.html'">
+      <div class="home-orb-tooltip">Back to Home</div>
+    </div>
     <a href="about.html" style="background: #00f5d4; color: #0f0e17; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">About</a>
     <a href="rules.html" style="background: #f15bb5; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Rules</a>
     <a href="privacy.html" style="background: #6247aa; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Privacy</a>
@@ -197,16 +254,16 @@
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="script.js"></script>
   <script>
-  // Detect private mode from URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const isPrivateMode = urlParams.get('mode') === 'private';
+    // Detect private mode from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const isPrivateMode = urlParams.get('mode') === 'private';
 
-  // Update UI for private mode
-  if (isPrivateMode) {
-    document.querySelector('h1').textContent = "🔥 Private Roast Battle";
-    document.getElementById('status').textContent = "🔒 Private match - waiting for opponent...";
-    document.getElementById('skipBtn').style.display = 'none';
-  }
-</script>
+    // Update UI for private mode
+    if (isPrivateMode) {
+      document.querySelector('h1').textContent = "🔥 Private Roast Battle";
+      document.getElementById('status').textContent = "🔒 Private match - waiting for opponent...";
+      document.getElementById('skipBtn').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
