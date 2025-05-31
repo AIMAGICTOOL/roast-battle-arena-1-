@@ -12,16 +12,15 @@ const app = express();
 const server = createServer(app);
 
 app.use(cors({
-  origin: ["https://roast-battle-arena-1.onrender.com"],
+  origin: ["https://roast-battle-rena.onrender.com"],
   credentials: true
 }));
 
-// Serve static files from public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
 const io = new Server(server, {
   cors: {
-    origin: ["https://roast-battle-arena-1.onrender.com"],
+    origin: ["https://roast-battle-rena.onrender.com"],
     methods: ["GET", "POST"],
     credentials: true
   },
@@ -31,7 +30,6 @@ const io = new Server(server, {
   }
 });
 
-// --- YOUR EXISTING SOCKET.IO LOGIC (UNTOUCHED) ---
 let waitingUsers = new Map();
 let activePairs = new Map();
 
@@ -43,17 +41,70 @@ io.on('connection', (socket) => {
     message: 'Server connection established' 
   });
 
-  // [Keep all your existing socket.io code exactly as is...]
-  // Matchmaking, message handling, typing indicators, etc.
-  // ...
+  // Matchmaking
+  if (waitingUsers.size > 0) {
+    const [firstUserId] = waitingUsers.keys();
+    const partnerSocket = waitingUsers.get(firstUserId);
+    
+    activePairs.set(socket.id, partnerSocket.id);
+    activePairs.set(partnerSocket.id, socket.id);
+    
+    socket.emit('chat_start', { partnerId: partnerSocket.id });
+    partnerSocket.emit('chat_start', { partnerId: socket.id });
+    
+    waitingUsers.delete(firstUserId);
+  } else {
+    waitingUsers.set(socket.id, socket);
+    socket.emit('waiting');
+  }
+
+  // Message handling
+  socket.on('send_message', (msg) => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) io.to(partnerId).emit('receive_message', msg);
+  });
+
+  // Typing indicators
+  socket.on('typing', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) io.to(partnerId).emit('partner_typing');
+  });
+
+  socket.on('stop_typing', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) io.to(partnerId).emit('partner_stopped_typing');
+  });
+
+  // Skip handling
+  socket.on('skip_partner', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) {
+      io.to(partnerId).emit('partner_left', {
+        reason: 'skipped',
+        message: '💨 Poof! Your opponent vanished...'
+      });
+      activePairs.delete(partnerId);
+    }
+    activePairs.delete(socket.id);
+    waitingUsers.set(socket.id, socket);
+    socket.emit('waiting');
+  });
+
+  // Disconnect handling
+  socket.on('disconnect', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) {
+      io.to(partnerId).emit('partner_left', {
+        reason: 'disconnected',
+        message: '💨 Opponent disconnected'
+      });
+      activePairs.delete(partnerId);
+    }
+    activePairs.delete(socket.id);
+    waitingUsers.delete(socket.id);
+  });
 });
 
-// KEY CHANGE: Make portal.html the default page
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'portal.html'));
-});
-
-// Fallback to index.html for all other routes (including /index.html)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
