@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Roast Battle Portal</title>
+  <title>Roast Battle Arena</title>
   <style>
     :root {
       --bg-dark: #0f0e17;
@@ -13,24 +13,6 @@
       --text-primary: #e2f3f5;
       --text-secondary: #b8b8ff;
     }
-
-    /* FIRE ANIMATION (smooth) */
-    @keyframes burn {
-      0%, 100% { 
-        text-shadow: 0 0 10px rgba(255, 80, 0, 0.8),
-                     0 0 20px rgba(255, 30, 0, 0.6);
-      }
-      50% {
-        text-shadow: 0 0 15px rgba(255, 120, 0, 1),
-                     0 0 25px rgba(255, 60, 0, 0.8);
-      }
-    }
-    .fire-title {
-      animation: burn 1.5s infinite alternate ease-in-out;
-      display: inline-block;
-    }
-
-    /* OPTIMIZED UI */
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: var(--bg-dark);
@@ -38,7 +20,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       padding: 20px;
       min-height: 100vh;
       margin: 0;
@@ -46,97 +27,174 @@
     h1 {
       color: var(--accent-primary);
       text-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
-      margin-bottom: 25px;
-      font-size: 2.2rem;
+      margin-bottom: 20px;
     }
-    .portal-options {
+    #status {
+      margin-bottom: 15px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    #chat {
+      width: 100%;
+      max-width: 600px;
+      height: 400px;
+      background: var(--bg-light);
+      border: 1px solid #2d2b4e;
+      padding: 15px;
+      overflow-y: auto;
+      margin-bottom: 5px;
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      width: 100%;
-      max-width: 380px;
     }
-    .portal-btn {
-      padding: 12px 0;
+    #typing-indicator {
+      height: 30px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .typing-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    .typing-dots {
+      display: inline-flex;
+      gap: 4px;
+      height: 10px;
+      align-items: center;
+    }
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-primary);
+      border-radius: 50%;
+      display: inline-block;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-4px); }
+    }
+    .input-container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      margin-bottom: 15px;
+    }
+    input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      background: #25233d;
+      color: var(--text-primary);
+      border: none;
+      border-radius: 8px 0 0 8px;
+      outline: none;
+    }
+    button {
+      padding: 12px 20px;
       font-size: 16px;
       font-weight: bold;
       border: none;
-      border-radius: 10px;
       cursor: pointer;
       transition: all 0.3s ease;
-      width: 100%;
     }
-    #publicBtn {
+    button:hover {
+      transform: scale(1.03);
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 600px;
+      justify-content: center;
+    }
+    #startBtn, #sendBtn {
       background: var(--accent-primary);
       color: var(--bg-dark);
-      box-shadow: 0 0 12px rgba(0, 245, 212, 0.4);
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
     }
-    #privateBtn {
+    #skipBtn {
       background: var(--accent-secondary);
       color: white;
-      box-shadow: 0 0 12px rgba(241, 91, 181, 0.4);
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(241, 91, 181, 0.3);
     }
-    .portal-btn:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 20px currentColor;
+    .message {
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      border-radius: 18px;
+      max-width: 70%;
+      word-wrap: break-word;
+      animation: slideIn 0.3s ease-out;
     }
-
-    /* NAV LINKS */
-    .nav-links {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 25px 0;
-      width: 100%;
+    .message.you {
+      background: linear-gradient(135deg, #00f5d4 0%, #00bbf9 100%);
+      color: var(--bg-dark);
+      align-self: flex-end;
+      border-bottom-right-radius: 5px;
     }
-    .nav-link {
+    .message.stranger {
       background: #6247aa;
       color: white;
-      padding: 8px 16px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 14px;
-      transition: all 0.3s;
+      align-self: flex-start;
+      border-bottom-left-radius: 5px;
     }
-    .nav-link:hover {
-      transform: scale(1.06);
+    @keyframes slideIn {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
-    .status-message {
+    #roast-quote {
       margin: 15px 0;
       color: var(--text-secondary);
       font-style: italic;
-      font-size: 14px;
+      text-align: center;
+      min-height: 24px;
     }
   </style>
 </head>
 <body>
-  <h1><span class="fire-title">🔥</span> ROAST BATTLE PORTAL <span class="fire-title">🔥</span></h1>
+  <h1>Roast Battle Arena</h1>
+  <div class="nav-links" style="display: flex; justify-content: center; gap: 15px; margin: 20px 0;">
+    <a href="about.html" style="background: #00f5d4; color: #0f0e17; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">About</a>
+    <a href="rules.html" style="background: #f15bb5; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Rules</a>
+    <a href="privacy.html" style="background: #6247aa; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Privacy</a>
+  </div>
+  <div id="status">🌌 Connecting to neural network...</div>
+  <div id="roast-quote"></div>
   
-  <div class="status-message">Choose your battle dimension:</div>
-  
-  <div class="portal-options">
-    <button id="publicBtn" class="portal-btn" onclick="enterPublicHall()">
-      PUBLIC HALL (Coming Soon)
-    </button>
-    <button id="privateBtn" class="portal-btn" onclick="enterPrivateRoom()">
-      PRIVATE 1v1 ROAST
-    </button>
+  <div id="chat"></div>
+  <div id="typing-indicator">
+    <div class="typing-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="typing-text">is typing...</div>
   </div>
 
-  <div class="nav-links">
-    <a href="about.html" class="nav-link" style="background: var(--accent-primary); color: var(--bg-dark);">About</a>
-    <a href="rules.html" class="nav-link" style="background: var(--accent-secondary); color: white;">Rules</a>
-    <a href="privacy.html" class="nav-link" style="background: #6247aa; color: white;">Privacy</a>
+  <div class="action-buttons">
+    <button id="startBtn">Enter Arena</button>
+    <button id="skipBtn" style="display: none;">Next Opponent</button>
   </div>
 
-  <script>
-    function enterPrivateRoom() {
-      window.location.href = "index.html"; 
-    }
-    function enterPublicHall() {
-      alert("Public Hall feature arriving soon! Prepare your roasts...");
-    }
-  </script>
+  <div class="input-container">
+    <input type="text" id="messageInput" placeholder="Type your killer roast..." />
+    <button id="sendBtn">Fire!</button>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
