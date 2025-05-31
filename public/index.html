@@ -196,5 +196,17 @@
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="script.js"></script>
+  <script>
+  // Detect private mode from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const isPrivateMode = urlParams.get('mode') === 'private';
+
+  // Update UI for private mode
+  if (isPrivateMode) {
+    document.querySelector('h1').textContent = "🔥 Private Roast Battle";
+    document.getElementById('status').textContent = "🔒 Private match - waiting for opponent...";
+    document.getElementById('skipBtn').style.display = 'none';
+  }
+</script>
 </body>
 </html>
