@@ -111,9 +111,7 @@ app.get('/', (req, res) => {
 });
 
 // Serve index.html for everything else (except Socket.io)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+
 
 
 
