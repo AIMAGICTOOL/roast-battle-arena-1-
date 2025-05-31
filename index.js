@@ -105,9 +105,16 @@ io.on('connection', (socket) => {
   });
 });
 
-app.get('*', (req, res) => {
+// Serve portal.html only for the homepage "/"
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'portal.html'));
 });
+
+// Serve index.html for everything else (except Socket.io)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 
 
 const PORT = process.env.PORT || 10000;
