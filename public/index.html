@@ -1,104 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Roast Battle Portal</title>
   <style>
     :root {
       --bg-dark: #0f0e17;
+      --bg-light: #1b1a2e;
       --accent-primary: #00f5d4;
       --accent-secondary: #f15bb5;
+      --text-primary: #e2f3f5;
+      --text-secondary: #b8b8ff;
     }
-    
+
+    /* FIRE TITLE ANIMATION (from index.html) */
+    @keyframes burn {
+      0%, 100% { 
+        text-shadow: 0 0 10px rgba(255, 80, 0, 0.8),
+                     0 0 20px rgba(255, 30, 0, 0.6);
+      }
+      50% {
+        text-shadow: 0 0 15px rgba(255, 120, 0, 1),
+                     0 0 25px rgba(255, 60, 0, 0.8);
+      }
+    }
+    .fire-title {
+      animation: burn 1.5s infinite alternate ease-in-out;
+      display: inline-block;
+    }
+
+    /* PORTAL STYLING (matching index.html) */
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: var(--bg-dark);
-      color: white;
+      color: var(--text-primary);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 20px;
       min-height: 100vh;
       margin: 0;
-      padding: 20px;
-      text-align: center;
     }
-
-    /* FIRE EMOJI GLOW EFFECT */
-    .fire-emoji {
-      display: inline-block;
-      animation: fire-glow 1.5s infinite alternate;
-    }
-    
-    @keyframes fire-glow {
-      0% { 
-        filter: drop-shadow(0 0 5px #ff6600);
-      }
-      100% {
-        filter: drop-shadow(0 0 15px #ff3300);
-      }
-    }
-
     h1 {
       color: var(--accent-primary);
-      font-size: 2rem;
+      text-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
       margin-bottom: 25px;
+      font-size: 2.2rem;
     }
-
-    .portal-btn {
+    .portal-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
       width: 100%;
       max-width: 380px;
-      padding: 14px;
-      margin: 8px 0;
-      font-size: 1rem;
+    }
+    .portal-btn {
+      padding: 12px 0;
+      font-size: 16px;
       font-weight: bold;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: all 0.3s ease;
+      width: 100%;
     }
-
     #publicBtn {
       background: var(--accent-primary);
       color: var(--bg-dark);
+      box-shadow: 0 0 12px rgba(0, 245, 212, 0.4);
     }
-
     #privateBtn {
       background: var(--accent-secondary);
       color: white;
+      box-shadow: 0 0 12px rgba(241, 91, 181, 0.4);
     }
-
     .portal-btn:hover {
-      transform: scale(1.05);
+      transform: scale(1.02);
+      box-shadow: 0 0 20px currentColor;
     }
 
+    /* NAV LINKS (same as index.html) */
     .nav-links {
       display: flex;
+      justify-content: center;
       gap: 12px;
       margin: 25px 0;
+      width: 100%;
     }
-
     .nav-link {
-      padding: 10px 16px;
+      background: #6247aa;
+      color: white;
+      padding: 8px 16px;
       border-radius: 20px;
       text-decoration: none;
       font-weight: bold;
-      transition: transform 0.2s ease;
+      font-size: 14px;
+      transition: all 0.3s;
     }
-
     .nav-link:hover {
-      transform: scale(1.05);
+      transform: scale(1.06);
+    }
+    .status-message {
+      margin: 15px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <h1><span class="fire-emoji">🔥</span> ROAST BATTLE PORTAL <span class="fire-emoji">🔥</span></h1>
-  <p>Choose your battle dimension:</p>
+  <h1><span class="fire-title">🔥</span> ROAST BATTLE PORTAL <span class="fire-title">🔥</span></h1>
+  
+  <div class="status-message">Choose your battle dimension:</div>
   
   <div class="portal-options">
-    <button id="publicBtn" class="portal-btn">PUBLIC HALL (Coming Soon)</button>
-    <button id="privateBtn" class="portal-btn">PRIVATE 1v1 ROAST</button>
+    <button id="publicBtn" class="portal-btn" onclick="enterPublicHall()">
+      PUBLIC HALL (Coming Soon)
+    </button>
+    <button id="privateBtn" class="portal-btn" onclick="enterPrivateRoom()">
+      PRIVATE 1v1 ROAST
+    </button>
   </div>
 
   <div class="nav-links">
@@ -107,14 +130,27 @@
     <a href="privacy.html" class="nav-link" style="background: #6247aa; color: white;">Privacy</a>
   </div>
 
+  <!-- Only socket.io connection added -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script>
-    document.getElementById('privateBtn').addEventListener('click', () => {
-      window.location.href = "index.html?mode=private";
+    // Original functions with socket check
+    const socket = io('https://your-socket-server.com', {
+      reconnection: true,
+      reconnectionAttempts: Infinity
     });
-    
-    document.getElementById('publicBtn').addEventListener('click', () => {
-      alert("Public battles coming soon!");
-    });
+
+    function enterPrivateRoom() {
+      if (socket.connected) {
+        window.location.href = "/portal.html?mode=private";
+      } else {
+        alert("Connecting to server...");
+        socket.connect();
+      }
+    }
+
+    function enterPublicHall() {
+      alert("Public Hall feature arriving soon! Prepare your roasts...");
+    }
   </script>
 </body>
 </html>
