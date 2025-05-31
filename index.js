@@ -19,15 +19,16 @@ app.use(cors({
 // Serve static files from 'public' (CSS, JS, images)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve portal.html for root "/"
+// Serve index.html on root
 app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Serve portal.html on all other routes
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'portal.html'));
 });
 
-// Serve index.html for all other routes (fallback)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
 
 // Setup Socket.io with CORS options
 const io = new Server(server, {
