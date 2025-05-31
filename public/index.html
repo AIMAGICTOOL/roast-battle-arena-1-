@@ -130,27 +130,15 @@
     <a href="privacy.html" class="nav-link" style="background: #6247aa; color: white;">Privacy</a>
   </div>
 
-  <!-- Only socket.io connection added -->
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script>
-    // Original functions with socket check
-    const socket = io('https://your-socket-server.com', {
-      reconnection: true,
-      reconnectionAttempts: Infinity
-    });
-
-    function enterPrivateRoom() {
-      if (socket.connected) {
-        window.location.href = "/portal.html?mode=private";
-      } else {
-        alert("Connecting to server...");
-        socket.connect();
-      }
-    }
-
-    function enterPublicHall() {
-      alert("Public Hall feature arriving soon! Prepare your roasts...");
-    }
-  </script>
+ <!-- Only change the script section at the bottom -->
+<script>
+  function enterPrivateRoom() {
+    // Use this updated path to ensure proper routing
+    window.location.href = "/portal.html?mode=private"; 
+  }
+  function enterPublicHall() {
+    alert("Public Hall feature arriving soon! Prepare your roasts...");
+  }
+</script>
 </body>
 </html>
