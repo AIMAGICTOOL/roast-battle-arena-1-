@@ -182,6 +182,17 @@ elements.sendBtn.addEventListener('click', sendMessage);
 elements.input.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') sendMessage();
 });
+// Detect query param and auto-start for private mode
+const urlParams = new URLSearchParams(window.location.search);
+const mode = urlParams.get('mode');
+
+if (mode === 'private') {
+  elements.status.textContent = "🚀 Private 1v1 battle starting...";
+  socket.emit('start_chat', { mode: 'private' });
+  elements.startBtn.style.display = 'none';
+  elements.skipBtn.style.display = 'block';
+} else {
+}
 
 // Initialize
 resetUI();
