@@ -16,7 +16,13 @@ app.use(cors({
   credentials: true
 }));
 
+// Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve portal.html explicitly for root "/"
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'portal.html'));
+});
 
 const io = new Server(server, {
   cors: {
