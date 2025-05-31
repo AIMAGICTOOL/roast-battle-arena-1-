@@ -16,10 +16,10 @@ app.use(cors({
   credentials: true
 }));
 
-// Serve static files (css, js etc)
+// Serve static files from 'public' (CSS, JS, images)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve portal.html at root "/"
+// Serve portal.html for root "/"
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'portal.html'));
 });
@@ -29,7 +29,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Socket.io setup here (keep your existing io.on('connection') logic)
+// Setup Socket.io with CORS options
 const io = new Server(server, {
   cors: {
     origin: ["https://roast-battle-arena-1.onrender.com"],
@@ -42,7 +42,80 @@ const io = new Server(server, {
   }
 });
 
-// Your socket.io logic here unchanged...
+let waitingUsers = new Map();
+let activePairs = new Map();
+
+io.on('connection', (socket) => {
+  console.log('✅ New connection:', socket.id);
+
+  socket.emit('connection_update', { 
+    status: 'connected', 
+    message: 'Server connection established' 
+  });
+
+  // Matchmaking logic
+  if (waitingUsers.size > 0) {
+    const [firstUserId] = waitingUsers.keys();
+    const partnerSocket = waitingUsers.get(firstUserId);
+
+    activePairs.set(socket.id, partnerSocket.id);
+    activePairs.set(partnerSocket.id, socket.id);
+
+    socket.emit('chat_start', { partnerId: partnerSocket.id });
+    partnerSocket.emit('chat_start', { partnerId: socket.id });
+
+    waitingUsers.delete(firstUserId);
+  } else {
+    waitingUsers.set(socket.id, socket);
+    socket.emit('waiting');
+  }
+
+  // Message passing
+  socket.on('send_message', (msg) => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) io.to(partnerId).emit('receive_message', msg);
+  });
+
+  // Typing events
+  socket.on('typing', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) io.to(partnerId).emit('partner_typing');
+  });
+
+  socket.on('stop_typing', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) io.to(partnerId).emit('partner_stopped_typing');
+  });
+
+  // Skip partner
+  socket.on('skip_partner', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) {
+      io.to(partnerId).emit('partner_left', {
+        reason: 'skipped',
+        message: '💨 Poof! Your opponent vanished...'
+      });
+      activePairs.delete(partnerId);
+    }
+    activePairs.delete(socket.id);
+    waitingUsers.set(socket.id, socket);
+    socket.emit('waiting');
+  });
+
+  // Disconnect handling
+  socket.on('disconnect', () => {
+    const partnerId = activePairs.get(socket.id);
+    if (partnerId) {
+      io.to(partnerId).emit('partner_left', {
+        reason: 'disconnected',
+        message: '💨 Opponent disconnected'
+      });
+      activePairs.delete(partnerId);
+    }
+    activePairs.delete(socket.id);
+    waitingUsers.delete(socket.id);
+  });
+});
 
 const PORT = process.env.PORT || 10000;
 server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
