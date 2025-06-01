@@ -129,14 +129,19 @@
 
  <script>
   function enterPublicHall() {
-    console.log("Going to roast-feed.html");
-    window.location.href = "roast-feed.html";  // Fixed this line
+    console.log("[DEBUG] Public Hall clicked - forcing roast-feed.html");
+    window.location.href = "roast-feed.html";
+    return false; // Prevent default
   }
 
   function enterPrivateRoom() {
-    console.log("Going to portal.html");
+    console.log("[DEBUG] Private Room clicked - going to portal.html");
     window.location.href = "portal.html?mode=private";
+    return false;
   }
+
+  // Nuclear option: Override all possible event listeners
+  document.getElementById("publicBtn").onclick = enterPublicHall;
 </script>
   
 </body>
