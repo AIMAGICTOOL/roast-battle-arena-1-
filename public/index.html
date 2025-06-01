@@ -127,15 +127,16 @@
     <a href="privacy.html" class="nav-link" style="background: #6247aa; color: white;">Privacy</a>
   </div>
 
- <script>
-  function enterPrivateRoom() {
-    window.location.href = "portal.html?mode=private";
-  }
+  <script>
+    function enterPublicHall() {
+      console.log("Going to roast-feed.html");
+      window.location.href = "roast-feed.html";
+    }
 
-  function enterPublicHall() {
-    window.location.href = "roast-feed.html";
-  }
-</script>
-
+    function enterPrivateRoom() {
+      console.log("Going to portal.html");
+      window.location.href = "portal.html?mode=private";
+    }
+  </script>
 </body>
 </html>
