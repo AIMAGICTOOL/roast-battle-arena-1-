@@ -46,6 +46,18 @@ const io = new Server(server, {
 let waitingUsers = new Map();
 let activePairs = new Map();
 
+// Public battle room
+io.on('connection', (socket) => {
+    socket.on('join_public', () => {
+        socket.join('public_arena');
+        socket.emit('message', 'Welcome to the public roast arena!');
+    });
+
+    socket.on('send_message', (msg) => {
+        // Broadcast to everyone in public arena
+        io.to('public_arena').emit('receive_message', msg);
+    });
+});
 io.on('connection', (socket) => {
   console.log('✅ New connection:', socket.id);
 
