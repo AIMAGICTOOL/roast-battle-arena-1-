@@ -720,12 +720,72 @@
                         <button class="action-btn downvote" onclick="vote(this)">
                             👎 <span>2</span>
                         </button>
-                        <button class="action-btn" onclick="reply()">
-                            💬 Reply
-                        </button>
-                        <button class="action-btn" onclick="share()">
-                            🔗 Share
-                        </button>
+                       // Proper reply function
+function reply(button) {
+    const roastCard = button.closest('.roast-card');
+    const replyForm = document.createElement('div');
+    replyForm.className = 'reply-form';
+    replyForm.innerHTML = `
+        <textarea placeholder="Write your reply..."></textarea>
+        <button class="post-btn" onclick="postReply(this)">POST REPLY</button>
+    `;
+    roastCard.appendChild(replyForm);
+    console.log('Reply form opened');
+}
+
+// Proper share function
+function share(button) {
+    const roastContent = button.closest('.roast-card').querySelector('.roast-content').textContent;
+    if (navigator.share) {
+        navigator.share({
+            title: 'Check out this roast!',
+            text: roastContent,
+            url: window.location.href
+        }).catch(err => {
+            console.log('Error sharing:', err);
+            fallbackShare(roastContent);
+        });
+    } else {
+        fallbackShare(roastContent);
+    }
+}
+
+function fallbackShare(content) {
+    const tempInput = document.createElement('input');
+    tempInput.value = `${content}\n\nShared from Roast Arena`;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    alert('Roast copied to clipboard!');
+}
+
+function postReply(button) {
+    const textarea = button.previousElementSibling;
+    const content = textarea.value.trim();
+    if (content) {
+        const roastCard = button.closest('.roast-card');
+        const replyElement = document.createElement('div');
+        replyElement.className = 'roast-reply';
+        replyElement.innerHTML = `
+            <div class="roast-header">
+                <div class="user-avatar">
+                    ${profilePic ? 
+                        `<img src="${URL.createObjectURL(profilePic)}" alt="You">` : 
+                        `<span>Y</span>`}
+                </div>
+                <div class="user-info">
+                    <span class="username">@You</span>
+                    <span class="roast-time">Just now</span>
+                </div>
+            </div>
+            <div class="roast-content">${content}</div>
+        `;
+        roastCard.insertBefore(replyElement, button.closest('.reply-form'));
+        textarea.value = '';
+        console.log('Reply posted:', content);
+    }
+}
                     </div>
                 </div>
 
