@@ -46,17 +46,26 @@ const io = new Server(server, {
 let waitingUsers = new Map();
 let activePairs = new Map();
 
-// Public battle room
+// Add these Socket.IO handlers
 io.on('connection', (socket) => {
-    socket.on('join_public', () => {
-        socket.join('public_arena');
-        socket.emit('message', 'Welcome to the public roast arena!');
-    });
+  // Private battles
+  socket.on('join_private', () => {
+    socket.join('private_room');
+    // Matchmaking logic here
+  });
 
-    socket.on('send_message', (msg) => {
-        // Broadcast to everyone in public arena
-        io.to('public_arena').emit('receive_message', msg);
-    });
+  // Public arena
+  socket.on('join_public', () => {
+    socket.join('public_arena');
+    socket.emit('message', 'Welcome to the public roast arena!');
+  });
+
+  socket.on('send_message', (data) => {
+    // Broadcast to the appropriate room
+    io.to(data.room).emit('message', data.msg);
+  });
+
+  // Other existing handlers...
 });
 io.on('connection', (socket) => {
   console.log('✅ New connection:', socket.id);
