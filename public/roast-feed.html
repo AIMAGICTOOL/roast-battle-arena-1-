@@ -331,26 +331,31 @@
         }
 
         /* Media upload controls */
-        .media-upload {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            width: 100%; /* Add this line */        }
+       .media-upload {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    width: 100%; /* Add this line */
+}
 
-        .upload-btn {
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+.upload-btn {
+    background: var(--primary); /* Match post button background */
+    border: none; /* Remove border */
+    color: black; /* Match post button text color */
+    padding: 10px 20px; /* Match post button padding */
+    border-radius: 5px; /* Match post button border radius */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold; /* Match post button font weight */
+    transition: all 0.3s; /* Match post button transition */
+}
 
-        .upload-btn:hover {
-            background: rgba(157, 0, 255, 0.1);
+.upload-btn:hover {
+    background: var(--secondary); /* Match post button hover state */
+    transform: translateY(-2px); /* Match post button hover effect */
+}
         }
 
         .media-preview {
