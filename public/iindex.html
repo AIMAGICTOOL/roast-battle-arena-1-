@@ -14,7 +14,6 @@
       --text-secondary: #b8b8ff;
     }
 
-    /* FIRE TITLE ANIMATION (from index.html) */
     @keyframes burn {
       0%, 100% { 
         text-shadow: 0 0 10px rgba(255, 80, 0, 0.8),
@@ -30,7 +29,6 @@
       display: inline-block;
     }
 
-    /* PORTAL STYLING (matching index.html) */
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: var(--bg-dark);
@@ -81,7 +79,6 @@
       box-shadow: 0 0 20px currentColor;
     }
 
-    /* NAV LINKS (same as index.html) */
     .nav-links {
       display: flex;
       justify-content: center;
@@ -116,13 +113,13 @@
   <div class="status-message">Choose your battle dimension:</div>
   
   <div class="portal-options">
-  <button id="publicBtn" class="portal-btn" onclick="enterPublicHall()">
-    PUBLIC HALL
-  </button>
-  <button id="privateBtn" class="portal-btn" onclick="enterPrivateRoom()">
-    PRIVATE 1v1 ROAST
-  </button>
-</div>
+    <button id="publicBtn" class="portal-btn" onclick="enterPublicHall()">
+      PUBLIC HALL
+    </button>
+    <button id="privateBtn" class="portal-btn" onclick="enterPrivateRoom()">
+      PRIVATE 1v1 ROAST
+    </button>
+  </div>
 
   <div class="nav-links">
     <a href="about.html" class="nav-link" style="background: var(--accent-primary); color: var(--bg-dark);">About</a>
@@ -130,17 +127,22 @@
     <a href="privacy.html" class="nav-link" style="background: #6247aa; color: white;">Privacy</a>
   </div>
 
- <!-- Only change the script section at the bottom -->
-<script>
-  function enterPrivateRoom() {
-    window.location.href = "portal.html?mode=private";
+ <script>
+  function enterPublicHall() {
+    console.log("[DEBUG] Public Hall clicked - forcing roast-feed.html");
+    window.location.href = "roast-feed.html";
+    return false; // Prevent default
   }
 
-  function enterPublicHall() {
-    window.location.href = "roast-feed.html";
+  function enterPrivateRoom() {
+    console.log("[DEBUG] Private Room clicked - going to portal.html");
+    window.location.href = "portal.html?mode=private";
+    return false;
   }
+
+  // Nuclear option: Override all possible event listeners
+  document.getElementById("publicBtn").onclick = enterPublicHall;
 </script>
+  
 </body>
 </html>
-
-
