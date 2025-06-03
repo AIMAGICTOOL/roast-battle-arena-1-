@@ -261,7 +261,9 @@
                 links: Array.from(document.querySelectorAll('#linksContainer input')).map(input => input.value),
                 profilePic: document.getElementById('profilePic').files[0]
             };
-
+             // Save to localStorage
+    localStorage.setItem('profileData', JSON.stringify(profileData));
+            
             console.log('Saving profile:', profileData);
             
             // In a real app: Upload image and save to backend
