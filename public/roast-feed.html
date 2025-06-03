@@ -870,7 +870,7 @@
             document.getElementById(tab + 'Tab').classList.add('active');
             
             currentTab = tab;
-            
+            if (tab === 'profile') loadProfileData();            
             // Hide dropdowns when switching tabs
             document.getElementById('profileDropdown').style.display = 'none';
             document.querySelector('.notification-content').style.display = 'none';
@@ -1151,7 +1151,22 @@
                 e.preventDefault();
                 postRoast();
             }
-        });
+      function loadProfileData() {
+    const savedData = localStorage.getItem('profileData');
+    if (savedData) {
+        const profileData = JSON.parse(savedData);
+        document.querySelector('#profileTab h2').textContent = `@${profileData.username}`;
+        document.querySelector('#profileTab p').textContent = profileData.bio;
+    }
+
+    const savedPic = localStorage.getItem('profilePic');
+    if (savedPic) {
+        document.getElementById('profileTabImage').src = savedPic;
+        document.getElementById('profileTabImage').style.display = 'block';
+        document.getElementById('profileTabInitial').style.display = 'none';
+    }
+}
+            
     </script>
 </body>
 </html>
