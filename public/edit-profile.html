@@ -252,29 +252,31 @@
         }
 
         // Save profile data
-       function saveProfile() {
+      function saveProfile() {
     const profileData = {
         name: document.getElementById('name').value,
         username: document.getElementById('username').value,
         bio: document.getElementById('bio').value,
         gender: document.getElementById('gender').value,
         links: Array.from(document.querySelectorAll('#linksContainer input')).map(input => input.value),
-        profilePic: document.getElementById('profilePic').files[0]
     };
 
-    // Save data to localStorage (browser storage)
-    localStorage.setItem('profileData', JSON.stringify(profileData));
-
-    // If a new profile pic was uploaded, save it
-    if (profileData.profilePic) {
+    const profilePicFile = document.getElementById('profilePic').files[0];
+    if (profilePicFile) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            localStorage.setItem('profilePic', e.target.result);
-            window.location.href = 'roast-feed.html#profileTab'; // Redirect to PROFILE
+            profileData.profilePic = e.target.result;
+            localStorage.setItem('profileData', JSON.stringify(profileData));
+            window.location.href = 'roast-feed.html#profileTab';
         };
-        reader.readAsDataURL(profileData.profilePic);
+        reader.readAsDataURL(profilePicFile);
     } else {
-        window.location.href = 'roast-feed.html#profileTab'; // Redirect to PROFILE
+        profileData.profilePic = document.getElementById('profilePreview').src;
+        localStorage.setItem('profileData', JSON.stringify(profileData));
+        window.location.href = 'roast-feed.html#profileTab';
+    }
+}
+/ Redirect to PROFILE
     }
 }
     </script>
