@@ -302,7 +302,7 @@
         }
 
         .new-roast textarea {
-            width: 100%;
+            width: calc(100% - 30px); /* Fixed alignment issue */
             min-height: 100px;
             background: var(--bg-dark);
             border: 1px solid var(--border);
@@ -311,7 +311,7 @@
             border-radius: 5px;
             margin-bottom: 10px;
             resize: vertical;
-            font-family: inherit;
+            font-family: inherit
         }
 
         .post-btn {
