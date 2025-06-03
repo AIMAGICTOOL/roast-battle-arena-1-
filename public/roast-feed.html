@@ -854,21 +854,45 @@
         let notificationsEnabled = true;
         
         // Switch between tabs
-        function switchTab(tab) {
-            // Update active tab button
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent.toLowerCase().includes(tab)) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            // Update active tab content
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.getElementById(tab + 'Tab').classList.add('active');
-            
+       function switchTab(tab) {
+    // Update active tab button
+    document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.toLowerCase().includes(tab)) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Update active tab content
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.getElementById(tab + 'Tab').classList.add('active');
+    
+    // ===== NEW CODE ADDED HERE =====
+    if (tab === 'profile') {
+        const savedData = localStorage.getItem('profileData');
+        if (savedData) {
+            const profileData = JSON.parse(savedData);
+            document.querySelector('#profileTab h2').textContent = `@${profileData.username}`;
+            document.querySelector('#profileTab p').textContent = profileData.bio;
+        }
+        const savedPic = localStorage.getItem('profilePic');
+        if (savedPic) {
+            document.getElementById('profileTabImage').src = savedPic;
+            document.getElementById('profileTabImage').style.display = 'block';
+            document.getElementById('profileTabInitial').style.display = 'none';
+        }
+    }
+    // ===== END NEW CODE =====
+    
+    currentTab = tab;
+    
+    // Hide dropdowns when switching tabs
+    document.getElementById('profileDropdown').style.display = 'none';
+    document.querySelector('.notification-content').style.display = 'none';
+}
+    }
             currentTab = tab;
             
             // Hide dropdowns when switching tabs
