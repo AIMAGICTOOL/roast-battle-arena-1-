@@ -1151,6 +1151,36 @@
                 e.preventDefault();
                 postRoast();
             }
+            // Load profile data from localStorage
+function loadProfileData() {
+    const data = localStorage.getItem('profileData');
+    if (data) {
+        const profile = JSON.parse(data);
+
+        // Set username, bio
+        document.querySelector('#profileTab h2').textContent = '@' + profile.username;
+        document.querySelector('#profileTab p').textContent = profile.bio;
+
+        // Set profile image
+        if (profile.profilePic) {
+            ['profileImage', 'profileTabImage', 'profileFeedImage'].forEach(id => {
+                const img = document.getElementById(id);
+                if (img) {
+                    img.src = profile.profilePic;
+                    img.style.display = 'block';
+                }
+            });
+            ['profileInitial', 'profileTabInitial', 'profileFeedInitial'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+        }
+
+        // Optional: log for debug
+        console.log('Profile loaded:', profile);
+    }
+}
+loadProfileData();
         });
     </script>
 </body>
