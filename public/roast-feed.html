@@ -336,26 +336,29 @@
     gap: 10px;
     margin-bottom: 10px;
     width: 100%; /* Add this line */
-}
+            width: 100%;
+    margin-bottom: 10px;
+}}
 
 .upload-btn {
-    background: var(--primary); /* Match post button background */
-    border: none; /* Remove border */
-    color: black; /* Match post button text color */
+   .upload-btn {
+    width: 100%; /* Match post button width */
     padding: 10px 20px; /* Match post button padding */
-    border-radius: 5px; /* Match post button border radius */
+    text-align: center; /* Center text like post button */
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    border-radius: 5px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-weight: bold; /* Match post button font weight */
-    transition: all 0.3s; /* Match post button transition */
+    font-weight: bold;
+    transition: all 0.3s;
 }
 
 .upload-btn:hover {
     background: var(--secondary); /* Match post button hover state */
     transform: translateY(-2px); /* Match post button hover effect */
-}
+     width: 100%; /* Explicit width to match upload button */}
+
         }
 
         .media-preview {
