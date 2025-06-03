@@ -331,26 +331,34 @@
         }
 
         /* Media upload controls */
-        .media-upload {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            width: 100%; /* Add this line */        }
+       .media-upload {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    width: 100%; /* Add this line */
+            width: 100%;
+    margin-bottom: 10px;
+}}
 
-        .upload-btn {
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+.upload-btn {
+   .upload-btn {
+    width: 100%; /* Match post button width */
+    padding: 10px 20px; /* Match post button padding */
+    text-align: center; /* Center text like post button */
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
 
-        .upload-btn:hover {
-            background: rgba(157, 0, 255, 0.1);
+.upload-btn:hover {
+    background: var(--secondary); /* Match post button hover state */
+    transform: translateY(-2px); /* Match post button hover effect */
+     width: 100%; /* Explicit width to match upload button */}
+
         }
 
         .media-preview {
