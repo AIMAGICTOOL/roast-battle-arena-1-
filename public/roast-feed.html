@@ -801,8 +801,7 @@
                 </div>
                 <h2>@YourUsername</h2>
                 <p>Master Roaster | Savage since 2023</p>
-    <div id="profileSavedData" style="margin: 10px 0;"></div>                
-               
+                
                 <div class="profile-stats">
                     <div class="stat">
                         <div class="stat-value">128</div>
@@ -1152,33 +1151,7 @@
                 e.preventDefault();
                 postRoast();
             }
-            <script>
-    // ... (existing code remains ABOVE this) ...
-
-    // ▼ PASTE THIS NEW FUNCTION AT THE BOTTOM (BUT STILL INSIDE <script>) ▲
-    function loadProfileData() {
-        const savedData = localStorage.getItem('profileData');
-        if (savedData) {
-            const profile = JSON.parse(savedData);
-            let html = `
-                <div style="margin-bottom: 8px;"><strong>${profile.name}</strong></div>
-                <div style="margin-bottom: 8px;">${profile.bio}</div>
-            `;
-            if (profile.links.length > 0) {
-                html += `<div style="margin-top: 10px;">` +
-                        profile.links.map(link => 
-                            `<a href="${link}" target="_blank" 
-                              style="color: #9d00ff; display: block; margin: 3px 0;">
-                              ${link}
-                            </a>`
-                        ).join('') +
-                        `</div>`;
-            }
-            document.getElementById('profileSavedData').innerHTML = html;
-        }
-    }
-    loadProfileData(); // Call the function
-      });
+        });
     </script>
 </body>
 </html>
