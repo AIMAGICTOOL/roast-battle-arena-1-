@@ -252,24 +252,31 @@
         }
 
         // Save profile data
-        function saveProfile() {
-            const profileData = {
-                name: document.getElementById('name').value,
-                username: document.getElementById('username').value,
-                bio: document.getElementById('bio').value,
-                gender: document.getElementById('gender').value,
-                links: Array.from(document.querySelectorAll('#linksContainer input')).map(input => input.value),
-                profilePic: document.getElementById('profilePic').files[0]
-            };
-             // Save to localStorage
+       function saveProfile() {
+    const profileData = {
+        name: document.getElementById('name').value,
+        username: document.getElementById('username').value,
+        bio: document.getElementById('bio').value,
+        gender: document.getElementById('gender').value,
+        links: Array.from(document.querySelectorAll('#linksContainer input')).map(input => input.value),
+        profilePic: document.getElementById('profilePic').files[0]
+    };
+
+    // Save data to localStorage (browser storage)
     localStorage.setItem('profileData', JSON.stringify(profileData));
-            
-            console.log('Saving profile:', profileData);
-            
-            // In a real app: Upload image and save to backend
-            // Then redirect back to profile:
-         window.location.href = 'roast-feed.html#profileTab';
-        }
+
+    // If a new profile pic was uploaded, save it
+    if (profileData.profilePic) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            localStorage.setItem('profilePic', e.target.result);
+            window.location.href = 'roast-feed.html#profileTab'; // Redirect to PROFILE
+        };
+        reader.readAsDataURL(profileData.profilePic);
+    } else {
+        window.location.href = 'roast-feed.html#profileTab'; // Redirect to PROFILE
+    }
+}
     </script>
 </body>
 </html>
