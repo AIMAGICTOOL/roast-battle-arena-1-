@@ -1151,77 +1151,7 @@
                 e.preventDefault();
                 postRoast();
             }
-            // Load profile data from localStorage
-function loadProfileData() {
-    const data = localStorage.getItem('profileData');
-    if (data) {
-        const profile = JSON.parse(data);
-
-        // Set username, bio
-        document.querySelector('#profileTab h2').textContent = '@' + profile.username;
-        document.querySelector('#profileTab p').textContent = profile.bio;
-
-        // Set profile image
-        if (profile.profilePic) {
-            ['profileImage', 'profileTabImage', 'profileFeedImage'].forEach(id => {
-                const img = document.getElementById(id);
-                if (img) {
-                    img.src = profile.profilePic;
-                    img.style.display = 'block';
-                }
-            });
-            ['profileInitial', 'profileTabInitial', 'profileFeedInitial'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = 'none';
-            });
-        }
-
-        // Optional: log for debug
-        console.log('Profile loaded:', profile);
-    }
-}
-loadProfileData();
-            // Load and apply profile data from localStorage
-function loadProfileData() {
-    const data = localStorage.getItem('profileData');
-    if (!data) return;
-
-    const profile = JSON.parse(data);
-
-    // Fill username and bio
-    document.querySelector('#profileTab h2').textContent = '@' + profile.username;
-    document.querySelector('#profileTab p').textContent = profile.bio;
-
-    // Set profile image in 3 places
-    ['profileImage', 'profileTabImage', 'profileFeedImage'].forEach(id => {
-        const img = document.getElementById(id);
-        if (img && profile.profilePic) {
-            img.src = profile.profilePic;
-            img.style.display = 'block';
-        }
-    });
-
-    // Hide initials
-    ['profileInitial', 'profileTabInitial', 'profileFeedInitial'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-}
-
-// Auto-switch to profile tab if #profileTab in URL
-function handleHashTabOnLoad() {
-    const hash = window.location.hash;
-    if (hash === '#profileTab') {
-        switchTab('profile');
-    }
-}
-
-// Run after DOM loads
-window.addEventListener('DOMContentLoaded', () => {
-    loadProfileData();
-    handleHashTabOnLoad();
-});
-        
+        });
     </script>
 </body>
 </html>
