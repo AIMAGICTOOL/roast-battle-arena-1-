@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | Roast Arena</title>
+    <style>
+        :root {
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --primary: #9d00ff;
+            --secondary: #00f7ff;
+            --text-main: #f0f0f0;
+            --text-dim: #aaaaaa;
+            --border: #333333;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .edit-container {
+            max-width: 500px;
+            margin: 20px auto;
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .profile-pic-upload {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-pic-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .add-link-btn {
+            background: var(--bg-dark);
+            color: var(--primary);
+            border: 1px dashed var(--primary);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .link-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .link-item input {
+            flex: 1;
+        }
+
+        .remove-link {
+            background: var(--bg-dark);
+            color: var(--accent);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            width: 36px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .save-btn, .cancel-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .save-btn {
+            background: var(--primary);
+            color: black;
+        }
+
+        .save-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .cancel-btn {
+            background: transparent;
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+
+        .cancel-btn:hover {
+            background: rgba(157, 0, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-container">
+        <h1>Edit Profile</h1>
+        
+        <!-- Profile Picture -->
+        <div class="form-group">
+            <label>Profile Picture</label>
+            <div class="profile-pic-upload">
+                <img id="profilePreview" src="https://i.pravatar.cc/150?img=3" class="profile-pic-preview" alt="Current Profile">
+                <div>
+                    <input type="file" id="profilePic" accept="image/*" onchange="previewProfilePic()">
+                    <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 5px;">
+                        Max 2MB. JPG, PNG, or GIF.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Name -->
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Your real name" value="John Doe">
+        </div>
+        
+        <!-- Username -->
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Unique username" value="RoastMaster3000">
+        </div>
+        
+        <!-- Bio -->
+        <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" placeholder="Describe yourself">Professional roaster since 2023 | Turning burns into art</textarea>
+        </div>
+        
+        <!-- Gender -->
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            <select id="gender">
+                <option value="">Prefer not to say</option>
+                <option value="male" selected>Male</option>
+                <option value="female">Female</option>
+                <option value="non-binary">Non-binary</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        
+        <!-- Links -->
+        <div class="form-group">
+            <label>Social Links</label>
+            <div id="linksContainer">
+                <div class="link-item">
+                    <input type="url" placeholder="https://twitter.com/you" value="https://twitter.com/RoastKing">
+                    <button class="remove-link" onclick="removeLink(this)">×</button>
+                </div>
+                <div class="link-item">
+                    <input type="url" placeholder="https://instagram.com/you" value="https://instagram.com/RoastArt">
+                    <button class="remove-link" onclick="removeLink(this)">×</button>
+                </div>
+            </div>
+            <button class="add-link-btn" onclick="addLinkField()">
+                + Add Link
+            </button>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <button class="cancel-btn" onclick="window.history.back()">Cancel</button>
+            <button class="save-btn" onclick="saveProfile()">Save Changes</button>
+        </div>
+    </div>
+
+    <script>
+        // Profile picture preview
+        function previewProfilePic() {
+            const file = document.getElementById('profilePic').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Add new link field
+        function addLinkField() {
+            const container = document.getElementById('linksContainer');
+            const div = document.createElement('div');
+            div.className = 'link-item';
+            div.innerHTML = `
+                <input type="url" placeholder="https://example.com/you">
+                <button class="remove-link" onclick="removeLink(this)">×</button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Remove link field
+        function removeLink(button) {
+            button.parentElement.remove();
+        }
+
+        // Save profile data
+        function saveProfile() {
+            const profileData = {
+                name: document.getElementById('name').value,
+                username: document.getElementById('username').value,
+                bio: document.getElementById('bio').value,
+                gender: document.getElementById('gender').value,
+                links: Array.from(document.querySelectorAll('#linksContainer input')).map(input => input.value),
+                profilePic: document.getElementById('profilePic').files[0]
+            };
+
+            console.log('Saving profile:', profileData);
+            
+            // In a real app: Upload image and save to backend
+            // Then redirect back to profile:
+         window.location.href = 'roast-feed.html#profileTab';
+        }
+    </script>
+</body>
+</html>
