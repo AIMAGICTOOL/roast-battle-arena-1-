@@ -651,7 +651,7 @@
                         <span id="profileInitial">Y</span>
                     </button>
                     <div class="dropdown-content" id="profileDropdown">
-                       <a href="#" onclick="switchTab('profile'); return false;">👤 My Profile</a>
+                        <a href="#" onclick="switchTab('profile'); return false;">👤 My Profile</a>
                         <a href="#" onclick="document.getElementById('profilePicInput').click(); return false;">📷 Change Profile Picture</a>
                         <a href="#">⚙️ Settings</a>
                         <a href="#">🔒 Logout</a>
@@ -848,30 +848,6 @@
     </div>
 
     <script>
-        // Load saved profile when page opens
-window.addEventListener('DOMContentLoaded', function() {
-    // Check if URL has #profileTab (coming from edit page)
-    if (window.location.hash === '#profileTab') {
-        switchTab('profile'); // Force open Profile tab
-    }
-
-    // Load saved data (if any)
-    const savedProfile = localStorage.getItem('profileData');
-    if (savedProfile) {
-        const profileData = JSON.parse(savedProfile);
-        
-        // Update UI with saved data
-        document.querySelector('#profileTab h2').textContent = `@${profileData.username}`;
-        document.querySelector('#profileTab p').textContent = profileData.bio;
-        
-        // Update profile picture (if saved)
-        if (profileData.profilePic) {
-            document.getElementById('profileTabImage').src = profileData.profilePic;
-            document.getElementById('profileTabImage').style.display = 'block';
-            document.getElementById('profileTabInitial').style.display = 'none';
-        }
-    }
-});
         let mediaFiles = [];
         let currentTab = 'public';
         let profilePic = null;
