@@ -874,6 +874,14 @@
             // Hide dropdowns when switching tabs
             document.getElementById('profileDropdown').style.display = 'none';
             document.querySelector('.notification-content').style.display = 'none';
+
+            // Auto open profile tab if hash is #profileTab
+window.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash;
+    if (hash === '#profileTab') {
+        switchTab('profile');
+    }
+});
         }
         
         // Toggle profile dropdown
