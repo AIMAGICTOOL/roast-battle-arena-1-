@@ -1196,7 +1196,9 @@ window.addEventListener('load', function () {
 
         const profileSection = document.querySelector('#profileTab .profile-section');
         if (profileSection) {
-            profileSection.appendChild(linkContainer);
+            const editButton = profileSection.querySelector('button');
+profileSection.insertBefore(linkContainer, editButton);
+
         }
     }
 
