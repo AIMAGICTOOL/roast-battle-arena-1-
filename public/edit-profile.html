@@ -235,24 +235,16 @@
         }
 
         // Add new link field
-      function addLinkField() {
-    const container = document.getElementById('linksContainer');
-    const existingLinks = container.querySelectorAll('.link-item');
-
-    if (existingLinks.length >= 1) {
-        alert("Only one social link allowed.");
-        return;
-    }
-
-    const div = document.createElement('div');
-    div.className = 'link-item';
-    div.innerHTML = `
-        <input type="url" placeholder="https://example.com/you">
-        <button class="remove-link" onclick="removeLink(this)">×</button>
-    `;
-    container.appendChild(div);
-}
-
+        function addLinkField() {
+            const container = document.getElementById('linksContainer');
+            const div = document.createElement('div');
+            div.className = 'link-item';
+            div.innerHTML = `
+                <input type="url" placeholder="https://example.com/you">
+                <button class="remove-link" onclick="removeLink(this)">×</button>
+            `;
+            container.appendChild(div);
+        }
 
         // Remove link field
         function removeLink(button) {
@@ -261,33 +253,23 @@
 
         // Save profile data
         function saveProfile() {
-    const profileData = {
-        name: document.getElementById('name').value,
-        username: document.getElementById('username').value,
-        bio: document.getElementById('bio').value,
-        gender: document.getElementById('gender').value,
-        links: Array.from(document.querySelectorAll('#linksContainer input')).map(input => input.value)
-    };
-
-    const fileInput = document.getElementById('profilePic');
-    const file = fileInput.files[0];
-
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            profileData.profilePic = e.target.result;
-            localStorage.setItem('profileData', JSON.stringify(profileData));
-            window.location.href = 'roast-feed.html#profileTab';
-        };
-        reader.readAsDataURL(file);
-    } else {
-        profileData.profilePic = document.getElementById('profilePreview').src;
-        localStorage.setItem('profileData', JSON.stringify(profileData));
-        window.location.href = 'roast-feed.html#profileTab';
-
-    }
-}
-
+            const profileData = {
+                name: document.getElementById('name').value,
+                username: document.getElementById('username').value,
+                bio: document.getElementById('bio').value,
+                gender: document.getElementById('gender').value,
+                links: Array.from(document.querySelectorAll('#linksContainer input')).map(input => input.value),
+                profilePic: document.getElementById('profilePic').files[0]
+            };
+             // Save to localStorage
+    localStorage.setItem('profileData', JSON.stringify(profileData));
+            
+            console.log('Saving profile:', profileData);
+            
+            // In a real app: Upload image and save to backend
+            // Then redirect back to profile:
+         window.location.href = 'roast-feed.html#profileTab';
+        }
     </script>
 </body>
 </html>
