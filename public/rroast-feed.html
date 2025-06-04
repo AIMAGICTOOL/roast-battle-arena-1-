@@ -1179,6 +1179,64 @@ window.addEventListener('load', function () {
     if (nameEl && profile.username) nameEl.textContent = '@' + profile.username;
     if (bioEl && profile.bio) bioEl.textContent = profile.bio;
 
+        // Show 1 social link if available
+    if (profile.links && profile.links.length > 0 && profile.links[0]) {
+        const linkContainer = document.createElement('div');
+        linkContainer.style.marginTop = '10px';
+
+        const link = document.createElement('a');
+        link.href = profile.links[0];
+        link.textContent = profile.links[0];
+        link.target = '_blank';
+        link.style.color = 'var(--secondary)';
+        link.style.textDecoration = 'none';
+        link.style.fontSize = '0.9rem';
+         linkContainer.style.marginBottom = '10px';
+
+        linkContainer.appendChild(link);
+
+        const profileSection = document.querySelector('#profileTab .profile-section');
+        if (profileSection) {
+            const editButton = profileSection.querySelector('button');
+profileSection.insertBefore(linkContainer, editButton);
+
+        }
+    }
+
+    // If redirected from edit-profile, open profile tab
+    if (window.location.hash === '#profileTab') {
+        if (typeof switchTab === 'function') {
+            switchTab('profile');
+        }
+    }
+});
+
+window.addEventListener('load', function () {
+    const profile = JSON.parse(localStorage.getItem('profileData'));
+    if (!profile) return;
+
+    // Load profile pic
+    if (profile.profilePic) {
+        ['profileImage', 'profileTabImage', 'profileFeedImage'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.src = profile.profilePic;
+                el.style.display = 'block';
+            }
+        });
+
+        ['profileInitial', 'profileTabInitial', 'profileFeedInitial'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    // Load username + bio
+    const nameEl = document.querySelector('#profileTab h2');
+    const bioEl = document.querySelector('#profileTab p');
+    if (nameEl && profile.username) nameEl.textContent = '@' + profile.username;
+    if (bioEl && profile.bio) bioEl.textContent = profile.bio;
+
     // If redirected from edit-profile, open profile tab
     if (window.location.hash === '#profileTab') {
         if (typeof switchTab === 'function') {
@@ -1187,6 +1245,7 @@ window.addEventListener('load', function () {
     }
 });
 </script>
+
 
 </body>
 </html>
