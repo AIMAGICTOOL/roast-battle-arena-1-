@@ -1179,31 +1179,6 @@ window.addEventListener('load', function () {
     if (nameEl && profile.username) nameEl.textContent = '@' + profile.username;
     if (bioEl && profile.bio) bioEl.textContent = profile.bio;
 
-        // Show 1 social link if available
-if (profile.links && profile.links.length > 0 && profile.links[0]) {
-    const linkContainer = document.createElement('div');
-    linkContainer.style.marginTop = '10px';
-
-    const link = document.createElement('a');
-    link.href = profile.links[0];
-    link.textContent = profile.links[0];
-    link.target = '_blank';
-    link.style.color = 'var(--secondary)';
-    link.style.textDecoration = 'none';
-    link.style.fontSize = '0.9rem';
-    link.style.marginBottom = '15px'; // ✅ added spacing below link
-
-    linkContainer.appendChild(link);
-
-    const profileSection = document.querySelector('#profileTab .profile-section');
-    const editButton = profileSection.querySelector('button');
-    profileSection.insertBefore(linkContainer, editButton);
-}
-
-
-        }
-    }
-
     // If redirected from edit-profile, open profile tab
     if (window.location.hash === '#profileTab') {
         if (typeof switchTab === 'function') {
@@ -1211,11 +1186,6 @@ if (profile.links && profile.links.length > 0 && profile.links[0]) {
         }
     }
 });
-        <!-- Existing script ends here -->
-</script>
-
-<!-- 🔽 ADD THIS JUST BELOW -->
-<script>
 window.addEventListener('load', function () {
     const profile = JSON.parse(localStorage.getItem('profileData'));
     if (!profile) return;
@@ -1236,42 +1206,21 @@ window.addEventListener('load', function () {
         });
     }
 
-    // Load username and bio
+    // Load username + bio
     const nameEl = document.querySelector('#profileTab h2');
     const bioEl = document.querySelector('#profileTab p');
     if (nameEl && profile.username) nameEl.textContent = '@' + profile.username;
     if (bioEl && profile.bio) bioEl.textContent = profile.bio;
 
-    // ✅ Show 1 social link under bio, above Edit button
-    if (profile.links && profile.links.length > 0 && profile.links[0]) {
-        const linkContainer = document.createElement('div');
-        linkContainer.style.marginTop = '10px';
-
-        const link = document.createElement('a');
-        link.href = profile.links[0];
-        link.textContent = profile.links[0];
-        link.target = '_blank';
-        link.style.color = 'var(--secondary)';
-        link.style.textDecoration = 'none';
-        link.style.fontSize = '0.9rem';
-        link.style.marginBottom = '15px';
-
-        linkContainer.appendChild(link);
-
-        const profileSection = document.querySelector('#profileTab .profile-section');
-        const editButton = profileSection.querySelector('button');
-        if (profileSection && editButton) {
-            profileSection.insertBefore(linkContainer, editButton);
+    // If redirected from edit-profile, open profile tab
+    if (window.location.hash === '#profileTab') {
+        if (typeof switchTab === 'function') {
+            switchTab('profile');
         }
     }
-
-    // ✅ Auto open Profile tab if needed
-    if (window.location.hash === '#profileTab' && typeof switchTab === 'function') {
-        switchTab('profile');
-    }
 });
-
 </script>
+
 
 </body>
 </html>
