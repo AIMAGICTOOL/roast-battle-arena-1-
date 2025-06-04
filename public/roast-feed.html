@@ -1152,6 +1152,41 @@
                 postRoast();
             }
         });
-    </script>
+   
+window.addEventListener('load', function () {
+    const profile = JSON.parse(localStorage.getItem('profileData'));
+    if (!profile) return;
+
+    // Load profile pic
+    if (profile.profilePic) {
+        ['profileImage', 'profileTabImage', 'profileFeedImage'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.src = profile.profilePic;
+                el.style.display = 'block';
+            }
+        });
+
+        ['profileInitial', 'profileTabInitial', 'profileFeedInitial'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    // Load username + bio
+    const nameEl = document.querySelector('#profileTab h2');
+    const bioEl = document.querySelector('#profileTab p');
+    if (nameEl && profile.username) nameEl.textContent = '@' + profile.username;
+    if (bioEl && profile.bio) bioEl.textContent = profile.bio;
+
+    // If redirected from edit-profile, open profile tab
+    if (window.location.hash === '#profileTab') {
+        if (typeof switchTab === 'function') {
+            switchTab('profile');
+        }
+    }
+});
+</script>
+
 </body>
 </html>
