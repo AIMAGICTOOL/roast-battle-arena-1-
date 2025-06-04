@@ -1158,8 +1158,38 @@ window.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 postRoast();
-            }
-        });
+            
+// Load profile data from localStorage when page loads
+window.addEventListener('DOMContentLoaded', () => {
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+
+    if (profileData) {
+        // Update Profile Tab
+        if (profileData.profilePic) {
+            const img1 = document.getElementById('profileImage');
+            const img2 = document.getElementById('profileTabImage');
+            const img3 = document.getElementById('profileFeedImage');
+            img1.src = img2.src = img3.src = profileData.profilePic;
+            img1.style.display = img2.style.display = img3.style.display = 'block';
+
+            document.getElementById('profileInitial').style.display = 'none';
+            document.getElementById('profileTabInitial').style.display = 'none';
+            document.getElementById('profileFeedInitial').style.display = 'none';
+        }
+
+        document.querySelector('#profileTab h2').textContent = `@${profileData.username || 'Username'}`;
+        document.querySelector('#profileTab p').textContent = profileData.bio || '';
+
+        // You can also update other UI like name in header if needed
+    }
+
+    // Switch to #profileTab if URL has hash
+    const hash = window.location.hash;
+    if (hash === '#profileTab') {
+        switchTab('profile');
+    }
+});
+                
     </script>
 </body>
 </html>
