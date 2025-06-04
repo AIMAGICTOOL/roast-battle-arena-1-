@@ -1179,26 +1179,28 @@ window.addEventListener('load', function () {
     if (nameEl && profile.username) nameEl.textContent = '@' + profile.username;
     if (bioEl && profile.bio) bioEl.textContent = profile.bio;
 
-        // Show 1 social link if available
-   // Show 1 social link if available
-if (profile.links && profile.links.length > 0 && profile.links[0]) {
-    const linkContainer = document.createElement('div');
-    linkContainer.style.marginTop = '10px';
+          // Show 1 social link if available
+    if (profile.links && profile.links.length > 0 && profile.links[0]) {
+        const linkContainer = document.createElement('div');
+        linkContainer.style.marginTop = '10px';
 
-    const link = document.createElement('a');
-    link.href = profile.links[0];
-    link.textContent = profile.links[0];
-    link.target = '_blank';
-    link.style.color = 'var(--secondary)';
-    link.style.textDecoration = 'none';
-    link.style.fontSize = '0.9rem';
-    linkContainer.style.marginBottom = '15px';
-    linkContainer.appendChild(link);
+        const link = document.createElement('a');
+        link.href = profile.links[0];
+        link.textContent = profile.links[0];
+        link.target = '_blank';
+        link.style.color = 'var(--secondary)';
+        link.style.textDecoration = 'none';
+        link.style.fontSize = '0.9rem';
+ linkContainer.style.marginBottom = '10px';
+        
+        const profileSection = document.querySelector('#profileTab .profile-section');
+        if (profileSection) {
+          const editButton = profileSection.querySelector('button');
+profileSection.insertBefore(linkContainer, editButton);
 
-    const profileSection = document.querySelector('#profileTab .profile-section');
-    const editButton = profileSection.querySelector('button');
-    profileSection.insertBefore(linkContainer, editButton);
-}
+        }
+    }
+
 
 
     // If redirected from edit-profile, open profile tab
