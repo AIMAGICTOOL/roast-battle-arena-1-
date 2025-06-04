@@ -1227,10 +1227,11 @@ if (profile.links && profile.links.length > 0 && profile.links[0]) {
     linkContainer.style.marginBottom = '10px';
     linkContainer.appendChild(link);
 
-    const profileSection = document.querySelector('#profileTab .profile-section');
-    const editButton = profileSection.querySelector('button');
-    profileSection.insertBefore(linkContainer, editButton);
+   const bioParagraph = document.querySelector('#profileTab .profile-section p');
+if (bioParagraph && linkContainer) {
+    bioParagraph.insertAdjacentElement('afterend', linkContainer);
 }
+
 
     // If redirected from edit-profile, open profile tab
     if (window.location.hash === '#profileTab') {
