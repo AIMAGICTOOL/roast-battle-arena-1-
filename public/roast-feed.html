@@ -1194,7 +1194,39 @@ window.addEventListener('load', function () {
         console.error("Profile load error:", err);
     }
 });
+
+window.addEventListener('load', function () {
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    if (!profileData) return;
+
+    // Apply profile pic
+    if (profileData.profilePic) {
+        ['profileImage', 'profileTabImage', 'profileFeedImage'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.src = profileData.profilePic;
+                el.style.display = 'block';
+            }
+        });
+        ['profileInitial', 'profileTabInitial', 'profileFeedInitial'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    // Username and bio
+    const nameEl = document.querySelector('#profileTab h2');
+    const bioEl = document.querySelector('#profileTab p');
+    if (nameEl) nameEl.textContent = '@' + (profileData.username || 'You');
+    if (bioEl) bioEl.textContent = profileData.bio || '';
+
+    // Activate profile tab if hash exists
+    if (window.location.hash === '#profileTab' && typeof switchTab === 'function') {
+        switchTab('profile');
+    }
+});
 </script>
+
 
 </body>
 </html>
