@@ -252,13 +252,14 @@
         }
 
         // Save profile data
-      function saveProfile() {
+   
+function saveProfile() {
     const profileData = {
         name: document.getElementById('name').value,
         username: document.getElementById('username').value,
         bio: document.getElementById('bio').value,
         gender: document.getElementById('gender').value,
-        links: Array.from(document.querySelectorAll('#linksContainer input')).map(input => input.value),
+        links: Array.from(document.querySelectorAll('#linksContainer input')).map(input => input.value)
     };
 
     const fileInput = document.getElementById('profilePic');
@@ -269,16 +270,16 @@
         reader.onload = function(e) {
             profileData.profilePic = e.target.result;
             localStorage.setItem('profileData', JSON.stringify(profileData));
-            window.location.href = 'roast-feed.html#profileTab'; // ✅ fixed path
+            window.location.href = 'roast-feed.html#profileTab';
         };
         reader.readAsDataURL(file);
     } else {
         profileData.profilePic = document.getElementById('profilePreview').src;
         localStorage.setItem('profileData', JSON.stringify(profileData));
-        window.location.href = 'roast-feed.html#profileTab'; // ✅ fixed path
+        window.location.href = 'roast-feed.html#profileTab';
     }
 }
+</script>
 
-    </script>
 </body>
 </html>
