@@ -254,6 +254,9 @@
         // Save profile data
    
 function saveProfile() {
+    console.log("Save button clicked"); // 🐞 debug
+    localStorage.setItem('profileData', JSON.stringify(profileData));
+console.log("Saved to localStorage:", profileData);
     const profileData = {
         name: document.getElementById('name').value,
         username: document.getElementById('username').value,
