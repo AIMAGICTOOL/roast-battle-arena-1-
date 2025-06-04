@@ -874,14 +874,6 @@
             // Hide dropdowns when switching tabs
             document.getElementById('profileDropdown').style.display = 'none';
             document.querySelector('.notification-content').style.display = 'none';
-
-            // Auto open profile tab if hash is #profileTab
-window.addEventListener('DOMContentLoaded', () => {
-    const hash = window.location.hash;
-    if (hash === '#profileTab') {
-        switchTab('profile');
-    }
-});
         }
         
         // Toggle profile dropdown
@@ -1158,38 +1150,42 @@ window.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 postRoast();
-            
-// Load profile data from localStorage when page loads
-window.addEventListener('DOMContentLoaded', () => {
+            }
+        window.addEventListener('DOMContentLoaded', () => {
     const profileData = JSON.parse(localStorage.getItem('profileData'));
 
     if (profileData) {
-        // Update Profile Tab
-        if (profileData.profilePic) {
-            const img1 = document.getElementById('profileImage');
-            const img2 = document.getElementById('profileTabImage');
-            const img3 = document.getElementById('profileFeedImage');
-            img1.src = img2.src = img3.src = profileData.profilePic;
-            img1.style.display = img2.style.display = img3.style.display = 'block';
+        // Load profile image
+        ['profileImage', 'profileTabImage', 'profileFeedImage'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && profileData.profilePic) {
+                el.src = profileData.profilePic;
+                el.style.display = 'block';
+            }
+        });
 
-            document.getElementById('profileInitial').style.display = 'none';
-            document.getElementById('profileTabInitial').style.display = 'none';
-            document.getElementById('profileFeedInitial').style.display = 'none';
-        }
+        // Hide initials if image loaded
+        ['profileInitial', 'profileTabInitial', 'profileFeedInitial'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && profileData.profilePic) {
+                el.style.display = 'none';
+            }
+        });
 
-        document.querySelector('#profileTab h2').textContent = `@${profileData.username || 'Username'}`;
-        document.querySelector('#profileTab p').textContent = profileData.bio || '';
+        // Load username and bio
+        const usernameEl = document.querySelector('#profileTab h2');
+        if (usernameEl) usernameEl.textContent = `@${profileData.username || 'Username'}`;
 
-        // You can also update other UI like name in header if needed
+        const bioEl = document.querySelector('#profileTab p');
+        if (bioEl) bioEl.textContent = profileData.bio || '';
     }
 
-    // Switch to #profileTab if URL has hash
-    const hash = window.location.hash;
-    if (hash === '#profileTab') {
+    // Check URL hash and activate tab
+    if (window.location.hash === '#profileTab') {
         switchTab('profile');
     }
 });
-                
-    </script>
+
+            </script>
 </body>
 </html>
