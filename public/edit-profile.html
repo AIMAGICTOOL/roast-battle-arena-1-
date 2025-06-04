@@ -252,24 +252,33 @@
         }
 
         // Save profile data
-        function saveProfile() {
-            const profileData = {
-                name: document.getElementById('name').value,
-                username: document.getElementById('username').value,
-                bio: document.getElementById('bio').value,
-                gender: document.getElementById('gender').value,
-                links: Array.from(document.querySelectorAll('#linksContainer input')).map(input => input.value),
-                profilePic: document.getElementById('profilePic').files[0]
-            };
-             // Save to localStorage
-    localStorage.setItem('profileData', JSON.stringify(profileData));
-            
-            console.log('Saving profile:', profileData);
-            
-            // In a real app: Upload image and save to backend
-            // Then redirect back to profile:
-         window.location.href = 'roast-feed.html#profileTab';
-        }
+      function saveProfile() {
+    const profileData = {
+        name: document.getElementById('name').value,
+        username: document.getElementById('username').value,
+        bio: document.getElementById('bio').value,
+        gender: document.getElementById('gender').value,
+        links: Array.from(document.querySelectorAll('#linksContainer input')).map(input => input.value),
+    };
+
+    const fileInput = document.getElementById('profilePic');
+    const file = fileInput.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            profileData.profilePic = e.target.result;
+            localStorage.setItem('profileData', JSON.stringify(profileData));
+            window.location.href = 'roast-feed.html#profileTab'; // ✅ fixed path
+        };
+        reader.readAsDataURL(file);
+    } else {
+        profileData.profilePic = document.getElementById('profilePreview').src;
+        localStorage.setItem('profileData', JSON.stringify(profileData));
+        window.location.href = 'roast-feed.html#profileTab'; // ✅ fixed path
+    }
+}
+
     </script>
 </body>
 </html>
