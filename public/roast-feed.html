@@ -841,7 +841,8 @@
                     </button>
                     <button class="action-btn downvote">
                         👎 <span>3</span>
-                    </button>
+                   <button onclick="debugLoad()">Test Load Profile</button>
+</button>
                 </div>
             </div>
         </div>
@@ -1192,8 +1193,12 @@ window.addEventListener('load', function () {
             switchTab('profile');
         } else {
             console.error('switchTab() not found.');
-        }
-    }
+    
+function debugLoad() {
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    console.log("Loaded profile data:", profileData);
+}
+
 });
 </script>
 </body>
