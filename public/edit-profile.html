@@ -269,7 +269,7 @@
         reader.onload = function(e) {
             profileData.profilePic = e.target.result;
             localStorage.setItem('profileData', JSON.stringify(profileData));
-            window.location.href = '/#profileTab'; // ✅ fixed for Render
+            window.location.href = 'roast-feed.html#profileTab';
         };
         reader.readAsDataURL(file);
     } else {
