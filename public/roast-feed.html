@@ -1152,6 +1152,49 @@
                 postRoast();
             }
         });
-    </script>
+
+    <script>
+window.addEventListener('load', function () {
+    const data = JSON.parse(localStorage.getItem('profileData'));
+    if (data) {
+        // Image
+        if (data.profilePic) {
+            const imgs = ['profileImage', 'profileTabImage', 'profileFeedImage'];
+            imgs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.src = data.profilePic;
+                    el.style.display = 'block';
+                }
+            });
+
+            const initials = ['profileInitial', 'profileTabInitial', 'profileFeedInitial'];
+            initials.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+        }
+
+        // Username and Bio
+        const name = data.username || 'You';
+        const bio = data.bio || '';
+
+        const nameEl = document.querySelector('#profileTab h2');
+        const bioEl = document.querySelector('#profileTab p');
+
+        if (nameEl) nameEl.textContent = '@' + name;
+        if (bioEl) bioEl.textContent = bio;
+    }
+
+    // Handle tab from URL
+    if (window.location.hash === '#profileTab') {
+        if (typeof switchTab === 'function') {
+            switchTab('profile');
+        } else {
+            console.error('switchTab() not found.');
+        }
+    }
+});
+</script>
 </body>
 </html>
