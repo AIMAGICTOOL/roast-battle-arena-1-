@@ -616,9 +616,9 @@
         <div class="header-content">
             <div class="logo">ROAST ARENA</div>
             <div class="header-right">
-               <div class="nav-tabs">
-    <button class="nav-tab" onclick="window.location.href='public-battle-hall.html'">Public Hall</button>
+              <div class="nav-tabs">
     <button class="nav-tab active" onclick="switchTab('feeds')">Feeds</button>
+    <button class="nav-tab" onclick="window.location.href='public-battle-hall.html'">Public Hall</button>
     <button class="nav-tab" onclick="switchTab('chat')">Chat</button>
 </div>
                 
@@ -848,30 +848,27 @@
         let notificationsEnabled = true;
         
         // Switch between tabs
-        function switchTab(tab) {
-            if (tab === 'public') {
-    window.location.href = 'public-battle-hall.html';
-    return;
-}            // Update active tab button
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent.toLowerCase().includes(tab)) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            // Update active tab content
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.getElementById(tab + 'Tab').classList.add('active');
-            
-            currentTab = tab;
-            
-            // Hide dropdowns when switching tabs
-            document.getElementById('profileDropdown').style.display = 'none';
-            document.querySelector('.notification-content').style.display = 'none';
+       function switchTab(tab) {
+    // Update active tab button
+    document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.toLowerCase().includes(tab)) {
+            btn.classList.add('active');
         }
+    });
+    
+    // Update active tab content
+    document.querySelectorAll('.tab-content').forEach(tabContent => {
+        tabContent.classList.remove('active');
+    });
+    document.getElementById(tab + 'Tab').classList.add('active');
+    
+    currentTab = tab;
+    
+    // Hide dropdowns when switching tabs
+    document.getElementById('profileDropdown').style.display = 'none';
+    document.querySelector('.notification-content').style.display = 'none';
+}
         
         // Toggle profile dropdown
         function toggleProfileDropdown() {
