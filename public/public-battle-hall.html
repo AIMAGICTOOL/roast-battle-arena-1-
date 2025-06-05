@@ -40,7 +40,14 @@
             border-bottom: 1px solid #333;
             position: relative;
         }
-        
+        .main-header > div {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Keep all your existing .btn styles exactly as they are */        
         .main-header h1 {
             color: var(--accent-purple);
             font-size: 2.5rem;
@@ -434,9 +441,9 @@
     </style>
 
 <header class="main-header">
-    <h1>PUBLIC ROAST BATTLE HALL</h1>
+    <h1><i class="fas fa-fire-alt"></i> PUBLIC ROAST BATTLE HALL</h1>
     <div>
-        <button class="btn" onclick="location.href='index.html'">BACK TO LOBBY</button>
+        <button class="btn" onclick="location.href='roast-feed.html'">BACK TO FEED</button>
         <button class="btn btn-create" onclick="openModal()">+ CREATE ROOM</button>
     </div>
 </header>
