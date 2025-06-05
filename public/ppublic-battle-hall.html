@@ -649,17 +649,77 @@
         }
         
         // Create room function
-        function createRoom() {
-            const name = document.getElementById('roomName').value.trim();
-            const desc = document.getElementById('roomDesc').value.trim();
-            
-            if (!name) {
-                showToast("Room name is required!");
-                return;
-            }
-            
-            showToast(`Creating ${name}...`);
-            closeModal();
+       function createRoom() {
+    const name = document.getElementById('roomName').value.trim();
+    const desc = document.getElementById('roomDesc').value.trim();
+    const roomType = document.getElementById('roomType').value;
+    
+    if (!name) {
+        showToast("Room name is required!");
+        return;
+    }
+    
+    // Get selected tags
+    const selectedTags = [];
+    document.querySelectorAll('.tag-btn.selected').forEach(tag => {
+        selectedTags.push(tag.textContent);
+    });
+    
+    // Generate random stats
+    const players = Math.floor(Math.random() * 5) + 1;
+    const messages = Math.floor(Math.random() * 10);
+    const hype = calculateHype(players, messages);
+    
+    // Create new room card
+    const roomGrid = document.getElementById('roomGrid');
+    const newRoom = document.createElement('div');
+    newRoom.className = 'room-card';
+    newRoom.onclick = function() { joinRoom(name.toLowerCase().replace(/\s+/g, '-')); };
+    
+    // Determine badges
+    let badges = '';
+    if (selectedTags.includes('#nsfw')) {
+        badges += '<span class="badge nsfw">NSFW</span> ';
+    }
+    badges += '<span class="badge new">NEW</span>';
+    
+    newRoom.innerHTML = `
+        <h3>${name.toUpperCase()} ${badges}</h3>
+        <p>${desc || "No description provided"}</p>
+        <div class="room-meta">
+            <span><i class="fas fa-users"></i> ${players} players</span>
+            <span><i class="fas fa-comments"></i> ${messages} messages</span>
+        </div>
+        <div class="room-card-footer">
+            <div class="room-rating"><i class="fas fa-fire"></i> ${hype}% HYPE</div>
+            <div>
+                ${roomType === 'public' ? '<i class="fas fa-lock-open"></i> Public' : ''}
+                ${roomType === 'private' ? '<i class="fas fa-lock"></i> Private' : ''}
+                ${roomType === 'pro' ? '<i class="fas fa-crown"></i> Pro Only' : ''}
+            </div>
+        </div>
+    `;
+    
+    roomGrid.prepend(newRoom);
+    showToast(`Room "${name}" created successfully!`);
+    closeModal();
+    
+    // Reset form
+    document.getElementById('roomName').value = '';
+    document.getElementById('roomDesc').value = '';
+    document.querySelectorAll('.tag-btn.selected').forEach(tag => {
+        tag.classList.remove('selected');
+    });
+    document.getElementById('roomType').value = 'public';
+}
+
+function calculateHype(players, messages) {
+    const activityScore = (players * 10) + (messages * 2);
+    const randomness = Math.floor(Math.random() * 21) - 10;
+    let hype = Math.min(100, Math.max(20, activityScore + randomness));
+    hype = Math.min(100, hype + 15);
+    return hype;
+}
             
             // Simulate room creation
             setTimeout(() => {
