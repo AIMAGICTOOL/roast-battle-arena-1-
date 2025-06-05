@@ -4,14 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Public Hall - Roast Battle Arena</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --main-bg: #0f0f0f;
             --card-bg: #1a1a1a;
             --accent-purple: #9d00ff;
             --accent-cyan: #00f7ff;
+            --accent-red: #ff3860;
+            --accent-green: #00ff88;
             --text-primary: #ffffff;
             --text-secondary: #aaaaaa;
+            --glow: 0 0 15px;
         }
         
         body {
@@ -34,13 +38,20 @@
             padding: 20px 0;
             margin-bottom: 30px;
             border-bottom: 1px solid #333;
+            position: relative;
         }
         
         .main-header h1 {
             color: var(--accent-purple);
             font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(157, 0, 255, 0.5);
+            text-shadow: var(--glow) rgba(157, 0, 255, 0.5);
+            animation: pulse 2s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { text-shadow: var(--glow) rgba(157, 0, 255, 0.5); }
+            100% { text-shadow: var(--glow) rgba(157, 0, 255, 0.8); }
         }
         
         /* Buttons */
@@ -54,17 +65,39 @@
             font-weight: bold;
             border-radius: 5px;
             transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
         
         .btn:hover {
             background: var(--accent-purple);
             color: #000;
-            box-shadow: 0 0 15px var(--accent-purple);
+            box-shadow: var(--glow) var(--accent-purple);
         }
         
         .btn-create {
             background: var(--accent-purple);
             color: #000;
+        }
+        
+        .btn-create:hover {
+            box-shadow: var(--glow) var(--accent-purple);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+            transition: all 0.3s;
+        }
+        
+        .btn:hover::after {
+            left: 100%;
         }
         
         /* Room Grid */
@@ -82,11 +115,29 @@
             border-left: 4px solid var(--accent-purple);
             transition: all 0.3s;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .room-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(157, 0, 255, 0.1) 0%, rgba(0, 247, 255, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
         
         .room-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(157, 0, 255, 0.2);
+            box-shadow: 0 10px 20px rgba(157, 0, 255, 0.3);
+        }
+        
+        .room-card:hover::before {
+            opacity: 1;
         }
         
         .room-card h3 {
@@ -106,6 +157,25 @@
             justify-content: space-between;
             font-size: 0.8rem;
             color: #777;
+        }
+        
+        .room-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+        }
+        
+        .room-rating {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+        
+        .room-rating .fa-fire {
+            color: var(--accent-red);
+            margin-right: 5px;
         }
         
         /* Badges */
@@ -133,10 +203,16 @@
             color: white;
         }
         
+        .hot {
+            background: var(--accent-red);
+            color: white;
+        }
+        
         /* Search */
         .search-container {
             display: flex;
             margin-bottom: 20px;
+            position: relative;
         }
         
         #roomSearch {
@@ -146,6 +222,13 @@
             border: 1px solid #333;
             color: white;
             border-radius: 5px 0 0 5px;
+            transition: all 0.3s;
+        }
+        
+        #roomSearch:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 2px rgba(157, 0, 255, 0.3);
         }
         
         .search-btn {
@@ -156,6 +239,33 @@
             border-radius: 0 5px 5px 0;
             font-weight: bold;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .search-btn:hover {
+            background: var(--accent-cyan);
+        }
+        
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tab {
+            padding: 8px 15px;
+            background: #222;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .filter-tab:hover, .filter-tab.active {
+            background: var(--accent-purple);
+            color: #000;
         }
         
         /* Modal */
@@ -170,6 +280,7 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(5px);
         }
         
         .modal-content {
@@ -179,6 +290,34 @@
             width: 90%;
             max-width: 500px;
             border: 1px solid var(--accent-purple);
+            box-shadow: 0 0 30px rgba(157, 0, 255, 0.5);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent-red);
+            transform: rotate(90deg);
         }
         
         .form-group {
@@ -200,6 +339,15 @@
             border: 1px solid #333;
             color: white;
             border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 2px rgba(157, 0, 255, 0.3);
         }
         
         .tag-options {
@@ -216,45 +364,155 @@
             border-radius: 15px;
             cursor: pointer;
             font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        
+        .tag-btn:hover {
+            transform: translateY(-2px);
         }
         
         .tag-btn.selected {
             background: var(--accent-purple);
             color: #000;
+            box-shadow: 0 0 10px var(--accent-purple);
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-purple);
+            color: #000;
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(157, 0, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-purple);
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-header h1 {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                margin: 5px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="main-header">
-            <h1>PUBLIC ROAST BATTLE HALL</h1>
+            <h1><i class="fas fa-fire-alt"></i> PUBLIC ROAST BATTLE HALL</h1>
             <div>
-                <button class="btn" onclick="location.href='index.html'">BACK TO LOBBY</button>
-                <button class="btn btn-create" onclick="openModal()">+ CREATE ROOM</button>
+                <button class="btn" onclick="location.href='index.html'"><i class="fas fa-arrow-left"></i> BACK TO LOBBY</button>
+                <button class="btn btn-create" onclick="openModal()"><i class="fas fa-plus"></i> CREATE ROOM</button>
             </div>
         </header>
         
         <div class="search-container">
             <input type="text" id="roomSearch" placeholder="🔍 Search rooms or #tags...">
-            <button class="search-btn">SEARCH</button>
+            <button class="search-btn" onclick="searchRooms()">SEARCH</button>
         </div>
         
-        <div class="room-grid">
-            <div class="room-card" onclick="joinRoom('epic-memes')">
-                <h3>🔥 EPIC MEME SHOWDOWN <span class="badge trending">TRENDING</span></h3>
-                <p>Only the dankest roasts allowed</p>
+        <div class="filter-tabs">
+            <div class="filter-tab active" onclick="filterRooms('all')">All Rooms</div>
+            <div class="filter-tab" onclick="filterRooms('trending')">Trending</div>
+            <div class="filter-tab" onclick="filterRooms('new')">New</div>
+            <div class="filter-tab" onclick="filterRooms('hot')">Hot 🔥</div>
+            <div class="filter-tab" onclick="filterRooms('gaming')">Gaming</div>
+            <div class="filter-tab" onclick="filterRooms('memes')">Memes</div>
+        </div>
+        
+        <div class="loading" id="loadingRooms">
+            <div class="spinner"></div>
+            <p>Loading battle rooms...</p>
+        </div>
+        
+        <div class="room-grid" id="roomGrid">
+            <!-- Room cards will be loaded here -->
+            <div class="room-card" onclick="joinRoom('epic-memes')" data-tags="memes trending">
+                <h3>🔥 EPIC MEME SHOWDOWN <span class="badge trending">TRENDING</span> <span class="badge hot">HOT</span></h3>
+                <p>Only the dankest roasts allowed. Winner gets eternal meme glory!</p>
                 <div class="room-meta">
-                    <span>👥 24 players</span>
-                    <span>💬 128 messages</span>
+                    <span><i class="fas fa-users"></i> 24 players</span>
+                    <span><i class="fas fa-comments"></i> 128 messages</span>
+                </div>
+                <div class="room-card-footer">
+                    <div class="room-rating"><i class="fas fa-fire"></i> 98% HYPE</div>
+                    <div><i class="fas fa-lock-open"></i> Public</div>
                 </div>
             </div>
             
-            <div class="room-card" onclick="joinRoom('dev-roast')">
+            <div class="room-card" onclick="joinRoom('dev-roast')" data-tags="new tech">
                 <h3>💻 DEV ROAST BATTLE <span class="badge new">NEW</span></h3>
-                <p>Roast bad code and bad coders</p>
+                <p>Roast bad code and bad coders. May the best debugger win!</p>
                 <div class="room-meta">
-                    <span>👥 12 players</span>
-                    <span>💬 64 messages</span>
+                    <span><i class="fas fa-users"></i> 12 players</span>
+                    <span><i class="fas fa-comments"></i> 64 messages</span>
+                </div>
+                <div class="room-card-footer">
+                    <div class="room-rating"><i class="fas fa-fire"></i> 85% HYPE</div>
+                    <div><i class="fas fa-lock-open"></i> Public</div>
+                </div>
+            </div>
+            
+            <div class="room-card" onclick="joinRoom('gamer-war')" data-tags="gaming hot">
+                <h3>🎮 GAMER WARZONE <span class="badge hot">HOT</span></h3>
+                <p>Console wars, bad plays, and toxic gamers - roast them all!</p>
+                <div class="room-meta">
+                    <span><i class="fas fa-users"></i> 42 players</span>
+                    <span><i class="fas fa-comments"></i> 256 messages</span>
+                </div>
+                <div class="room-card-footer">
+                    <div class="room-rating"><i class="fas fa-fire"></i> 96% HYPE</div>
+                    <div><i class="fas fa-crown"></i> Pro Only</div>
+                </div>
+            </div>
+            
+            <div class="room-card" onclick="joinRoom('anime-battle')" data-tags="anime new">
+                <h3>🌸 ANIME ROAST ARENA <span class="badge new">NEW</span></h3>
+                <p>Overpowered MCs and filler arcs - let the weeb wars begin!</p>
+                <div class="room-meta">
+                    <span><i class="fas fa-users"></i> 18 players</span>
+                    <span><i class="fas fa-comments"></i> 89 messages</span>
+                </div>
+                <div class="room-card-footer">
+                    <div class="room-rating"><i class="fas fa-fire"></i> 78% HYPE</div>
+                    <div><i class="fas fa-lock-open"></i> Public</div>
                 </div>
             </div>
         </div>
@@ -263,26 +521,45 @@
     <!-- Create Room Modal -->
     <div class="modal" id="createModal">
         <div class="modal-content">
-            <h2>CREATE A ROOM</h2>
-            <div class="form-group">
-                <label>Room Name</label>
-                <input type="text" placeholder="e.g., Savage Gamers">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> CREATE A ROOM</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
             </div>
             <div class="form-group">
-                <label>Description</label>
-                <textarea placeholder="Set the vibe..."></textarea>
+                <label><i class="fas fa-heading"></i> Room Name</label>
+                <input type="text" id="roomName" placeholder="e.g., Savage Gamers" maxlength="30">
+                <small id="nameCounter">0/30</small>
             </div>
             <div class="form-group">
-                <label>Tags</label>
+                <label><i class="fas fa-align-left"></i> Description</label>
+                <textarea id="roomDesc" placeholder="Set the vibe..." maxlength="120"></textarea>
+                <small id="descCounter">0/120</small>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-tags"></i> Tags</label>
                 <div class="tag-options">
                     <button class="tag-btn" onclick="toggleTag(this)">#memes</button>
                     <button class="tag-btn" onclick="toggleTag(this)">#gaming</button>
+                    <button class="tag-btn" onclick="toggleTag(this)">#tech</button>
+                    <button class="tag-btn" onclick="toggleTag(this)">#anime</button>
                     <button class="tag-btn" onclick="toggleTag(this)">#nsfw</button>
+                    <button class="tag-btn" onclick="toggleTag(this)">#music</button>
                 </div>
             </div>
-            <button class="btn btn-create">CREATE ROOM</button>
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Room Type</label>
+                <select id="roomType">
+                    <option value="public">Public (Anyone can join)</option>
+                    <option value="private">Private (Invite only)</option>
+                    <option value="pro">Pro Battle (Verified users only)</option>
+                </select>
+            </div>
+            <button class="btn btn-create" onclick="createRoom()"><i class="fas fa-bolt"></i> CREATE ROOM</button>
         </div>
     </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
     <script>
         // Modal controls
@@ -294,20 +571,130 @@
             document.getElementById('createModal').style.display = 'none';
         }
         
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === document.getElementById('createModal')) {
+                closeModal();
+            }
+        });
+        
+        // Tag selection
         function toggleTag(btn) {
             btn.classList.toggle('selected');
         }
         
+        // Room joining
         function joinRoom(roomId) {
-            window.location.href = `battle-arena.html?room=${roomId}`;
+            showToast(`Entering ${roomId}...`);
+            setTimeout(() => {
+                window.location.href = `battle-arena.html?room=${roomId}`;
+            }, 1000);
         }
         
         // Search functionality
-        document.getElementById('roomSearch').addEventListener('input', function() {
-            const term = this.value.toLowerCase();
-            document.querySelectorAll('.room-card').forEach(card => {
+        function searchRooms() {
+            const term = document.getElementById('roomSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.room-card');
+            let found = false;
+            
+            cards.forEach(card => {
                 const matches = card.textContent.toLowerCase().includes(term);
                 card.style.display = matches ? 'block' : 'none';
+                if (matches) found = true;
+            });
+            
+            if (!found) {
+                showToast("No rooms found matching your search");
+            }
+        }
+        
+        // Filter rooms by category
+        function filterRooms(filter) {
+            const tabs = document.querySelectorAll('.filter-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const cards = document.querySelectorAll('.room-card');
+            
+            if (filter === 'all') {
+                cards.forEach(card => card.style.display = 'block');
+                return;
+            }
+            
+            cards.forEach(card => {
+                const tags = card.getAttribute('data-tags');
+                const matches = tags.includes(filter);
+                card.style.display = matches ? 'block' : 'none';
+            });
+        }
+        
+        // Character counters
+        document.getElementById('roomName').addEventListener('input', function() {
+            document.getElementById('nameCounter').textContent = `${this.value.length}/30`;
+        });
+        
+        document.getElementById('roomDesc').addEventListener('input', function() {
+            document.getElementById('descCounter').textContent = `${this.value.length}/120`;
+        });
+        
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Create room function
+        function createRoom() {
+            const name = document.getElementById('roomName').value.trim();
+            const desc = document.getElementById('roomDesc').value.trim();
+            
+            if (!name) {
+                showToast("Room name is required!");
+                return;
+            }
+            
+            showToast(`Creating ${name}...`);
+            closeModal();
+            
+            // Simulate room creation
+            setTimeout(() => {
+                showToast(`Room ${name} created successfully!`);
+                // In a real app, you would redirect or refresh the room list
+            }, 1500);
+        }
+        
+        // Simulate loading rooms
+        function simulateLoading() {
+            const loading = document.getElementById('loadingRooms');
+            const grid = document.getElementById('roomGrid');
+            
+            loading.style.display = 'block';
+            grid.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                loading.style.display = 'none';
+                grid.style.opacity = '1';
+            }, 1500);
+        }
+        
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate loading rooms on first visit
+            if (!sessionStorage.getItem('roomsLoaded')) {
+                simulateLoading();
+                sessionStorage.setItem('roomsLoaded', 'true');
+            }
+            
+            // Enable search on Enter key
+            document.getElementById('roomSearch').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchRooms();
+                }
             });
         });
     </script>
