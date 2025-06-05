@@ -616,11 +616,11 @@
         <div class="header-content">
             <div class="logo">ROAST ARENA</div>
             <div class="header-right">
-                <div class="nav-tabs">
-                    <button class="nav-tab active" onclick="switchTab('public')">Public Hall</button>
-                    <button class="nav-tab" onclick="switchTab('feeds')">Feeds</button>
-                    <button class="nav-tab" onclick="switchTab('chat')">Chat</button>
-                </div>
+               <div class="nav-tabs">
+    <button class="nav-tab" onclick="window.location.href='public-battle-hall.html'">Public Hall</button>
+    <button class="nav-tab active" onclick="switchTab('feeds')">Feeds</button>
+    <button class="nav-tab" onclick="switchTab('chat')">Chat</button>
+</div>
                 
                 <!-- Notification Button -->
                 <div class="notification-dropdown">
@@ -664,16 +664,10 @@
 
     <div class="main-content">
         <!-- Public Hall Tab - Minimal content that links to public-hall.html -->
-        <div id="publicTab" class="tab-content active">
-            <div class="public-hall-intro">
-                <h1>Welcome to the Public Hall</h1>
-                <p>This is where the hottest roast battles happen. Join the arena and test your wit against the best!</p>
-                <button class="join-battle-btn" onclick="window.location.href='public-hall.html'">Enter Battle Arena</button>
-            </div>
-        </div>
+
 
         <!-- Feeds Tab - Now contains all the roast content -->
-        <div id="feedsTab" class="tab-content">
+       <div id="feedsTab" class="tab-content active">
             <!-- New Roast Form -->
             <div class="new-roast">
                 <textarea placeholder="Write your savage roast here..."></textarea>
@@ -855,7 +849,10 @@
         
         // Switch between tabs
         function switchTab(tab) {
-            // Update active tab button
+            if (tab === 'public') {
+    window.location.href = 'public-battle-hall.html';
+    return;
+}            // Update active tab button
             document.querySelectorAll('.nav-tab').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.textContent.toLowerCase().includes(tab)) {
@@ -1181,26 +1178,51 @@ window.addEventListener('load', function () {
     if (bioEl && profile.bio) bioEl.textContent = profile.bio;
 
     // ✅ Insert 1 link below bio (not below followers)
-    if (profile.links && profile.links.length > 0 && profile.links[0]) {
-        const linkContainer = document.createElement('div');
-        linkContainer.style.marginTop = '8px';
-        linkContainer.style.marginBottom = '12px';
+  if (profile.links && profile.links.length > 0 && profile.links[0]) {
+    const linkContainer = document.createElement('div');
+    linkContainer.style.marginTop = '8px';
+    linkContainer.style.marginBottom = '12px';
 
-        const link = document.createElement('a');
-        link.href = profile.links[0];
-        link.textContent = profile.links[0];
-        link.target = '_blank';
-        link.style.color = 'var(--secondary)';
-        link.style.textDecoration = 'none';
-        link.style.fontSize = '0.9rem';
+    const url = profile.links[0];
 
-        linkContainer.appendChild(link);
+    // Choose correct icon based on link
+    let iconSrc = 'icons/web-icon.png'; // default
+    if (url.includes('twitter.com')) iconSrc = 'icons/twitter-icon.png';
+    else if (url.includes('instagram.com')) iconSrc = 'icons/instagram-icon.png';
+    else if (url.includes('facebook.com')) iconSrc = 'icons/facebook-icon.png';
+    else if (url.includes('github.com')) iconSrc = 'icons/github-icon.png';
+    else if (url.includes('linkedin.com')) iconSrc = 'icons/linkedin-icon.png';
+    else if (url.includes('youtube.com')) iconSrc = 'icons/youtube-icon.png';
 
-        const bioParagraph = document.querySelector('#profileTab .profile-section p');
-        if (bioParagraph) {
-            bioParagraph.insertAdjacentElement('afterend', linkContainer);
-        }
+    // Create icon image
+    const iconImg = document.createElement('img');
+    iconImg.src = iconSrc;
+    iconImg.alt = 'icon';
+    iconImg.style.width = '20px';
+    iconImg.style.height = '20px';
+    iconImg.style.marginRight = '6px';
+    iconImg.style.verticalAlign = 'middle';
+
+    // Create the link
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.style.color = 'var(--secondary)';
+    link.style.textDecoration = 'none';
+    link.style.fontSize = '0.9rem';
+
+    // Add icon + link text
+    link.appendChild(iconImg);
+    link.appendChild(document.createTextNode(url));
+
+    // Insert under bio
+    linkContainer.appendChild(link);
+    const bioParagraph = document.querySelector('#profileTab .profile-section p');
+    if (bioParagraph) {
+        bioParagraph.insertAdjacentElement('afterend', linkContainer);
     }
+}
+
 
     // ✅ Switch to profile tab if needed
     if (window.location.hash === '#profileTab') {
