@@ -357,18 +357,23 @@
             margin-bottom: 10px;
         }
         
+        .tag-option {
+            cursor: pointer;
+            display: inline-block;
+        }
+        
         .tag-btn {
             padding: 5px 10px;
             background: #333;
             border: 1px solid #444;
             border-radius: 15px;
-            cursor: pointer;
             font-size: 0.8rem;
-            transition: all 0.3s;
+            cursor: default;
+            pointer-events: none;
         }
         
-        .tag-btn:hover {
-            transform: translateY(-2px);
+        .tag-option:hover .tag-btn:not(.selected) {
+            background: #444;
         }
         
         .tag-btn.selected {
@@ -438,13 +443,13 @@
         <header class="main-header">
             <h1><i class="fas fa-fire-alt"></i> PUBLIC ROAST BATTLE HALL</h1>
             <div>
-                <button class="btn" onclick="location.href='roast-feed.html'"><i class="fas fa-arrow-left"></i> BACK TO FEED</button>
+                <button class="btn" onclick="location.href='index.html'"><i class="fas fa-arrow-left"></i> BACK TO LOBBY</button>
                 <button class="btn btn-create" onclick="openModal()"><i class="fas fa-plus"></i> CREATE ROOM</button>
             </div>
         </header>
         
         <div class="search-container">
-           <input type="text" id="roomSearch" placeholder="🔍 Search rooms or #tags...">
+            <input type="text" id="roomSearch" placeholder="🔍 Search rooms or #tags...">
             <button class="search-btn" onclick="searchRooms()">SEARCH</button>
         </div>
         
@@ -489,32 +494,6 @@
                     <div><i class="fas fa-lock-open"></i> Public</div>
                 </div>
             </div>
-            
-            <div class="room-card" onclick="joinRoom('gamer-war')" data-tags="gaming hot">
-                <h3>🎮 GAMER WARZONE <span class="badge hot">HOT</span></h3>
-                <p>Console wars, bad plays, and toxic gamers - roast them all!</p>
-                <div class="room-meta">
-                    <span><i class="fas fa-users"></i> 42 players</span>
-                    <span><i class="fas fa-comments"></i> 256 messages</span>
-                </div>
-                <div class="room-card-footer">
-                    <div class="room-rating"><i class="fas fa-fire"></i> 96% HYPE</div>
-                    <div><i class="fas fa-crown"></i> Pro Only</div>
-                </div>
-            </div>
-            
-            <div class="room-card" onclick="joinRoom('anime-battle')" data-tags="anime new">
-                <h3>🌸 ANIME ROAST ARENA <span class="badge new">NEW</span></h3>
-                <p>Overpowered MCs and filler arcs - let the weeb wars begin!</p>
-                <div class="room-meta">
-                    <span><i class="fas fa-users"></i> 18 players</span>
-                    <span><i class="fas fa-comments"></i> 89 messages</span>
-                </div>
-                <div class="room-card-footer">
-                    <div class="room-rating"><i class="fas fa-fire"></i> 78% HYPE</div>
-                    <div><i class="fas fa-lock-open"></i> Public</div>
-                </div>
-            </div>
         </div>
     </div>
     
@@ -538,14 +517,24 @@
             <div class="form-group">
                 <label><i class="fas fa-tags"></i> Tags</label>
                 <div class="tag-options">
-                 <div class="room-card" data-tags="memes funny" onclick="joinRoom('meme-room')">
-                   <div class="room-card" data-tags="memes funny" onclick="joinRoom('gaming-room')">
-                  <div class="room-card" data-tags="memes funny" onclick="joinRoom('hot-room')">
-                   <div class="room-card" data-tags="memes funny" onclick="joinRoom('anime-room')">
-                   <div class="room-card" data-tags="memes funny" onclick="joinRoom('nsfw-room')">
-                    <div class="room-card" data-tags="memes funny" onclick="joinRoom('music-room')">
-    <!-- room content -->
-</div>
+                    <div class="tag-option" onclick="toggleTag(this)">
+                        <button class="tag-btn">#memes</button>
+                    </div>
+                    <div class="tag-option" onclick="toggleTag(this)">
+                        <button class="tag-btn">#gaming</button>
+                    </div>
+                    <div class="tag-option" onclick="toggleTag(this)">
+                        <button class="tag-btn">#tech</button>
+                    </div>
+                    <div class="tag-option" onclick="toggleTag(this)">
+                        <button class="tag-btn">#anime</button>
+                    </div>
+                    <div class="tag-option" onclick="toggleTag(this)">
+                        <button class="tag-btn">#nsfw</button>
+                    </div>
+                    <div class="tag-option" onclick="toggleTag(this)">
+                        <button class="tag-btn">#music</button>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -556,30 +545,12 @@
                     <option value="pro">Pro Battle (Verified users only)</option>
                 </select>
             </div>
-           <button class="btn btn-create" onclick="openModal()">+ CREATE ROOM</button>
+            <button class="btn btn-create" onclick="createRoom()"><i class="fas fa-bolt"></i> CREATE ROOM</button>
         </div>
-     </div>
+    </div>
 
-               <!DOCTYPE html>
-<html lang="en">
-<head>
-  
-</head>
-<body>
-   
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-  
-<body>
-    <!-- [Keep ALL your existing body content exactly the same until the script] -->
-    <!-- ... -->
-
- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- [Keep ALL your existing head content exactly the same until the script] -->
-    <!-- ... -->
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
     <script>
         // Modal controls
@@ -599,7 +570,8 @@
         });
         
         // Tag selection
-        function toggleTag(btn) {
+        function toggleTag(element) {
+            const btn = element.querySelector('.tag-btn');
             btn.classList.toggle('selected');
         }
         
@@ -620,10 +592,8 @@
             cards.forEach(card => {
                 const textMatch = card.textContent.toLowerCase().includes(term);
                 const tagMatch = card.getAttribute('data-tags').includes(term.replace('#', ''));
-                const shouldShow = textMatch || tagMatch;
-                
-                card.style.display = shouldShow ? 'block' : 'none';
-                if (shouldShow) found = true;
+                card.style.display = (textMatch || tagMatch) ? 'block' : 'none';
+                if (textMatch || tagMatch) found = true;
             });
             
             if (!found) {
@@ -670,7 +640,7 @@
             }, 3000);
         }
         
-        // FIXED Create room function
+        // Create room function
         function createRoom() {
             const name = document.getElementById('roomName').value.trim();
             const desc = document.getElementById('roomDesc').value.trim();
@@ -687,7 +657,7 @@
                 selectedTags.push(tag.textContent);
             });
             
-            // Create new room card with PROPER structure
+            // Create new room card
             const roomHTML = `
                 <div class="room-card" data-tags="${selectedTags.join(' ')}" onclick="joinRoom('${name.toLowerCase().replace(/\s+/g, '-')}')">
                     <h3>${name.toUpperCase()}
@@ -751,9 +721,6 @@
                     searchRooms();
                 }
             });
-            
-            // Properly bind create room button in modal
-            document.querySelector('.modal-content .btn-create').addEventListener('click', createRoom);
         });
     </script>
 </body>
