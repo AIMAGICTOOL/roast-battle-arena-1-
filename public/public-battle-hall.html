@@ -444,7 +444,7 @@
         </header>
         
         <div class="search-container">
-            <input type="text" id="roomSearch" placeholder="🔍 Search rooms or #tags...">
+           <input type="text" id="roomSearch" placeholder="🔍 Search rooms or #tags...">
             <button class="search-btn" onclick="searchRooms()">SEARCH</button>
         </div>
         
@@ -538,12 +538,14 @@
             <div class="form-group">
                 <label><i class="fas fa-tags"></i> Tags</label>
                 <div class="tag-options">
-                    <button class="tag-btn" onclick="toggleTag(this)">#memes</button>
-                    <button class="tag-btn" onclick="toggleTag(this)">#gaming</button>
-                    <button class="tag-btn" onclick="toggleTag(this)">#tech</button>
-                    <button class="tag-btn" onclick="toggleTag(this)">#anime</button>
-                    <button class="tag-btn" onclick="toggleTag(this)">#nsfw</button>
-                    <button class="tag-btn" onclick="toggleTag(this)">#music</button>
+                 <div class="room-card" data-tags="memes funny" onclick="joinRoom('meme-room')">
+                   <div class="room-card" data-tags="memes funny" onclick="joinRoom('gaming-room')">
+                  <div class="room-card" data-tags="memes funny" onclick="joinRoom('hot-room')">
+                   <div class="room-card" data-tags="memes funny" onclick="joinRoom('anime-room')">
+                   <div class="room-card" data-tags="memes funny" onclick="joinRoom('nsfw-room')">
+                    <div class="room-card" data-tags="memes funny" onclick="joinRoom('music-room')">
+    <!-- room content -->
+</div>
                 </div>
             </div>
             <div class="form-group">
@@ -554,7 +556,7 @@
                     <option value="pro">Pro Battle (Verified users only)</option>
                 </select>
             </div>
-            <button class="btn btn-create" onclick="createRoom()"><i class="fas fa-bolt"></i> CREATE ROOM</button>
+           <button class="btn btn-create" onclick="openModal()">+ CREATE ROOM</button>
         </div>
     </div>
 
@@ -562,6 +564,18 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // For instant search while typing
+document.getElementById('roomSearch').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    document.querySelectorAll('.room-card').forEach(room => {
+        const roomText = room.textContent.toLowerCase();
+        room.style.display = roomText.includes(searchTerm) ? 'block' : 'none';
+    });
+});
+        
+        function openModal() {
+    document.getElementById('createModal').style.display = 'flex';
+}
         // Modal controls
         function openModal() {
             document.getElementById('createModal').style.display = 'flex';
@@ -591,21 +605,25 @@
             }, 1000);
         }
         
-        // Search functionality
-        function searchRooms() {
-            const term = document.getElementById('roomSearch').value.toLowerCase();
-            const cards = document.querySelectorAll('.room-card');
-            let found = false;
-            
-            cards.forEach(card => {
-                const matches = card.textContent.toLowerCase().includes(term);
-                card.style.display = matches ? 'block' : 'none';
-                if (matches) found = true;
-            });
-            
-            if (!found) {
-                showToast("No rooms found matching your search");
-            }
+       function searchRooms() {
+    const term = document.getElementById('roomSearch').value.toLowerCase();
+    const cards = document.querySelectorAll('.room-card');
+    let found = false;
+    
+    cards.forEach(card => {
+        // Check BOTH text content AND data-tags
+        const textMatches = card.textContent.toLowerCase().includes(term);
+        const tagMatches = card.getAttribute('data-tags').includes(term.replace('#', '')); 
+        const isMatch = textMatches || tagMatches;
+        
+        card.style.display = isMatch ? 'block' : 'none';
+        if (isMatch) found = true;
+    });
+    
+    if (!found) {
+        showToast("No rooms found matching your search");
+    }
+           
         }
         
         // Filter rooms by category
