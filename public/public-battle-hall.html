@@ -575,130 +575,80 @@
     <!-- [Keep ALL your existing body content exactly the same until the script] -->
     <!-- ... -->
 
-  <script>
-    // ===== MODAL FUNCTIONS =====
-    function openModal() {
-        document.getElementById('createModal').style.display = 'flex';
-    }
-    
-    function closeModal() {
-        document.getElementById('createModal').style.display = 'none';
-    }
-    
-    // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
-        if (event.target === document.getElementById('createModal')) {
-            closeModal();
-        }
-    });
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- [Keep ALL your existing head content exactly the same until the script] -->
+    <!-- ... -->
 
-    // ===== ROOM CREATION =====
-   function createRoom() {
-    const name = document.getElementById('roomName').value.trim();
-    const desc = document.getElementById('roomDesc').value.trim();
-    const roomType = document.getElementById('roomType').value;
-    
-    if (!name) {
-        showToast("Room name is required!");
-        return;
-    }
-
-    // Get selected tags
-    const selectedTags = [];
-    document.querySelectorAll('.tag-btn.selected').forEach(tag => {
-        selectedTags.push(tag.textContent);
-    });
-
-    // Create clean room card HTML
-    const roomHTML = `
-        <div class="room-card" data-tags="${selectedTags.join(' ')}" 
-             onclick="joinRoom('${name.toLowerCase().replace(/\s+/g, '-')}')">
-            <h3>${name.toUpperCase()}
-                ${selectedTags.includes('#nsfw') ? '<span class="badge nsfw">NSFW</span>' : ''}
-                <span class="badge new">NEW</span>
-            </h3>
-            <p>${desc || "No description provided"}</p>
-            <div class="room-meta">
-                <span><i class="fas fa-users"></i> ${Math.floor(Math.random() * 5) + 1} players</span>
-                <span><i class="fas fa-comments"></i> ${Math.floor(Math.random() * 10)} messages</span>
-            </div>
-            <div class="room-card-footer">
-                <div class="room-rating"><i class="fas fa-fire"></i> ${70 + Math.floor(Math.random() * 30)}% HYPE</div>
-                <div>
-                    <i class="fas ${
-                        roomType === 'public' ? 'fa-lock-open' : 
-                        roomType === 'private' ? 'fa-lock' : 'fa-crown'
-                    }"></i>
-                    ${roomType === 'public' ? 'Public' : 
-                      roomType === 'private' ? 'Private' : 'Pro Only'}
-                </div>
-            </div>
-        </div>
-    `;
-
-    // Add to grid
-    document.getElementById('roomGrid').insertAdjacentHTML('afterbegin', roomHTML);
-    closeModal();
-    showToast(`Room "${name}" created!`);
-
-    // Reset form
-    document.getElementById('roomName').value = '';
-    document.getElementById('roomDesc').value = '';
-    document.querySelectorAll('.tag-btn.selected').forEach(tag => {
-        tag.classList.remove('selected');
-    });
-}
-
-    // ===== OTHER FUNCTIONS =====
-    function toggleTag(btn) {
-        btn.classList.toggle('selected');
-    }
-    
-    function joinRoom(roomId) {
-        alert(`Joining room: ${roomId}`);
-        // window.location.href = `battle-arena.html?room=${roomId}`;
-    }
-    
-    function searchRooms() {
-        const term = document.getElementById('roomSearch').value.toLowerCase();
-        const cards = document.querySelectorAll('.room-card');
-        
-        cards.forEach(card => {
-            const textMatch = card.textContent.toLowerCase().includes(term);
-            const tagMatch = card.getAttribute('data-tags').includes(term.replace('#', '')); 
-            card.style.display = (textMatch || tagMatch) ? 'block' : 'none';
-        });
-    }
-    
-    function filterRooms(filter) {
-        const tabs = document.querySelectorAll('.filter-tab');
-        tabs.forEach(tab => tab.classList.remove('active'));
-        event.target.classList.add('active');
-        
-        const cards = document.querySelectorAll('.room-card');
-        
-        if (filter === 'all') {
-            cards.forEach(card => card.style.display = 'block');
-            return;
+    <script>
+        // Modal controls
+        function openModal() {
+            document.getElementById('createModal').style.display = 'flex';
         }
         
-        cards.forEach(card => {
-            const tags = card.getAttribute('data-tags');
-            card.style.display = tags.includes(filter) ? 'block' : 'none';
+        function closeModal() {
+            document.getElementById('createModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === document.getElementById('createModal')) {
+                closeModal();
+            }
         });
-    }
-
-    // ===== INITIALIZATION =====
-    document.addEventListener('DOMContentLoaded', function() {
-        // Bind create room button
-        document.querySelector('.btn-create').addEventListener('click', openModal);
         
-        // Bind modal create button
-        document.querySelector('.modal-content .btn-create').addEventListener('click', createRoom);
+        // Tag selection
+        function toggleTag(btn) {
+            btn.classList.toggle('selected');
+        }
         
-        // Bind search
-        document.getElementById('roomSearch').addEventListener('input', searchRooms);
-        document.querySelector('.search-btn').addEventListener('click', searchRooms);
+        // Room joining
+        function joinRoom(roomId) {
+            showToast(`Entering ${roomId}...`);
+            setTimeout(() => {
+                window.location.href = `battle-arena.html?room=${roomId}`;
+            }, 1000);
+        }
+        
+        // Search functionality
+        function searchRooms() {
+            const term = document.getElementById('roomSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.room-card');
+            let found = false;
+            
+            cards.forEach(card => {
+                const textMatch = card.textContent.toLowerCase().includes(term);
+                const tagMatch = card.getAttribute('data-tags').includes(term.replace('#', ''));
+                const shouldShow = textMatch || tagMatch;
+                
+                card.style.display = shouldShow ? 'block' : 'none';
+                if (shouldShow) found = true;
+            });
+            
+            if (!found) {
+                showToast("No rooms found matching your search");
+            }
+        }
+        
+        // Filter rooms by category
+        function filterRooms(filter) {
+            const tabs = document.querySelectorAll('.filter-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const cards = document.querySelectorAll('.room-card');
+            
+            if (filter === 'all') {
+                cards.forEach(card => card.style.display = 'block');
+                return;
+            }
+            
+            cards.forEach(card => {
+                const tags = card.getAttribute('data-tags');
+                card.style.display = tags.includes(filter) ? 'block' : 'none';
+            });
+        }
         
         // Character counters
         document.getElementById('roomName').addEventListener('input', function() {
@@ -708,5 +658,103 @@
         document.getElementById('roomDesc').addEventListener('input', function() {
             document.getElementById('descCounter').textContent = `${this.value.length}/120`;
         });
-    });
-</script>
+        
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // FIXED Create room function
+        function createRoom() {
+            const name = document.getElementById('roomName').value.trim();
+            const desc = document.getElementById('roomDesc').value.trim();
+            const roomType = document.getElementById('roomType').value;
+            
+            if (!name) {
+                showToast("Room name is required!");
+                return;
+            }
+            
+            // Get selected tags
+            const selectedTags = [];
+            document.querySelectorAll('.tag-btn.selected').forEach(tag => {
+                selectedTags.push(tag.textContent);
+            });
+            
+            // Create new room card with PROPER structure
+            const roomHTML = `
+                <div class="room-card" data-tags="${selectedTags.join(' ')}" onclick="joinRoom('${name.toLowerCase().replace(/\s+/g, '-')}')">
+                    <h3>${name.toUpperCase()}
+                        ${selectedTags.includes('#nsfw') ? '<span class="badge nsfw">NSFW</span>' : ''}
+                        <span class="badge new">NEW</span>
+                    </h3>
+                    <p>${desc || "No description provided"}</p>
+                    <div class="room-meta">
+                        <span><i class="fas fa-users"></i> ${Math.floor(Math.random() * 5) + 1} players</span>
+                        <span><i class="fas fa-comments"></i> ${Math.floor(Math.random() * 10)} messages</span>
+                    </div>
+                    <div class="room-card-footer">
+                        <div class="room-rating"><i class="fas fa-fire"></i> ${70 + Math.floor(Math.random() * 30)}% HYPE</div>
+                        <div>
+                            <i class="fas ${roomType === 'public' ? 'fa-lock-open' : roomType === 'private' ? 'fa-lock' : 'fa-crown'}"></i>
+                            ${roomType === 'public' ? 'Public' : roomType === 'private' ? 'Private' : 'Pro Only'}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add to grid
+            document.getElementById('roomGrid').insertAdjacentHTML('afterbegin', roomHTML);
+            closeModal();
+            showToast(`Room "${name}" created successfully!`);
+            
+            // Reset form
+            document.getElementById('roomName').value = '';
+            document.getElementById('roomDesc').value = '';
+            document.querySelectorAll('.tag-btn.selected').forEach(tag => {
+                tag.classList.remove('selected');
+            });
+            document.getElementById('roomType').value = 'public';
+        }
+        
+        // Simulate loading rooms
+        function simulateLoading() {
+            const loading = document.getElementById('loadingRooms');
+            const grid = document.getElementById('roomGrid');
+            
+            loading.style.display = 'block';
+            grid.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                loading.style.display = 'none';
+                grid.style.opacity = '1';
+            }, 1500);
+        }
+        
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate loading rooms on first visit
+            if (!sessionStorage.getItem('roomsLoaded')) {
+                simulateLoading();
+                sessionStorage.setItem('roomsLoaded', 'true');
+            }
+            
+            // Enable search on Enter key
+            document.getElementById('roomSearch').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchRooms();
+                }
+            });
+            
+            // Properly bind create room button in modal
+            document.querySelector('.modal-content .btn-create').addEventListener('click', createRoom);
+        });
+    </script>
+</body>
+</html>
