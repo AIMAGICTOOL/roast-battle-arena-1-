@@ -1181,26 +1181,51 @@ window.addEventListener('load', function () {
     if (bioEl && profile.bio) bioEl.textContent = profile.bio;
 
     // ✅ Insert 1 link below bio (not below followers)
-    if (profile.links && profile.links.length > 0 && profile.links[0]) {
-        const linkContainer = document.createElement('div');
-        linkContainer.style.marginTop = '8px';
-        linkContainer.style.marginBottom = '12px';
+  if (profile.links && profile.links.length > 0 && profile.links[0]) {
+    const linkContainer = document.createElement('div');
+    linkContainer.style.marginTop = '8px';
+    linkContainer.style.marginBottom = '12px';
 
-        const link = document.createElement('a');
-        link.href = profile.links[0];
-        link.textContent = profile.links[0];
-        link.target = '_blank';
-        link.style.color = 'var(--secondary)';
-        link.style.textDecoration = 'none';
-        link.style.fontSize = '0.9rem';
+    const url = profile.links[0];
 
-        linkContainer.appendChild(link);
+    // Choose correct icon based on link
+    let iconSrc = 'icons/web-icon.png'; // default
+    if (url.includes('twitter.com')) iconSrc = 'icons/twitter-icon.png';
+    else if (url.includes('instagram.com')) iconSrc = 'icons/instagram-icon.png';
+    else if (url.includes('facebook.com')) iconSrc = 'icons/facebook-icon.png';
+    else if (url.includes('github.com')) iconSrc = 'icons/github-icon.png';
+    else if (url.includes('linkedin.com')) iconSrc = 'icons/linkedin-icon.png';
+    else if (url.includes('youtube.com')) iconSrc = 'icons/youtube-icon.png';
 
-        const bioParagraph = document.querySelector('#profileTab .profile-section p');
-        if (bioParagraph) {
-            bioParagraph.insertAdjacentElement('afterend', linkContainer);
-        }
+    // Create icon image
+    const iconImg = document.createElement('img');
+    iconImg.src = iconSrc;
+    iconImg.alt = 'icon';
+    iconImg.style.width = '20px';
+    iconImg.style.height = '20px';
+    iconImg.style.marginRight = '6px';
+    iconImg.style.verticalAlign = 'middle';
+
+    // Create the link
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.style.color = 'var(--secondary)';
+    link.style.textDecoration = 'none';
+    link.style.fontSize = '0.9rem';
+
+    // Add icon + link text
+    link.appendChild(iconImg);
+    link.appendChild(document.createTextNode(url));
+
+    // Insert under bio
+    linkContainer.appendChild(link);
+    const bioParagraph = document.querySelector('#profileTab .profile-section p');
+    if (bioParagraph) {
+        bioParagraph.insertAdjacentElement('afterend', linkContainer);
     }
+}
+
 
     // ✅ Switch to profile tab if needed
     if (window.location.hash === '#profileTab') {
