@@ -848,7 +848,7 @@
         let notificationsEnabled = true;
         
         // Switch between tabs
-      function switchTab(tab) {
+       function switchTab(tab) {
     // Update active tab button
     document.querySelectorAll('.nav-tab').forEach(btn => {
         btn.classList.remove('active');
@@ -861,10 +861,7 @@
     document.querySelectorAll('.tab-content').forEach(tabContent => {
         tabContent.classList.remove('active');
     });
-    
-    if (tab === 'feeds' || tab === 'chat') {
-        document.getElementById(tab + 'Tab').classList.add('active');
-    }
+    document.getElementById(tab + 'Tab').classList.add('active');
     
     currentTab = tab;
     
