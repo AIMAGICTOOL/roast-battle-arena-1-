@@ -506,7 +506,7 @@
         <div class="battle-arena">
             <!-- Room Header -->
             <div class="room-header">
-                <h1 class="room-title" id="roomTitle"><span id="roomBadge">#MEMES</span> EPIC MEME SHOWDOWN</h1>
+                <h1 class="room-title" id="roomTitle">EPIC MEME SHOWDOWN</h1>
                 <div class="room-stats">
                     <div class="stat">
                         <i class="fas fa-users"></i>
@@ -614,63 +614,8 @@
 
         // Get room ID from URL
         const urlParams = new URLSearchParams(window.location.search);
-       const roomThemes = {
-    'epic-memes': {
-        background: "url('https://media.giphy.com/media/3o7TKz2eMXx7dn95FS/giphy.gif')",
-        badge: "#MEMES",
-        sound: "sounds/memes.mp3"
-    },
-    'roast-raps': {
-        background: "url('https://media.giphy.com/media/26xBwdIuRJiAIqHwA/giphy.gif')",
-        badge: "#RAPS",
-        sound: "sounds/rap.mp3"
-    },
-    'tech-burns': {
-        background: "url('https://media.giphy.com/media/3oKIPf3C7HqqYBVcCk/giphy.gif')",
-        badge: "#TECH",
-        sound: "sounds/tech.mp3"
-    },
-    'school-wars': {
-        background: "url('https://media.giphy.com/media/l0ExdMHUDKteztyfe/giphy.gif')",
-        badge: "#SCHOOL",
-        sound: "sounds/school.mp3"
-    }
-};
-
-const roomId = urlParams.get('room') || 'epic-memes';
-const roomConfig = roomThemes[roomId] || roomThemes['epic-memes'];
-const formattedRoomName = roomId.replace(/-/g, ' ').toUpperCase();
-
-document.getElementById('roomTitle').textContent = formattedRoomName;
-document.getElementById('roomBadge').textContent = roomConfig.badge;
-document.getElementById('messageArea').style.backgroundImage = roomConfig.background;
-
-// Set ambient sound
-const audio = document.getElementById('ambientSound');
-const toggleBtn = document.getElementById('soundToggle');
-audio.src = roomConfig.sound;
-
-toggleBtn.onclick = () => {
-    audio.muted = !audio.muted;
-    toggleBtn.textContent = audio.muted ? \"🔈\" : \"🔊\";
-    if (!audio.paused) return;
-    audio.play().catch(() => {});
-};
-
-// Show welcome toast and timer
-showToast(`Welcome to ${formattedRoomName}!`, 2000);
-let seconds = 0;
-setInterval(() => {
-  seconds++;
-  if (seconds % 60 === 0) {
-    const mins = seconds / 60;
-    const toast = document.createElement(\"div\");
-    toast.className = \"toast show\";
-    toast.textContent = `🔥 You've been in this arena for ${mins} min${mins > 1 ? 's' : ''}! Keep roasting!`;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 4000);
-  }
-}, 1000);
+        const roomId = urlParams.get('room') || 'epic-memes';
+        document.getElementById('roomTitle').textContent = roomId.toUpperCase().replace(/-/g, ' ');
 
         // Create floating particles
         function createParticles() {
@@ -921,9 +866,6 @@ setInterval(() => {
                 addMessage('System', 'Battle begins in 3... 2... 1... 🔥', false);
             }, 500);
         });
-        <audio id="ambientSound" loop muted></audio>
-<button id="soundToggle" style="position: fixed; bottom: 20px; left: 20px; z-index: 999;">🔈</button>
-
     </script>
 </body>
 </html>
