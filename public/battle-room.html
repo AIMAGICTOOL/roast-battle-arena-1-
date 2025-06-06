@@ -18,31 +18,34 @@
             --glow: 0 0 15px;
         }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             background: radial-gradient(circle at center, #1a0033, #0f0f0f);
             color: var(--text-primary);
             font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            padding: 0;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* Battle Arena Layout */
+        /* Main Layout */
         .arena-container {
             display: grid;
             grid-template-columns: 250px 1fr;
             height: 100vh;
-            position: relative;
         }
 
-        /* PARTICIPANTS SIDEBAR */
+        /* Participants Sidebar */
         .participants-sidebar {
-            background: rgba(10, 10, 10, 0.8);
+            background: rgba(10, 10, 10, 0.95);
             border-right: 1px solid rgba(157, 0, 255, 0.3);
-            backdrop-filter: blur(5px);
             padding: 15px;
             overflow-y: auto;
+            z-index: 10;
         }
 
         .participants-sidebar h3 {
@@ -56,10 +59,10 @@
         .participant {
             display: flex;
             align-items: center;
-            padding: 8px;
+            padding: 10px;
             margin-bottom: 10px;
             background: rgba(30, 30, 30, 0.6);
-            border-radius: 5px;
+            border-radius: 8px;
             transition: all 0.3s;
             cursor: pointer;
         }
@@ -70,40 +73,49 @@
         }
 
         .participant-avatar {
-            width: 30px;
-            height: 30px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: var(--accent-purple);
-            margin-right: 10px;
+            margin-right: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            color: black;
         }
 
-        /* MAIN BATTLE ARENA */
+        .participant-name {
+            flex: 1;
+        }
+
+        .participant-score {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        /* Main Battle Area */
         .battle-arena {
             display: flex;
             flex-direction: column;
             height: 100vh;
             position: relative;
-            overflow: hidden;
         }
 
-        /* ROOM HEADER */
+        /* Room Header */
         .room-header {
             background: linear-gradient(90deg, rgba(157, 0, 255, 0.1), rgba(0, 247, 255, 0.05));
-            padding: 15px;
+            padding: 15px 20px;
             border-bottom: 1px solid rgba(157, 0, 255, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 5;
         }
 
         .room-title {
             color: var(--accent-purple);
-            font-size: 1.5rem;
-            margin: 0;
+            font-size: 1.3rem;
             text-shadow: 0 0 10px var(--accent-purple);
         }
 
@@ -116,13 +128,14 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            font-size: 0.9rem;
         }
 
         .stat i {
             color: var(--accent-cyan);
         }
 
-        /* MESSAGE AREA */
+        /* Message Area */
         .message-area {
             flex: 1;
             padding: 20px;
@@ -134,18 +147,21 @@
             flex-direction: column;
         }
 
-        /* CHAT BUBBLES */
+        /* Chat Messages */
         .message {
             max-width: 70%;
             margin-bottom: 15px;
             padding: 12px 15px;
             border-radius: 12px;
             animation: fadeIn 0.3s ease-out;
-            position: relative;
             backdrop-filter: blur(5px);
         }
 
-        /* Received messages (left) */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .message.received {
             background: rgba(30, 30, 30, 0.7);
             border-bottom-left-radius: 0;
@@ -153,20 +169,18 @@
             border-left: 3px solid var(--accent-purple);
         }
 
-        /* Sent messages (right) */
         .message.sent {
             background: rgba(157, 0, 255, 0.2);
             border-bottom-right-radius: 0;
             align-self: flex-end;
             border-right: 3px solid var(--accent-cyan);
-            margin-left: auto;
         }
 
         .message-header {
             display: flex;
             justify-content: space-between;
             margin-bottom: 5px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .message-sender {
@@ -205,13 +219,15 @@
             color: var(--accent-red);
         }
 
-        /* INPUT AREA */
+        /* Input Area */
         .input-area {
             padding: 15px;
-            background: rgba(20, 20, 20, 0.9);
+            background: rgba(20, 20, 20, 0.95);
             border-top: 1px solid rgba(157, 0, 255, 0.3);
             display: flex;
             gap: 10px;
+            position: relative;
+            z-index: 5;
         }
 
         #messageInput {
@@ -220,7 +236,7 @@
             background: rgba(30, 30, 30, 0.8);
             border: 1px solid rgba(157, 0, 255, 0.5);
             color: white;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 1rem;
             transition: all 0.3s;
         }
@@ -235,8 +251,8 @@
             background: var(--accent-purple);
             color: black;
             border: none;
-            padding: 0 25px;
-            border-radius: 5px;
+            padding: 0 20px;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
@@ -247,7 +263,7 @@
             box-shadow: 0 0 20px var(--accent-purple);
         }
 
-        /* BATTLE EFFECTS */
+        /* Battle Effects */
         .battle-effects {
             position: absolute;
             top: 0;
@@ -274,7 +290,7 @@
             100% { transform: translateY(-100vh) translateX(20vw); opacity: 0; }
         }
 
-        /* USER PROFILE MODAL */
+        /* Profile Modal */
         .profile-modal {
             display: none;
             position: fixed;
@@ -291,16 +307,23 @@
 
         .profile-card {
             background: var(--card-bg);
-            width: 300px;
-            border-radius: 10px;
+            width: 320px;
+            max-width: 90%;
+            border-radius: 12px;
             overflow: hidden;
             border: 1px solid var(--accent-purple);
             box-shadow: 0 0 30px var(--accent-purple);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .profile-header {
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
-            padding: 20px;
+            padding: 25px;
             text-align: center;
         }
 
@@ -309,12 +332,13 @@
             height: 80px;
             border-radius: 50%;
             background: var(--accent-purple);
-            margin: 0 auto 10px;
+            margin: 0 auto 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2rem;
             border: 3px solid white;
+            color: white;
         }
 
         .profile-body {
@@ -324,12 +348,36 @@
         .profile-stat {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
             border-bottom: 1px solid #333;
         }
 
-        /* TOAST NOTIFICATION */
+        /* Mobile Menu Button - Bottom Left */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent-purple);
+            border-radius: 50%;
+            border: none;
+            color: black;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 0 15px var(--accent-purple);
+            transition: all 0.3s;
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--accent-cyan);
+            transform: scale(1.1);
+        }
+
+        /* Toast Notification */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -337,7 +385,7 @@
             background: var(--accent-purple);
             color: #000;
             padding: 15px 25px;
-            border-radius: 5px;
+            border-radius: 8px;
             font-weight: bold;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             transform: translateY(100px);
@@ -351,48 +399,20 @@
             opacity: 1;
         }
 
-        /* MOBILE MENU BUTTON */
-       /* IMPROVED MOBILE TOGGLE BUTTON */
-        .mobile-menu-btn {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: var(--accent-purple);
-            border-radius: 50%;
-            border: none;
-            color: black;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 100;
-            box-shadow: 0 0 20px var(--accent-purple);
-            transition: all 0.3s;
-        }
-
-        .mobile-menu-btn:hover {
-            transform: scale(1.1);
-            background: var(--accent-cyan);
-        }
-
-        /* ENHANCED MOBILE LAYOUT */
+        /* Responsive Design */
         @media (max-width: 768px) {
             .arena-container {
                 grid-template-columns: 1fr;
-                width: 100vw;
-                overflow-x: hidden;
             }
             
             .participants-sidebar {
                 position: fixed;
                 top: 0;
                 left: -100%;
-                width: 80%;
+                width: 280px;
                 height: 100vh;
-                transition: left 0.3s;
+                transition: left 0.3s ease-out;
                 z-index: 99;
-                background: rgba(20, 20, 20, 0.95);
             }
             
             .participants-sidebar.active {
@@ -400,87 +420,60 @@
             }
             
             .battle-arena {
-                width: 100%;
-                padding-right: 0;
+                width: 100vw;
             }
-
+            
             .message {
-                max-width: 85%;
+                max-width: 80%;
             }
-
-            /* Fix input area on mobile */
-            .input-area {
-                padding: 10px;
-                position: sticky;
-                bottom: 0;
-                background: rgba(10, 10, 10, 0.95);
-            }
-
-            #messageInput {
-                padding: 10px;
-            }
-
+            
             .mobile-menu-btn {
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
-
-            /* Adjust header for mobile */
+            
             .room-header {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 10px;
+                padding: 12px 15px;
             }
-
-            .room-stats {
-                margin-top: 10px;
-                gap: 15px;
+            
+            .room-title {
+                font-size: 1.1rem;
+            }
+            
+            .stat {
+                font-size: 0.8rem;
             }
         }
 
-        /* Extra small devices */
         @media (max-width: 480px) {
             .message {
-                max-width: 90%;
-                padding: 10px;
+                max-width: 85%;
+                padding: 10px 12px;
             }
-
-            .room-title {
-                font-size: 1.2rem;
-            }
-
-            .profile-card {
-                width: 90%;
-            }
-        }
-   
             
             .participants-sidebar {
-                position: fixed;
-                top: 0;
-                left: -250px;
-                width: 250px;
-                height: 100vh;
-                transition: left 0.3s;
-                z-index: 99;
+                width: 85%;
             }
             
-            .participants-sidebar.active {
-                left: 0;
+            .input-area {
+                padding: 12px;
             }
             
+            #messageInput {
+                padding: 10px 12px;
+            }
+
             .mobile-menu-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                bottom: 70px;
+                left: 15px;
             }
         }
     </style>
 </head>
 <body>
     <div class="arena-container">
-        <!-- PARTICIPANTS SIDEBAR -->
+        <!-- Participants Sidebar -->
         <div class="participants-sidebar" id="participantsSidebar">
             <h3><i class="fas fa-users"></i> GLADIATORS</h3>
             <div id="participantList">
@@ -502,9 +495,9 @@
             </div>
         </div>
 
-        <!-- MAIN BATTLE ARENA -->
+        <!-- Main Battle Arena -->
         <div class="battle-arena">
-            <!-- ROOM HEADER -->
+            <!-- Room Header -->
             <div class="room-header">
                 <h1 class="room-title" id="roomTitle">EPIC MEME SHOWDOWN</h1>
                 <div class="room-stats">
@@ -519,7 +512,7 @@
                 </div>
             </div>
 
-            <!-- MESSAGE AREA -->
+            <!-- Message Area -->
             <div class="message-area" id="messageArea">
                 <div class="message received">
                     <div class="message-header">
@@ -549,7 +542,7 @@
                 </div>
             </div>
 
-            <!-- INPUT AREA -->
+            <!-- Input Area -->
             <div class="input-area">
                 <input type="text" id="messageInput" placeholder="Drop your sickest roast..." autocomplete="off">
                 <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
@@ -557,16 +550,15 @@
         </div>
     </div>
 
-    <!-- BATTLE EFFECTS -->
+    <!-- Battle Effects -->
     <div class="battle-effects" id="battleEffects"></div>
 
-    <!-- MOBILE MENU BUTTON -->
-    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()">
+    <!-- Mobile Menu Button - Bottom Left -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-users"></i>
     </button>
 
-
-    <!-- USER PROFILE MODAL -->
+    <!-- Profile Modal -->
     <div class="profile-modal" id="profileModal">
         <div class="profile-card">
             <div class="profile-header">
@@ -590,14 +582,14 @@
                     <span>Join Date:</span>
                     <strong>Jan 2023</strong>
                 </div>
-                <button class="btn" onclick="closeProfile()" style="width:100%;margin-top:15px;background:var(--accent-purple);color:black;border:none;padding:10px;border-radius:5px;">
+                <button class="btn" id="closeProfileBtn" style="width:100%;margin-top:15px;background:var(--accent-purple);color:black;border:none;padding:10px;border-radius:5px;font-weight:bold;">
                     Close
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION -->
+    <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
     <script>
@@ -608,26 +600,15 @@
         const participantsSidebar = document.getElementById('participantsSidebar');
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const profileModal = document.getElementById('profileModal');
+        const closeProfileBtn = document.getElementById('closeProfileBtn');
         const battleEffects = document.getElementById('battleEffects');
         const toast = document.getElementById('toast');
+        const participantElements = document.querySelectorAll('.participant');
 
-        // Toggle sidebar on mobile
-        function toggleSidebar() {
-            participantsSidebar.classList.toggle('active');
-        }
-
-        // Open user profile
-        function openProfile(name, avatar, score) {
-            document.getElementById('profileName').textContent = name;
-            document.getElementById('profileAvatar').textContent = avatar;
-            document.getElementById('profileScore').textContent = score;
-            profileModal.style.display = 'flex';
-        }
-
-        // Close profile modal
-        function closeProfile() {
-            profileModal.style.display = 'none';
-        }
+        // Get room ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('room') || 'epic-memes';
+        document.getElementById('roomTitle').textContent = roomId.toUpperCase().replace(/-/g, ' ');
 
         // Create floating particles
         function createParticles() {
@@ -647,6 +628,38 @@
                 
                 battleEffects.appendChild(particle);
             }
+        }
+
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            participantsSidebar.classList.toggle('active');
+            
+            if (participantsSidebar.classList.contains('active')) {
+                document.addEventListener('click', closeSidebarOnClickOutside);
+            } else {
+                document.removeEventListener('click', closeSidebarOnClickOutside);
+            }
+        }
+
+        function closeSidebarOnClickOutside(e) {
+            if (!participantsSidebar.contains(e.target) && e.target !== mobileMenuBtn) {
+                participantsSidebar.classList.remove('active');
+                document.removeEventListener('click', closeSidebarOnClickOutside);
+            }
+        }
+
+        // Open user profile
+        function openProfile(name, avatar, score) {
+            document.getElementById('profileName').textContent = name;
+            document.getElementById('profileAvatar').textContent = avatar;
+            document.getElementById('profileScore').textContent = score;
+            profileModal.style.display = 'flex';
+            participantsSidebar.classList.remove('active');
+        }
+
+        // Close profile modal
+        function closeProfile() {
+            profileModal.style.display = 'none';
         }
 
         // Show toast notification
@@ -742,6 +755,20 @@
             if (e.key === 'Enter') sendMessage();
         });
 
+        mobileMenuBtn.addEventListener('click', toggleSidebar);
+
+        closeProfileBtn.addEventListener('click', closeProfile);
+
+        // Add click event to all participant elements
+        participantElements.forEach(participant => {
+            participant.addEventListener('click', function() {
+                const name = this.querySelector('.participant-name').textContent;
+                const avatar = this.querySelector('.participant-avatar').textContent;
+                const score = this.querySelector('.participant-score').textContent.replace('🔥 ', '');
+                openProfile(name, avatar, score);
+            });
+        });
+
         // Close modal when clicking outside
         window.addEventListener('click', (e) => {
             if (e.target === profileModal) {
@@ -759,31 +786,6 @@
                 addMessage('System', 'Battle begins in 3... 2... 1... 🔥', false);
             }, 500);
         });
-  // Enhanced toggle function for mobile
-        function toggleSidebar() {
-            const sidebar = document.getElementById('participantsSidebar');
-            sidebar.classList.toggle('active');
-            
-            // Close when clicking outside
-            if (sidebar.classList.contains('active')) {
-                document.addEventListener('click', closeSidebarOnClickOutside);
-            } else {
-                document.removeEventListener('click', closeSidebarOnClickOutside);
-            }
-        }
-
-        function closeSidebarOnClickOutside(e) {
-            const sidebar = document.getElementById('participantsSidebar');
-            const mobileBtn = document.getElementById('mobileMenuBtn');
-            
-            if (!sidebar.contains(e.target) && e.target !== mobileBtn) {
-                sidebar.classList.remove('active');
-                document.removeEventListener('click', closeSidebarOnClickOutside);
-            }
-        }
     </script>
 </body>
-</html>      
-    </script>
-</body>
-</html>b
+</html>
