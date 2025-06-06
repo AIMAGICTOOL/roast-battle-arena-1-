@@ -30,6 +30,7 @@
             font-family: 'Segoe UI', sans-serif;
             height: 100vh;
             overflow: hidden;
+            touch-action: none;
         }
 
         /* Main Layout */
@@ -353,12 +354,10 @@
             border-bottom: 1px solid #333;
         }
 
-        /* Mobile Menu Button - Bottom Left */
+        /* Draggable Mobile Menu Button */
         .mobile-menu-btn {
             display: none;
             position: fixed;
-            bottom: 80px;
-            left: 20px;
             width: 50px;
             height: 50px;
             background: var(--accent-purple);
@@ -366,15 +365,21 @@
             border: none;
             color: black;
             font-size: 1.2rem;
-            cursor: pointer;
+            cursor: move;
             z-index: 100;
             box-shadow: 0 0 15px var(--accent-purple);
-            transition: all 0.3s;
+            transition: transform 0.2s;
+            user-select: none;
+            touch-action: none;
         }
 
         .mobile-menu-btn:hover {
             background: var(--accent-cyan);
             transform: scale(1.1);
+        }
+
+        .mobile-menu-btn:active {
+            transform: scale(1.05);
         }
 
         /* Toast Notification */
@@ -431,6 +436,8 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                left: 20px;
+                bottom: 80px;
             }
             
             .room-header {
@@ -477,17 +484,17 @@
         <div class="participants-sidebar" id="participantsSidebar">
             <h3><i class="fas fa-users"></i> GLADIATORS</h3>
             <div id="participantList">
-                <div class="participant" onclick="openProfile('You', 'Y', '250')">
+                <div class="participant">
                     <div class="participant-avatar">Y</div>
                     <div class="participant-name">You</div>
                     <div class="participant-score">🔥 250</div>
                 </div>
-                <div class="participant" onclick="openProfile('RoastMaster', 'R', '980')">
+                <div class="participant">
                     <div class="participant-avatar">R</div>
                     <div class="participant-name">RoastMaster</div>
                     <div class="participant-score">🔥 980</div>
                 </div>
-                <div class="participant" onclick="openProfile('SavageSam', 'S', '750')">
+                <div class="participant">
                     <div class="participant-avatar">S</div>
                     <div class="participant-name">SavageSam</div>
                     <div class="participant-score">🔥 750</div>
@@ -553,7 +560,7 @@
     <!-- Battle Effects -->
     <div class="battle-effects" id="battleEffects"></div>
 
-    <!-- Mobile Menu Button - Bottom Left -->
+    <!-- Draggable Mobile Menu Button -->
     <button class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-users"></i>
     </button>
@@ -749,15 +756,80 @@
             }
         }
 
-        // Event listeners
-        sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+        // Draggable button functionality
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        // Desktop drag events
+        mobileMenuBtn.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - mobileMenuBtn.getBoundingClientRect().left;
+            offsetY = e.clientY - mobileMenuBtn.getBoundingClientRect().top;
+            mobileMenuBtn.style.transition = 'none';
+            e.preventDefault();
         });
 
-        mobileMenuBtn.addEventListener('click', toggleSidebar);
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+            
+            // Constrain to window boundaries
+            const maxX = window.innerWidth - mobileMenuBtn.offsetWidth;
+            const maxY = window.innerHeight - mobileMenuBtn.offsetHeight;
+            
+            mobileMenuBtn.style.left = `${Math.min(Math.max(0, x), maxX)}px`;
+            mobileMenuBtn.style.top = `${Math.min(Math.max(0, y), maxY)}px`;
+        });
 
-        closeProfileBtn.addEventListener('click', closeProfile);
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                mobileMenuBtn.style.transition = 'all 0.3s';
+            }
+        });
+
+        // Mobile touch events
+        mobileMenuBtn.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            const touch = e.touches[0];
+            offsetX = touch.clientX - mobileMenuBtn.getBoundingClientRect().left;
+            offsetY = touch.clientY - mobileMenuBtn.getBoundingClientRect().top;
+            mobileMenuBtn.style.transition = 'none';
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            const touch = e.touches[0];
+            const x = touch.clientX - offsetX;
+            const y = touch.clientY - offsetY;
+            
+            // Constrain to window boundaries
+            const maxX = window.innerWidth - mobileMenuBtn.offsetWidth;
+            const maxY = window.innerHeight - mobileMenuBtn.offsetHeight;
+            
+            mobileMenuBtn.style.left = `${Math.min(Math.max(0, x), maxX)}px`;
+            mobileMenuBtn.style.top = `${Math.min(Math.max(0, y), maxY)}px`;
+            
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+                mobileMenuBtn.style.transition = 'all 0.3s';
+            }
+        });
+
+        // Toggle sidebar - only if not dragging
+        mobileMenuBtn.addEventListener('click', (e) => {
+            if (!isDragging) {
+                toggleSidebar();
+            }
+        });
 
         // Add click event to all participant elements
         participantElements.forEach(participant => {
@@ -775,6 +847,14 @@
                 closeProfile();
             }
         });
+
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        closeProfileBtn.addEventListener('click', closeProfile);
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
