@@ -636,430 +636,295 @@
                 font-size: 16px;
             }
         }
-    </style>
-</head>
-<body>
-    <div class="arena-container">
-        <!-- Participants Sidebar -->
-        <div class="participants-sidebar" id="participantsSidebar">
-            <h3><i class="fas fa-users"></i> GLADIATORS <span id="onlineCount">(3)</span></h3>
-            <div id="participantList">
-                <div class="participant">
-                    <div class="participant-avatar">Y</div>
-                    <div class="participant-name">You</div>
-                    <div class="participant-score">🔥 250</div>
-                </div>
-                <div class="participant">
-                    <div class="participant-avatar">R</div>
-                    <div class="participant-name">RoastMaster</div>
-                    <div class="participant-score">🔥 980</div>
-                </div>
-                <div class="participant">
-                    <div class="participant-avatar">S</div>
-                    <div class="participant-name">SavageSam</div>
-                    <div class="participant-score">🔥 750</div>
-                </div>
-            </div>
-        </div>
+   <script>
+    // DOM Elements
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const messageArea = document.getElementById('messageArea');
+    const participantsSidebar = document.getElementById('participantsSidebar');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const profileModal = document.getElementById('profileModal');
+    const closeProfileBtn = document.getElementById('closeProfileBtn');
+    const battleEffects = document.getElementById('battleEffects');
+    const toast = document.getElementById('toast');
+    const participantElements = document.querySelectorAll('.participant');
+    const onlineCount = document.getElementById('onlineCount');
 
-        <!-- Main Battle Arena -->
-        <div class="battle-arena">
-            <!-- Battle Effects -->
-            <div class="battle-effects" id="battleEffects"></div>
+    // Room Configuration
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = urlParams.get('room') || 'epic-memes';
+    const roomTags = urlParams.get('tags') || 'memes';
+    document.getElementById('roomTitle').textContent = roomId.toUpperCase().replace(/-/g, ' ');
 
-            <!-- Back Button -->
-            <button class="back-button" onclick="location.href='public-battle-hall.html'">
-                <i class="fas fa-arrow-left"></i>
-            </button>
+    // ======================
+    // Core Functions
+    // ======================
 
-            <!-- Room Header -->
-            <div class="room-header">
-                <h1 class="room-title" id="roomTitle">EPIC MEME SHOWDOWN</h1>
-                <div class="room-stats">
-                    <div class="stat hype-meter">
-                        <i class="fas fa-bolt"></i>
-                        <span id="hypeLevel">98%</span>
-                    </div>
-                </div>
-            </div>
+    function setTheme() {
+        messageArea.className = 'message-area'; // Reset classes
+        if (roomTags.includes('memes')) messageArea.classList.add('theme-memes');
+        else if (roomTags.includes('gaming')) messageArea.classList.add('theme-gaming');
+        else if (roomTags.includes('tech')) messageArea.classList.add('theme-tech');
+        else if (roomTags.includes('anime')) messageArea.classList.add('theme-anime');
+        else messageArea.classList.add('theme-default');
+    }
 
-            <!-- Message Area -->
-            <div class="message-area" id="messageArea">
-                <div class="message received">
-                    <div class="message-header">
-                        <span class="message-sender">RoastMaster</span>
-                        <span class="message-time">2:45 PM</span>
-                    </div>
-                    <div class="message-content">
-                        Yo mama's so fat, when she sat on a binary tree, she turned it into a linked list in constant time!
-                    </div>
-                    <div class="message-votes">
-                        <button class="vote-btn up"><i class="fas fa-arrow-up"></i><span class="vote-count">24</span></button>
-                        <button class="vote-btn down"><i class="fas fa-arrow-down"></i><span class="vote-count">2</span></button>
-                    </div>
-                </div>
-                <div class="message sent">
-                    <div class="message-header">
-                        <span class="message-sender">You</span>
-                        <span class="message-time">2:46 PM</span>
-                    </div>
-                    <div class="message-content">
-                        Your face looks like it caught fire and someone tried to put it out with a fork!
-                    </div>
-                    <div class="message-votes">
-                        <button class="vote-btn up"><i class="fas fa-arrow-up"></i><span class="vote-count">42</span></button>
-                        <button class="vote-btn down"><i class="fas fa-arrow-down"></i><span class="vote-count">5</span></button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Input Area -->
-            <div class="input-area">
-                <input type="text" id="messageInput" placeholder="Drop your sickest roast..." autocomplete="off">
-                <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
-    </div>
-
-      <!-- Draggable Mobile Menu Button -->
-    <button class="mobile-menu-btn" id="mobileMenuBtn">
-        <i class="fas fa-users"></i>
-    </button>
-
-    <!-- Profile Modal -->
-    <div class="profile-modal" id="profileModal">
-        <div class="profile-card">
-            <div class="profile-header">
-                <div class="profile-avatar" id="profileAvatar">Y</div>
-                <h2 id="profileName">Username</h2>
-            </div>
-            <div class="profile-body">
-                <div class="profile-stat">
-                    <span>Roast Score:</span>
-                    <strong id="profileScore">0</strong>
-                </div>
-                <div class="profile-stat">
-                    <span>Wins:</span>
-                    <strong>24</strong>
-                </div>
-                <div class="profile-stat">
-                    <span>Total Roasts:</span>
-                    <strong>128</strong>
-                </div>
-                <div class="profile-stat">
-                    <span>Join Date:</span>
-                    <strong>Jan 2023</strong>
-                </div>
-                <button class="btn" id="closeProfileBtn" style="width:100%;margin-top:15px;background:var(--accent-purple);color:black;border:none;padding:10px;border-radius:5px;font-weight:bold;">
-                    Close
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div class="toast" id="toast"></div>
-
-    <script>
-        // DOM Elements
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const messageArea = document.getElementById('messageArea');
-        const participantsSidebar = document.getElementById('participantsSidebar');
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const profileModal = document.getElementById('profileModal');
-        const closeProfileBtn = document.getElementById('closeProfileBtn');
-        const battleEffects = document.getElementById('battleEffects');
-        const toast = document.getElementById('toast');
-        const participantElements = document.querySelectorAll('.participant');
-        const onlineCount = document.getElementById('onlineCount');
-
-        // Get room ID and tags from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const roomId = urlParams.get('room') || 'epic-memes';
-        const roomTags = urlParams.get('tags') || 'memes';
-        document.getElementById('roomTitle').textContent = roomId.toUpperCase().replace(/-/g, ' ');
-
-        // Set theme based on tags
-        function setTheme() {
-            const messageArea = document.getElementById('messageArea');
-            messageArea.classList.remove('theme-memes', 'theme-gaming', 'theme-tech', 'theme-anime', 'theme-default');
+    function createParticles() {
+        battleEffects.innerHTML = '';
+        const count = roomTags.includes('anime') ? 30 : 20;
+        const colors = getThemeColors();
+        
+        for (let i = 0; i < count; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'effect-particle';
             
-            if (roomTags.includes('memes')) {
-                messageArea.classList.add('theme-memes');
-            } else if (roomTags.includes('gaming')) {
-                messageArea.classList.add('theme-gaming');
-            } else if (roomTags.includes('tech')) {
-                messageArea.classList.add('theme-tech');
-            } else if (roomTags.includes('anime')) {
-                messageArea.classList.add('theme-anime');
-            } else {
-                messageArea.classList.add('theme-default');
-            }
-        }
-
-        // Create floating particles with theme colors
-        function createParticles() {
-            battleEffects.innerHTML = '';
-            const particleCount = roomTags.includes('anime') ? 30 : 20;
+            // Random properties
+            const size = Math.random() * 15 + 5;
+            const duration = Math.random() * 10 + 5;
+            const delay = Math.random() * 5;
             
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('effect-particle');
-                
-                const size = Math.random() * 15 + 5;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                
-                particle.style.left = `${Math.random() * 100}vw`;
-                particle.style.bottom = `-${size}px`;
-                
-                if (roomTags.includes('memes')) {
-                    particle.style.animationDuration = `${Math.random() * 8 + 8}s`;
-                } else if (roomTags.includes('gaming')) {
-                    particle.style.animationDuration = `${Math.random() * 5 + 5}s`;
-                } else if (roomTags.includes('tech')) {
-                    particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
-                    particle.style.animationTimingFunction = 'linear';
-                } else {
-                    particle.style.animationDuration = `${Math.random() * 7 + 7}s`;
-                }
-                
-                particle.style.animationDelay = `${Math.random() * 5}s`;
-                battleEffects.appendChild(particle);
-            }
-        }
-
-        // Hype meter animation
-        function animateHypeMeter() {
-            const hypeElement = document.querySelector('.hype-meter');
-            const hypeLevel = document.getElementById('hypeLevel');
-            
-            setInterval(() => {
-                const currentHype = parseInt(hypeLevel.textContent);
-                const change = Math.random() > 0.5 ? 
-                    Math.floor(Math.random() * 5) : 
-                    -Math.floor(Math.random() * 5);
-                
-                let newHype = currentHype + change;
-                newHype = Math.min(100, Math.max(0, newHype));
-                hypeLevel.textContent = `${newHype}%`;
-                
-                if (newHype > 80) {
-                    hypeLevel.style.color = 'var(--accent-green)';
-                    hypeElement.querySelector('i').style.color = 'var(--accent-green)';
-                } else if (newHype > 50) {
-                    hypeLevel.style.color = 'var(--accent-cyan)';
-                    hypeElement.querySelector('i').style.color = 'var(--accent-cyan)';
-                } else {
-                    hypeLevel.style.color = 'var(--accent-red)';
-                    hypeElement.querySelector('i').style.color = 'var(--accent-red)';
-                }
-            }, 3000);
-        }
-
-        // Update online count
-        function updateOnlineCount() {
-            const count = document.querySelectorAll('.participant').length;
-            onlineCount.textContent = `(${count})`;
-        }
-
-        // Toggle sidebar on mobile
-        function toggleSidebar() {
-            participantsSidebar.classList.toggle('active');
-            
-            if (participantsSidebar.classList.contains('active')) {
-                document.addEventListener('click', closeSidebarOnClickOutside);
-                updateOnlineCount();
-            } else {
-                document.removeEventListener('click', closeSidebarOnClickOutside);
-            }
-        }
-
-        function closeSidebarOnClickOutside(e) {
-            if (!participantsSidebar.contains(e.target) && e.target !== mobileMenuBtn) {
-                participantsSidebar.classList.remove('active');
-                document.removeEventListener('click', closeSidebarOnClickOutside);
-            }
-        }
-
-        // Open user profile
-        function openProfile(name, avatar, score) {
-            document.getElementById('profileName').textContent = name;
-            document.getElementById('profileAvatar').textContent = avatar;
-            document.getElementById('profileScore').textContent = score;
-            profileModal.style.display = 'flex';
-            participantsSidebar.classList.remove('active');
-        }
-
-        // Close profile modal
-        function closeProfile() {
-            profileModal.style.display = 'none';
-        }
-
-        // Show toast notification
-        function showToast(message, duration = 3000) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, duration);
-        }
-
-        // Add a new message to the chat
-        function addMessage(sender, content, isSent = false) {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message', isSent ? 'sent' : 'received');
-            
-            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            messageElement.innerHTML = `
-                <div class="message-header">
-                    <span class="message-sender">${sender}</span>
-                    <span class="message-time">${timestamp}</span>
-                </div>
-                <div class="message-content">${content}</div>
-                <div class="message-votes">
-                    <button class="vote-btn up"><i class="fas fa-arrow-up"></i><span class="vote-count">0</span></button>
-                    <button class="vote-btn down"><i class="fas fa-arrow-down"></i><span class="vote-count">0</span></button>
-                </div>
+            // Apply styles
+            particle.style.cssText = `
+                width: ${size}px;
+                height: ${size}px;
+                left: ${Math.random() * 100}vw;
+                bottom: -${size}px;
+                background: ${colors[i % 2]};
+                animation-duration: ${duration}s;
+                animation-delay: ${delay}s;
             `;
             
-            messageArea.appendChild(messageElement);
-            messageArea.scrollTop = messageArea.scrollHeight;
-            
-            if (content.includes('🔥') || content.length > 50) {
-                triggerHypeEffect();
-            }
-                // Trigger hype effects
-        function triggerHypeEffect() {
-            messageArea.style.boxShadow = '0 0 30px rgba(157, 0, 255, 0.7)';
-            setTimeout(() => {
-                messageArea.style.boxShadow = 'none';
-            }, 1000);
-            
-            for (let i = 0; i < 5; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('effect-particle');
-                
-                if (roomTags.includes('memes')) {
-                    particle.style.background = i % 2 === 0 ? '#ff00aa' : '#ffff00';
-                } else if (roomTags.includes('gaming')) {
-                    particle.style.background = i % 2 === 0 ? '#00ff88' : '#0066ff';
-                } else if (roomTags.includes('tech')) {
-                    particle.style.background = i % 2 === 0 ? '#00f7ff' : '#9d00ff';
-                } else if (roomTags.includes('anime')) {
-                    particle.style.background = i % 2 === 0 ? '#ff3860' : '#ff00aa';
-                } else {
-                    particle.style.background = i % 2 === 0 ? 'var(--accent-purple)' : 'var(--accent-cyan)';
-                }
-                
-                const size = Math.random() * 15 + 10;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                
-                particle.style.left = `${Math.random() * 100}vw`;
-                particle.style.bottom = `-${size}px`;
-                
-                particle.style.animationDuration = `${Math.random() * 5 + 3}s`;
-                battleEffects.appendChild(particle);
-            }
+            battleEffects.appendChild(particle);
         }
+    }
 
-        // Handle sending messages
-        function sendMessage() {
-            const content = messageInput.value.trim();
-            if (content) {
-                addMessage('You', content, true);
-                messageInput.value = '';
-                
-                setTimeout(() => {
-                    const responses = [
-                        "Weak roast. My grandma spicier than that!",
-                        "🔥🔥🔥 DAMN! That was savage!",
-                        "Try again when you've got something better",
-                        "I've seen better roasts in a vegan restaurant",
-                        "Okay, that one hurt a little...",
-                        "*standing ovation* 👏👏👏"
-                    ];
-                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                    addMessage('RoastMaster', randomResponse, false);
-                }, 1000 + Math.random() * 2000);
-            }
+    function getThemeColors() {
+        if (roomTags.includes('memes')) return ['#ff00aa', '#ffff00'];
+        if (roomTags.includes('gaming')) return ['#00ff88', '#0066ff'];
+        if (roomTags.includes('tech')) return ['#00f7ff', '#9d00ff'];
+        if (roomTags.includes('anime')) return ['#ff3860', '#ff00aa'];
+        return ['#9d00ff', '#00f7ff'];
+    }
+
+    function animateHypeMeter() {
+        const hypeElement = document.querySelector('.hype-meter');
+        const hypeLevel = document.getElementById('hypeLevel');
+        
+        setInterval(() => {
+            const current = parseInt(hypeLevel.textContent);
+            const change = Math.random() > 0.5 ? 
+                Math.floor(Math.random() * 5) : 
+                -Math.floor(Math.random() * 5);
+            
+            const newValue = Math.min(100, Math.max(0, current + change));
+            hypeLevel.textContent = `${newValue}%`;
+            
+            // Update colors based on hype level
+            const color = newValue > 80 ? 'var(--accent-green)' : 
+                         newValue > 50 ? 'var(--accent-cyan)' : 'var(--accent-red)';
+            hypeLevel.style.color = color;
+            hypeElement.querySelector('i').style.color = color;
+        }, 3000);
+    }
+
+    // ======================
+    // UI Interactions
+    // ======================
+
+    function toggleSidebar() {
+        participantsSidebar.classList.toggle('active');
+        if (participantsSidebar.classList.contains('active')) {
+            document.addEventListener('click', closeSidebarOnClickOutside);
+        } else {
+            document.removeEventListener('click', closeSidebarOnClickOutside);
         }
+    }
 
-        // Draggable button functionality
-        let isDragging = false;
-        let offsetX, offsetY;
+    function closeSidebarOnClickOutside(e) {
+        if (!participantsSidebar.contains(e.target) && e.target !== mobileMenuBtn) {
+            toggleSidebar();
+        }
+    }
 
-        mobileMenuBtn.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            offsetX = e.clientX - mobileMenuBtn.getBoundingClientRect().left;
-            offsetY = e.clientY - mobileMenuBtn.getBoundingClientRect().top;
-            mobileMenuBtn.style.transition = 'none';
-            e.preventDefault();
+    function openProfile(name, avatar, score) {
+        document.getElementById('profileName').textContent = name;
+        document.getElementById('profileAvatar').textContent = avatar;
+        document.getElementById('profileScore').textContent = score;
+        profileModal.style.display = 'flex';
+    }
+
+    function closeProfile() {
+        profileModal.style.display = 'none';
+    }
+
+    function showToast(message, duration = 3000) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), duration);
+    }
+
+    // ======================
+    // Message System
+    // ======================
+
+    function addMessage(sender, content, isSent = false) {
+        const message = document.createElement('div');
+        message.className = `message ${isSent ? 'sent' : 'received'}`;
+        message.innerHTML = `
+            <div class="message-header">
+                <span class="message-sender">${sender}</span>
+                <span class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+            </div>
+            <div class="message-content">${content}</div>
+            <div class="message-votes">
+                <button class="vote-btn up"><i class="fas fa-arrow-up"></i><span class="vote-count">0</span></button>
+                <button class="vote-btn down"><i class="fas fa-arrow-down"></i><span class="vote-count">0</span></button>
+            </div>
+        `;
+        
+        messageArea.appendChild(message);
+        messageArea.scrollTop = messageArea.scrollHeight;
+        
+        // Add vote button functionality
+        message.querySelectorAll('.vote-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const countEl = this.querySelector('.vote-count');
+                countEl.textContent = parseInt(countEl.textContent) + 1;
+            });
         });
+        
+        if (content.includes('🔥') || content.length > 50) {
+            triggerHypeEffect();
+        }
+    }
 
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            
-            const x = e.clientX - offsetX;
-            const y = e.clientY - offsetY;
-            
-            const maxX = window.innerWidth - mobileMenuBtn.offsetWidth;
-            const maxY = window.innerHeight - mobileMenuBtn.offsetHeight;
-            
-            mobileMenuBtn.style.left = `${Math.min(Math.max(0, x), maxX)}px`;
-            mobileMenuBtn.style.top = `${Math.min(Math.max(0, y), maxY)}px`;
+    function triggerHypeEffect() {
+        // Add temporary glow
+        messageArea.style.boxShadow = '0 0 30px rgba(157, 0, 255, 0.7)';
+        setTimeout(() => messageArea.style.boxShadow = 'none', 1000);
+        
+        // Add explosive particles
+        const colors = getThemeColors();
+        for (let i = 0; i < 5; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'effect-particle';
+            particle.style.cssText = `
+                width: ${Math.random() * 15 + 10}px;
+                height: ${Math.random() * 15 + 10}px;
+                left: ${Math.random() * 100}vw;
+                bottom: -30px;
+                background: ${colors[i % 2]};
+                animation-duration: ${Math.random() * 5 + 3}s;
+            `;
+            battleEffects.appendChild(particle);
+        }
+    }
+
+    function sendMessage() {
+        const content = messageInput.value.trim();
+        if (!content) return;
+        
+        addMessage('You', content, true);
+        messageInput.value = '';
+        
+        // Simulate response
+        setTimeout(() => {
+            const responses = [
+                "Weak roast. My grandma spicier than that!",
+                "🔥🔥🔥 DAMN! That was savage!",
+                "Try again when you've got something better",
+                "I've seen better roasts in a vegan restaurant",
+                "Okay, that one hurt a little...",
+                "*standing ovation* 👏👏👏"
+            ];
+            addMessage('RoastMaster', responses[Math.floor(Math.random() * responses.length)], false);
+        }, 1000 + Math.random() * 2000);
+    }
+
+    // ======================
+    // Draggable Mobile Button
+    // ======================
+
+    let isDragging = false;
+    let offsetX, offsetY;
+
+    function setupDrag(element) {
+        // Mouse events
+        element.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', endDrag);
+        
+        // Touch events
+        element.addEventListener('touchstart', startDrag);
+        document.addEventListener('touchmove', drag);
+        document.addEventListener('touchend', endDrag);
+        
+        // Click event (only when not dragging)
+        element.addEventListener('click', function(e) {
+            if (!isDragging) toggleSidebar();
         });
+    }
 
-        document.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                mobileMenuBtn.style.transition = 'all 0.3s';
-            }
+    function startDrag(e) {
+        isDragging = true;
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        
+        const rect = mobileMenuBtn.getBoundingClientRect();
+        offsetX = clientX - rect.left;
+        offsetY = clientY - rect.top;
+        
+        mobileMenuBtn.style.transition = 'none';
+        if (e.cancelable) e.preventDefault();
+    }
+
+    function drag(e) {
+        if (!isDragging) return;
+        
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        
+        const x = clientX - offsetX;
+        const y = clientY - offsetY;
+        
+        const maxX = window.innerWidth - mobileMenuBtn.offsetWidth;
+        const maxY = window.innerHeight - mobileMenuBtn.offsetHeight;
+        
+        mobileMenuBtn.style.left = `${Math.min(Math.max(0, x), maxX)}px`;
+        mobileMenuBtn.style.top = `${Math.min(Math.max(0, y), maxY)}px`;
+        
+        if (e.cancelable) e.preventDefault();
+    }
+
+    function endDrag() {
+        if (isDragging) {
+            isDragging = false;
+            mobileMenuBtn.style.transition = 'all 0.3s';
+        }
+    }
+
+    // ======================
+    // Initialize Everything
+    // ======================
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Setup theme and effects
+        setTheme();
+        createParticles();
+        animateHypeMeter();
+        
+        // Setup event listeners
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
         });
-
-        mobileMenuBtn.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            const touch = e.touches[0];
-            offsetX = touch.clientX - mobileMenuBtn.getBoundingClientRect().left;
-            offsetY = touch.clientY - mobileMenuBtn.getBoundingClientRect().top;
-            mobileMenuBtn.style.transition = 'none';
-            e.preventDefault();
+        
+        closeProfileBtn.addEventListener('click', closeProfile);
+        window.addEventListener('click', (e) => {
+            if (e.target === profileModal) closeProfile();
         });
-
-        document.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            
-            const touch = e.touches[0];
-            const x = touch.clientX - offsetX;
-            const y = touch.clientY - offsetY;
-            
-            const maxX = window.innerWidth - mobileMenuBtn.offsetWidth;
-            const maxY = window.innerHeight - mobileMenuBtn.offsetHeight;
-            
-            mobileMenuBtn.style.left = `${Math.min(Math.max(0, x), maxX)}px`;
-            mobileMenuBtn.style.top = `${Math.min(Math.max(0, y), maxY)}px`;
-            
-            e.preventDefault();
-        });
-
-        document.addEventListener('touchend', () => {
-            if (isDragging) {
-                isDragging = false;
-                mobileMenuBtn.style.transition = 'all 0.3s';
-            }
-        });
-
-        mobileMenuBtn.addEventListener('click', (e) => {
-            if (!isDragging) {
-                toggleSidebar();
-            }
-        });
-
-        // Add click event to all participant elements
+        
+        // Setup participant click events
         participantElements.forEach(participant => {
             participant.addEventListener('click', function() {
                 const name = this.querySelector('.participant-name').textContent;
@@ -1068,60 +933,16 @@
                 openProfile(name, avatar, score);
             });
         });
-
-        // Close modal when clicking outside
-        window.addEventListener('click', (e) => {
-            if (e.target === profileModal) {
-                closeProfile();
-            }
-        });
-
-        // Event listeners
-        sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-
-        closeProfileBtn.addEventListener('click', closeProfile);
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            setTheme();
-            createParticles();
-            animateHypeMeter();
-            updateOnlineCount();
-            showToast(`Welcome to ${document.getElementById('roomTitle').textContent}!`, 2000);
-            
-            // Better touch handling for buttons
-            const buttons = document.querySelectorAll('button');
-            buttons.forEach(button => {
-                button.addEventListener('touchstart', () => {
-                    button.style.transform = 'scale(0.95)';
-                });
-                button.addEventListener('touchend', () => {
-                    button.style.transform = 'scale(1)';
-                });
-            });
-
-            // Prevent keyboard from pushing content up on mobile
-            if (window.innerWidth < 768) {
-                const messageInput = document.getElementById('messageInput');
-                messageInput.addEventListener('focus', () => {
-                    window.scrollTo(0, 0);
-                    document.body.style.height = '100vh';
-                    document.body.style.overflow = 'hidden';
-                });
-                messageInput.addEventListener('blur', () => {
-                    document.body.style.height = '';
-                    document.body.style.overflow = '';
-                });
-            }
-
-            // Simulate initial activity
-            setTimeout(() => {
-                addMessage('System', 'Battle begins in 3... 2... 1... 🔥', false);
-            }, 500);
-        });
-    </script>
-</body>
-</html>
+        
+        // Setup draggable mobile button
+        setupDrag(mobileMenuBtn);
+        
+        // Show welcome message
+        showToast(`Welcome to ${document.getElementById('roomTitle').textContent}!`, 2000);
+        
+        // Simulate initial message
+        setTimeout(() => {
+            addMessage('System', 'Battle begins in 3... 2... 1... 🔥', false);
+        }, 500);
+    });
+</script>
