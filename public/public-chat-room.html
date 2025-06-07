@@ -635,63 +635,46 @@
             input, textarea {
                 font-size: 16px;
             }
-        }
-  <script>
-    // DOM Elements
-    const messageInput = document.getElementById('messageInput');
-    const sendButton = document.getElementById('sendButton');
-    const messageArea = document.getElementById('messageArea');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const participantsSidebar = document.getElementById('participantsSidebar');
+        }<script>
+    <script>
+console.log("Debug: Script loaded");
+document.body.style.backgroundColor = "red"; // Test if script runs
+        
+        console.log("Initializing...");
 
-    // Basic Functions
-    function addMessage(sender, content, isSent = false) {
-        const messageElement = document.createElement('div');
-        messageElement.className = `message ${isSent ? 'sent' : 'received'}`;
-        messageElement.innerHTML = `
-            <div class="message-header">
-                <span class="message-sender">${sender}</span>
-                <span class="message-time">${new Date().toLocaleTimeString()}</span>
-            </div>
-            <div class="message-content">${content}</div>
-        `;
-        messageArea.appendChild(messageElement);
-        messageArea.scrollTop = messageArea.scrollHeight;
-    }
+// 1. Basic Elements
+const messageInput = document.getElementById('messageInput');
+const sendButton = document.getElementById('sendButton');
+const messageArea = document.getElementById('messageArea');
 
-    function sendMessage() {
-        const content = messageInput.value.trim();
-        if (content) {
-            addMessage('You', content, true);
-            messageInput.value = '';
-            
-            // Simulate response
-            setTimeout(() => {
-                const responses = [
-                    "Weak roast!",
-                    "🔥🔥🔥 SAVAGE!",
-                    "Try again!",
-                    "My grandma roasts better!",
-                    "Ouch! That hurt!",
-                    "👏👏👏"
-                ];
-                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                addMessage('RoastMaster', randomResponse, false);
-            }, 1000);
-        }
-    }
+// 2. Core Functionality
+function sendMessage() {
+    const text = messageInput.value.trim();
+    if (!text) return;
+    
+    const message = document.createElement('div');
+    message.className = 'message sent';
+    message.innerHTML = `
+        <div class="message-sender">You</div>
+        <div class="message-content">${text}</div>
+    `;
+    messageArea.appendChild(message);
+    messageInput.value = '';
+}
 
-    // Event Listeners
-    sendButton.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
+// 3. Event Listeners
+sendButton.addEventListener('click', sendMessage);
+messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+});
 
-    mobileMenuBtn.addEventListener('click', () => {
-        participantsSidebar.classList.toggle('active');
-    });
-
-    // Initial Messages
-    addMessage('System', 'Welcome to the roast battle!', false);
-    addMessage('RoastMaster', 'Drop your sickest roast!', false);
-</script>
+console.log("Setup complete");
+<style>
+/* Force show elements */
+body { display: block !important; background: #1a1a1a !important; }
+#messageArea, #messageInput, #sendButton { 
+    display: block !important;
+    position: relative !important;
+    opacity: 1 !important;
+}
+</style>
