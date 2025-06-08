@@ -376,7 +376,7 @@
       background: var(--cyan);
     }
   </style>
-</head>
+  </head>
 <body>
 
   <div id="header">
@@ -419,6 +419,26 @@
   </div>
 
   <script>
+    // ===== AUTO THEME DETECTION ===== //
+function detectThemeFromName() {
+  const roomTitle = document.getElementById('roomTitle').textContent.toLowerCase();
+  
+  if (roomTitle.includes('#gaming') || roomTitle.includes('game')) {
+    return 'gaming';
+  } else if (roomTitle.includes('#meme') || roomTitle.includes('meme')) {
+    return 'meme';
+  } else if (roomTitle.includes('#anime') || roomTitle.includes('anime')) {
+    return 'anime';
+  } else if (roomTitle.includes('#dev') || roomTitle.includes('code') || roomTitle.includes('programming')) {
+    return 'dev';
+  } else {
+    return 'roast'; // Default theme
+  }
+}
+
+// Set theme automatically when page loads
+setRoomTheme(detectThemeFromName());
+    
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
     const messageArea = document.getElementById('messageArea');
