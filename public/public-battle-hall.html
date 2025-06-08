@@ -543,18 +543,7 @@
                     <option value="public">Public (Anyone can join)</option>
                     <option value="private">Private (Invite only)</option>
                     <option value="pro">Pro Battle (Verified users only)</option>
-                    <!-- ADD THIS RIGHT HERE 👇 -->
-<div class="form-group">
-    <label><i class="fas fa-paint-brush"></i> Room Theme</label>
-    <select id="roomTheme" required>
-        <option value="roast">🔥 Roast Battle</option>
-        <option value="gaming">🎮 Gaming</option>
-        <option value="anime">🌸 Anime</option>
-        <option value="meme">😂 Meme War</option>
-        <option value="dev">👨‍💻 Dev Roast</option>
-        <option value="music">🎵 Music</option>
-    </select>
-</div>                
+                </select>
             </div>
             <button class="btn btn-create" onclick="createRoom()"><i class="fas fa-bolt"></i> CREATE ROOM</button>
         </div>
@@ -653,18 +642,11 @@
         }
         
         // Create room function
-       function createRoom() {
-    const name = document.getElementById('roomName').value.trim();
-    const theme = document.getElementById('roomTheme').value;
-    
-    if (!name) {
-        showToast("Room name is required!");
-        return;
-    }
-    
-    // Redirect to chat room with theme
-    window.location.href = `public-chat-room.html?room=${encodeURIComponent(name)}&theme=${theme}`;
-}
+        function createRoom() {
+            const name = document.getElementById('roomName').value.trim();
+            const desc = document.getElementById('roomDesc').value.trim();
+            const roomType = document.getElementById('roomType').value;
+            
             if (!name) {
                 showToast("Room name is required!");
                 return;
