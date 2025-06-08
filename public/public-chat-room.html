@@ -593,11 +593,23 @@ let currentMessageId = 0;
     // };
 
     // Detect room theme from URL or title
-    function detectRoomTheme() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const theme = urlParams.get('theme') || 'roast';
-      setRoomTheme(theme);
-    }
+   function detectRoomTheme() {
+  const urlParams = new URLSearchParams(window.location.search);
+  let theme = urlParams.get('theme');
+  
+  // If no theme in URL, check room name for clues
+  if (!theme) {
+    const roomName = urlParams.get('room') || '';
+    if (roomName.includes('gaming')) theme = 'gaming';
+    else if (roomName.includes('anime')) theme = 'anime';
+    else if (roomName.includes('meme')) theme = 'meme';
+    else if (roomName.includes('dev')) theme = 'dev';
+    else if (roomName.includes('music')) theme = 'music';
+    else theme = 'roast';
+  }
+  
+  setRoomTheme(theme);
+}
 
     // Set room theme and background animation
     function setRoomTheme(theme) {
