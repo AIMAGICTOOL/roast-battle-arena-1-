@@ -616,17 +616,14 @@
         msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
         
         // Add reaction buttons to user messages
-        const reactions = document.createElement('div');
-        reactions.className = 'message-reactions';
-        reactions.innerHTML = `
-          <div class="reaction-btn fire" onclick="addReaction(this, '${sender}')">
-            <i class="fas fa-fire reaction-icon"></i>
-            <span class="reaction-count">0</span>
-          </div>
-          <div class="reaction-btn ice" onclick="addReaction(this, '${sender}')">
-            <i class="fas fa-snowflake reaction-icon"></i>
-            <span class="reaction-count">0</span>
-          </div>
+           reactions.innerHTML = `
+      <div class="reaction-btn ice" onclick="addReaction(this, '${sender}')">
+        <span class="reaction-count">0</span> ❄️
+      </div>
+      <div class="reaction-btn fire" onclick="addReaction(this, '${sender}')">
+        <span class="reaction-count">0</span> 🔥
+      </div>
+
         `;
         msg.appendChild(reactions);
       }
@@ -714,7 +711,7 @@
 
     // Initialize
     detectRoomTheme();
-    addMessage('System', '🔥 Welcome to the roast battle!', 'system');
+    addMessage('System', '<div style="text-align: center;">🔥 Welcome to the roast battle!</div>', 'system');
     updateHype();
   </script>
 </body>
