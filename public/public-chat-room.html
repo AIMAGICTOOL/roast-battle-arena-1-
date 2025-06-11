@@ -195,7 +195,7 @@
     .message.you { float: right; border-right: 3px solid var(--cyan); text-align: right; }
     .message.system { text-align: center; background: transparent; color: var(--secondary); box-shadow: none; }
 
-    /* Message Reactions */
+    /* Enhanced Message Reactions */
     .message-reactions {
       display: flex;
       gap: 10px;
@@ -214,6 +214,8 @@
       cursor: pointer;
       transition: all 0.2s;
       font-size: 0.9rem;
+      position: relative;
+      overflow: hidden;
     }
 
     .reaction-btn:hover {
@@ -250,6 +252,7 @@
 
     .reaction-count {
       font-weight: bold;
+      transition: all 0.3s;
     }
 
     .fire .reaction-count {
@@ -258,6 +261,80 @@
 
     .ice .reaction-count {
       color: #00ccff;
+    }
+
+    /* New Reaction Animations */
+    @keyframes firePop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes iceShake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 5px currentColor; }
+      50% { box-shadow: 0 0 15px currentColor; }
+      100% { box-shadow: 0 0 5px currentColor; }
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-30px) scale(1.5); opacity: 0; }
+    }
+
+    .reaction-btn.fire.active {
+      animation: firePop 0.4s ease, pulseGlow 1.5s infinite;
+    }
+
+    .reaction-btn.ice.active {
+      animation: iceShake 0.4s ease, pulseGlow 1.5s infinite;
+    }
+
+    .reaction-sparkle {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .fire .reaction-sparkle {
+      background: radial-gradient(circle, rgba(255,85,0,0.8) 0%, transparent 70%);
+    }
+
+    .ice .reaction-sparkle {
+      background: radial-gradient(circle, rgba(0,204,255,0.8) 0%, transparent 70%);
+    }
+
+    .reaction-particle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 10;
+      font-size: 1.2rem;
+      animation: floatUp 1s ease-out forwards;
+    }
+
+    /* Notification styles */
+    .reaction-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--purple);
+      padding: 10px 15px;
+      border-radius: 5px;
+      animation: fadeSlide 0.3s ease;
+      z-index: 1000;
+    }
+
+    .reaction-notification.fade-out {
+      animation: fadeSlide 0.3s ease reverse;
     }
 
     #inputArea {
@@ -473,6 +550,14 @@
     const roomTitle = document.getElementById('roomTitle');
     let messageCount = 0;
     let currentTheme = 'roast'; // Default theme
+    let hasReacted = false;
+    let currentMessageId = 0;
+
+    // Uncomment to enable sound effects (requires sound files)
+    // const reactionSounds = {
+    //   fire: new Audio('fire-sound.mp3'),
+    //   ice: new Audio('ice-sound.mp3')
+    // };
 
     // Detect room theme from URL or title
     function detectRoomTheme() {
@@ -607,6 +692,7 @@
     function addMessage(sender, text, type = 'user') {
       const msg = document.createElement('div');
       msg.className = 'message';
+      currentMessageId++;
 
       if (type === 'system') {
         msg.classList.add('system');
@@ -614,16 +700,17 @@
       } else {
         msg.classList.add(sender === 'You' ? 'you' : 'opponent');
         msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
+        msg.dataset.messageId = currentMessageId;
         
         // Add reaction buttons to user messages
         const reactions = document.createElement('div');
         reactions.className = 'message-reactions';
         reactions.innerHTML = `
-          <div class="reaction-btn fire" onclick="addReaction(this, '${sender}')">
+          <div class="reaction-btn fire" onclick="addReaction(this, '${sender}', ${currentMessageId})">
             <i class="fas fa-fire reaction-icon"></i>
             <span class="reaction-count">0</span>
           </div>
-          <div class="reaction-btn ice" onclick="addReaction(this, '${sender}')">
+          <div class="reaction-btn ice" onclick="addReaction(this, '${sender}', ${currentMessageId})">
             <i class="fas fa-snowflake reaction-icon"></i>
             <span class="reaction-count">0</span>
           </div>
@@ -638,22 +725,105 @@
         messageCount++;
         updateHype();
       }
+
+      // Reset reaction state for new messages
+      hasReacted = false;
+      document.querySelectorAll('.reaction-btn').forEach(btn => {
+        btn.style.pointerEvents = 'auto';
+        btn.style.opacity = '1';
+      });
     }
 
-    function addReaction(button, sender) {
+    function addReaction(button, sender, messageId) {
+      // Check if user already reacted to this message
+      if (localStorage.getItem(`reacted_${messageId}`)) {
+        showNotification('You can only react once per message!');
+        return;
+      }
+
+      // Mark this message as reacted to
+      localStorage.setItem(`reacted_${messageId}`, 'true');
+
       const countElement = button.querySelector('.reaction-count');
       let count = parseInt(countElement.textContent);
       count++;
       countElement.textContent = count;
       
-      // Add visual effect
-      if (button.classList.contains('fire')) {
-        button.style.boxShadow = '0 0 10px #ff5500';
-        setTimeout(() => button.style.boxShadow = 'none', 300);
-      } else {
-        button.style.boxShadow = '0 0 10px #00ccff';
-        setTimeout(() => button.style.boxShadow = 'none', 300);
+      // Add active class for animations
+      button.classList.add('active');
+      
+      // Add sparkle effect
+      const sparkle = document.createElement('div');
+      sparkle.className = 'reaction-sparkle';
+      button.appendChild(sparkle);
+      
+      // Create particles
+      createReactionParticles(button, button.classList.contains('fire') ? 'fire' : 'ice');
+      
+      // Play sound (uncomment if you have sound files)
+      // const soundType = button.classList.contains('fire') ? 'fire' : 'ice';
+      // reactionSounds[soundType].currentTime = 0;
+      // reactionSounds[soundType].play();
+      
+      // Remove sparkle after animation
+      setTimeout(() => {
+        sparkle.style.opacity = '0';
+        sparkle.style.transition = 'opacity 0.3s';
+        setTimeout(() => sparkle.remove(), 300);
+      }, 500);
+      
+      // Remove active class after animation
+      setTimeout(() => {
+        button.classList.remove('active');
+      }, 1500);
+      
+      // Disable all reaction buttons for this message after reacting
+      const messageElement = document.querySelector(`.message[data-message-id="${messageId}"]`);
+      if (messageElement) {
+        messageElement.querySelectorAll('.reaction-btn').forEach(btn => {
+          btn.style.pointerEvents = 'none';
+          btn.style.opacity = '0.7';
+        });
       }
+    }
+
+    function createReactionParticles(button, type) {
+      const colors = type === 'fire' ? ['#ff5500', '#ff9900', '#ff3300'] : ['#00ccff', '#00ffff', '#0099ff'];
+      const emojis = type === 'fire' ? ['🔥', '✨', '⭐'] : ['❄️', '💎', '🌨️'];
+      
+      for (let i = 0; i < 5; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'reaction-particle';
+        particle.textContent = Math.random() > 0.5 ? emojis[Math.floor(Math.random() * emojis.length)] : '+1';
+        particle.style.color = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Position at the button
+        const rect = button.getBoundingClientRect();
+        particle.style.left = `${rect.left + rect.width/2 - 10}px`;
+        particle.style.top = `${rect.top}px`;
+        
+        // Random horizontal movement
+        particle.style.setProperty('--x-end', `${(Math.random() - 0.5) * 100}px`);
+        
+        document.body.appendChild(particle);
+        
+        // Remove after animation
+        setTimeout(() => {
+          particle.remove();
+        }, 1000);
+      }
+    }
+
+    function showNotification(text) {
+      const notification = document.createElement('div');
+      notification.className = 'reaction-notification';
+      notification.textContent = text;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
     }
 
     function updateHype() {
