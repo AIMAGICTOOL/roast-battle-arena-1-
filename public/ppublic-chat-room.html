@@ -567,10 +567,11 @@ let currentMessageId = 0;
     // };
 
     // Detect room theme from URL or title
-    function detectRoomTheme() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const theme = urlParams.get('theme') || 'roast';
-      setRoomTheme(theme);
+   function detectRoomTheme() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'roast';
+    setRoomTheme(theme);
+}
     }
 
     // Set room theme and background animation
@@ -587,7 +588,9 @@ let currentMessageId = 0;
         meme: { emoji: '😂', name: 'Meme War' },
         anime: { emoji: '🌸', name: 'Anime Showdown' },
         dev: { emoji: '👨‍💻', name: 'Dev Roast' }
-      };
+        music: { emoji: '🎵', name: 'Music Battle' }
+    
+  };
       
       const themeData = themes[currentTheme] || themes.roast;
       roomTitle.innerHTML = `${themeData.emoji} ${themeData.name}`;
