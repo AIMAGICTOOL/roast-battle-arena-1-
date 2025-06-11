@@ -550,7 +550,7 @@
     const roomTitle = document.getElementById('roomTitle');
     let messageCount = 0;
     let currentTheme = 'roast'; // Default theme
-    let hasReacted = false;
+   let reactedMessages = {};  // ← NEW TRACKING SYSTEM
     let currentMessageId = 0;
 
     // Uncomment to enable sound effects (requires sound files)
@@ -742,7 +742,7 @@
       }
 
       // Mark this message as reacted to
-      localStorage.setItem(`reacted_${messageId}`, 'true');
+     
 
       const countElement = button.querySelector('.reaction-count');
       let count = parseInt(countElement.textContent);
