@@ -193,16 +193,8 @@
     .message strong { color: var(--cyan); }
     .message.opponent { float: left; border-left: 3px solid var(--purple); }
     .message.you { float: right; border-right: 3px solid var(--cyan); text-align: right; }
-   .message.system {
-  text-align: center;
-  background: transparent;
-  color: var(--secondary);
-  box-shadow: none;
-  margin: 0 auto; /* Add this line */
-  float: none; /* Add this line */
-  max-width: 100%; /* Add this line */
-  padding: 12px 0; /* Adjust padding */
-}
+    .message.system { text-align: center; background: transparent; color: var(--secondary); box-shadow: none; }
+
     /* Enhanced Message Reactions */
     .message-reactions {
       display: flex;
@@ -556,10 +548,11 @@
     const closeSidebarBtn = document.getElementById('closeSidebarBtn');
     const hypeButton = document.getElementById('hypeButton');
     const roomTitle = document.getElementById('roomTitle');
-   let messageCount = 0;
-let currentTheme = 'roast';
-let reactedMessages = {};  // ← NEW TRACKING SYSTEM
-let currentMessageId = 0;
+    let messageCount = 0;
+    let currentTheme = 'roast'; // Default theme
+    let hasReacted = false;
+    let currentMessageId = 0;
+
     // Uncomment to enable sound effects (requires sound files)
     // const reactionSounds = {
     //   fire: new Audio('fire-sound.mp3'),
@@ -567,12 +560,11 @@ let currentMessageId = 0;
     // };
 
     // Detect room theme from URL or title
-  function detectRoomTheme() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const theme = urlParams.get('theme') || 'roast'; // Fallback to 'roast'
-    setRoomTheme(theme); // Apply animations
-}
-    
+    function detectRoomTheme() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const theme = urlParams.get('theme') || 'roast';
+      setRoomTheme(theme);
+    }
 
     // Set room theme and background animation
     function setRoomTheme(theme) {
@@ -588,9 +580,7 @@ let currentMessageId = 0;
         meme: { emoji: '😂', name: 'Meme War' },
         anime: { emoji: '🌸', name: 'Anime Showdown' },
         dev: { emoji: '👨‍💻', name: 'Dev Roast' }
-        music: { emoji: '🎵', name: 'Music Battle' }
-    
-  };
+      };
       
       const themeData = themes[currentTheme] || themes.roast;
       roomTitle.innerHTML = `${themeData.emoji} ${themeData.name}`;
@@ -746,13 +736,13 @@ let currentMessageId = 0;
 
     function addReaction(button, sender, messageId) {
       // Check if user already reacted to this message
-     if (localStorage.getItem(`reacted_${messageId}`)) {
-       showNotification('You can only react once per message!');
+      if (localStorage.getItem(`reacted_${messageId}`)) {
+        showNotification('You can only react once per message!');
         return;
       }
 
       // Mark this message as reacted to
-     
+      localStorage.setItem(`reacted_${messageId}`, 'true');
 
       const countElement = button.querySelector('.reaction-count');
       let count = parseInt(countElement.textContent);
