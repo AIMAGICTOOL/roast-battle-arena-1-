@@ -469,7 +469,7 @@
         
         <div class="room-grid" id="roomGrid">
             <!-- Room cards will be loaded here -->
-            <div class="room-card" onclick="joinRoom('epic-memes')" data-tags="memes trending">
+            <div class="room-card" onclick="joinRoom('epic-memes', 'meme')" data-tags="memes trending">
                 <h3>🔥 EPIC MEME SHOWDOWN <span class="badge trending">TRENDING</span> <span class="badge hot">HOT</span></h3>
                 <p>Only the dankest roasts allowed. Winner gets eternal meme glory!</p>
                 <div class="room-meta">
@@ -482,7 +482,7 @@
                 </div>
             </div>
             
-            <div class="room-card" onclick="joinRoom('dev-roast')" data-tags="new tech">
+            <div class="room-card" onclick="joinRoom('dev-roast', 'dev')" data-tags="new tech">
                 <h3>💻 DEV ROAST BATTLE <span class="badge new">NEW</span></h3>
                 <p>Roast bad code and bad coders. May the best debugger win!</p>
                 <div class="room-meta">
@@ -538,6 +538,17 @@
                 </div>
             </div>
             <div class="form-group">
+                <label><i class="fas fa-paint-brush"></i> Room Theme</label>
+                <select id="roomTheme">
+                    <option value="roast">🔥 Roast Battle</option>
+                    <option value="gaming">🎮 Gaming</option>
+                    <option value="anime">🌸 Anime</option>
+                    <option value="meme">😂 Meme War</option>
+                    <option value="dev">👨‍💻 Dev Roast</option>
+                    <option value="music">🎵 Music</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label><i class="fas fa-lock"></i> Room Type</label>
                 <select id="roomType">
                     <option value="public">Public (Anyone can join)</option>
@@ -575,14 +586,13 @@
             btn.classList.toggle('selected');
         }
         
-        // Room joining
-       function joinRoom(roomId) {
-    showToast(`Entering ${roomId}...`);
-    setTimeout(() => {
-        window.location.href = `public-chat-room.html?room=${roomId}`;
-    }, 1000);
-}
-
+        // Room joining with theme parameter
+        function joinRoom(roomId, theme) {
+            showToast(`Entering ${roomId}...`);
+            setTimeout(() => {
+                window.location.href = `public-chat-room.html?room=${roomId}&theme=${theme}`;
+            }, 1000);
+        }
         
         // Search functionality
         function searchRooms() {
@@ -646,6 +656,7 @@
             const name = document.getElementById('roomName').value.trim();
             const desc = document.getElementById('roomDesc').value.trim();
             const roomType = document.getElementById('roomType').value;
+            const roomTheme = document.getElementById('roomTheme').value;
             
             if (!name) {
                 showToast("Room name is required!");
@@ -660,7 +671,7 @@
             
             // Create new room card
             const roomHTML = `
-                <div class="room-card" data-tags="${selectedTags.join(' ')}" onclick="joinRoom('${name.toLowerCase().replace(/\s+/g, '-')}')">
+                <div class="room-card" data-tags="${selectedTags.join(' ')}" onclick="joinRoom('${name.toLowerCase().replace(/\s+/g, '-')}', '${roomTheme}')">
                     <h3>${name.toUpperCase()}
                         ${selectedTags.includes('#nsfw') ? '<span class="badge nsfw">NSFW</span>' : ''}
                         <span class="badge new">NEW</span>
@@ -692,6 +703,7 @@
                 tag.classList.remove('selected');
             });
             document.getElementById('roomType').value = 'public';
+            document.getElementById('roomTheme').value = 'roast';
         }
         
         // Simulate loading rooms
