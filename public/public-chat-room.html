@@ -73,56 +73,11 @@
     }
 
     /* Anime Animation */
-   /* Enhanced Anime Room Effects */
-.bg-particle.anime {
-  background: linear-gradient(45deg, #ff00aa, #00aaff);
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  animation: animeBeat 1.5s ease infinite, animeFloat 8s linear infinite;
-}
-
-/* Naruto Run Chibi Characters */
-.chibi-naruto {
-  position: fixed;
-  width: 80px;
-  height: 80px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="30" r="20" fill="%23FFC0CB"/><path d="M30,20 Q50,0 70,20 L65,50 Q50,40 35,50 Z" fill="%23FFA500"/><path d="M30,15 Q50,-10 70,15 L70,25 Q50,5 30,25 Z" fill="%23FF0000"/><path d="M50,50 L50,80 L40,90 L60,90 Z" fill="%23FF69B4"/></svg>');
-  background-size: contain;
-  background-repeat: no-repeat;
-  animation: narutoRun 15s linear infinite;
-  z-index: -1;
-}
-
-/* Sharingan Eyes */
-.sharingan {
-  position: fixed;
-  width: 60px;
-  height: 60px;
-  background: radial-gradient(circle, #ff0000 30%, #000 30%);
-  border-radius: 50%;
-  box-shadow: 0 0 20px #ff0000;
-  animation: sharinganSpin 4s linear infinite, sharinganPulse 2s infinite;
-}
-
-/* Keyframes */
-@keyframes narutoRun {
-  0% { transform: translateX(-100px) translateY(50vh) scaleX(-1); }
-  100% { transform: translateX(calc(100vw + 100px)) translateY(50vh) scaleX(-1); }
-}
-
-@keyframes sharinganSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes sharinganPulse {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
-}
-
-@keyframes chibiFloat {
-  0%, 100% { transform: translateY(0) rotate(-5deg); }
-  50% { transform: translateY(-20px) rotate(5deg); }
-}
+    .bg-particle.anime {
+      background: linear-gradient(45deg, #ff00aa, #00aaff);
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      animation: animeBeat 1.5s ease infinite;
+    }
 
     @keyframes animeBeat {
       0%, 100% { transform: scale(1); }
