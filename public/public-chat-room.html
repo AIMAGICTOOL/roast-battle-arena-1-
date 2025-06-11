@@ -697,7 +697,7 @@ let reactedMessages = new Set(); // 👈 ADD THIS LINE HERE
 
       if (type === 'system') {
         msg.classList.add('system');
-        msg.textContent = text;
+         msg.style.textAlign = 'center'; // 👈 ADD THIS LINE       
       } else {
         msg.classList.add(sender === 'You' ? 'you' : 'opponent');
         msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
