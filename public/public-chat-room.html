@@ -97,6 +97,18 @@
       100% { transform: scale(0.8); opacity: 0.5; }
     }
 
+    /* Music Animation */
+    .bg-particle.music {
+      background: linear-gradient(90deg, #ff00aa, #aa00ff, #00aaff);
+      height: 5px;
+      animation: musicWave 2s ease infinite;
+    }
+
+    @keyframes musicWave {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(5); }
+    }
+
     #header {
       background: var(--card);
       padding: 15px 20px;
@@ -192,66 +204,59 @@
 
     .message strong { color: var(--cyan); }
   
-/* Your messages - RIGHT side */
-.message.you {
-  float: right;
-  clear: both;
-  border-right: 3px solid var(--cyan);
-  text-align: right;
-  margin-left: auto;
-  margin-bottom: 12px;
-  width: fit-content;
-  max-width: 80%;
-}
+    /* Your messages - RIGHT side */
+    .message.you {
+      float: right;
+      clear: both;
+      border-right: 3px solid var(--cyan);
+      text-align: right;
+      margin-left: auto;
+      margin-bottom: 12px;
+      width: fit-content;
+      max-width: 80%;
+    }
 
-/* Opponent messages - LEFT side */
-.message.opponent {
-  float: left;
-  clear: both;
-  border-left: 3px solid var(--purple);
-  text-align: left;
-  margin-right: auto;
-  margin-bottom: 12px;
-  width: fit-content;
-  max-width: 80%;
-}
+    /* Opponent messages - LEFT side */
+    .message.opponent {
+      float: left;
+      clear: both;
+      border-left: 3px solid var(--purple);
+      text-align: left;
+      margin-right: auto;
+      margin-bottom: 12px;
+      width: fit-content;
+      max-width: 80%;
+    }
 
-/* Fix reaction buttons */
-.message.you .message-reactions {
-  float: right;
-}
-.message.opponent .message-reactions {
-  float: left;
-}
-.message.system {
-  text-align: center;
-  background: transparent;
-  color: var(--secondary);
-  box-shadow: none;
-  margin: 0 auto; /* Add this line */
-  float: none; /* Add this line */
-  max-width: 100%; /* Add this line */
-  padding: 12px 0; /* Adjust padding */
-}
-
+    /* System messages */
+    .message.system {
+      text-align: center;
+      background: transparent;
+      color: var(--secondary);
+      box-shadow: none;
+      margin: 0 auto;
+      float: none;
+      max-width: 100%;
+      padding: 12px 0;
+    }
    
-    /* Enhanced Message Reactions */
-   .message-reactions {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-  user-select: none;
-  clear: both;
-  width: 100%;
-}
+    /* Message reactions */
+    .message-reactions {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+      user-select: none;
+      clear: both;
+      width: 100%;
+    }
 
-.message.you .message-reactions {
-  justify-content: flex-end;
-}
+    .message.you .message-reactions {
+      justify-content: flex-end;
+    }
 
-.message.opponent .message-reactions {
-  justify-content: flex-start;
-}
+    .message.opponent .message-reactions {
+      justify-content: flex-start;
+    }
 
     .reaction-btn {
       display: flex;
@@ -599,14 +604,8 @@
     const roomTitle = document.getElementById('roomTitle');
     let messageCount = 0;
     let currentTheme = 'roast'; // Default theme
-   let reactedMessages = {};  // ← NEW TRACKING SYSTEM
+    let reactedMessages = {};  // ← NEW TRACKING SYSTEM
     let currentMessageId = 0;
-
-    // Uncomment to enable sound effects (requires sound files)
-    // const reactionSounds = {
-    //   fire: new Audio('fire-sound.mp3'),
-    //   ice: new Audio('ice-sound.mp3')
-    // };
 
     // Detect room theme from URL or title
     function detectRoomTheme() {
@@ -628,7 +627,8 @@
         gaming: { emoji: '🎮', name: 'Gaming Battle' },
         meme: { emoji: '😂', name: 'Meme War' },
         anime: { emoji: '🌸', name: 'Anime Showdown' },
-        dev: { emoji: '👨‍💻', name: 'Dev Roast' }
+        dev: { emoji: '👨‍💻', name: 'Dev Roast' },
+        music: { emoji: '🎵', name: 'Music Battle' }
       };
       
       const themeData = themes[currentTheme] || themes.roast;
@@ -662,6 +662,9 @@
           particle.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
         } else if (theme === 'anime') {
           particle.style.opacity = Math.random() * 0.5 + 0.3;
+        } else if (theme === 'music') {
+          particle.style.width = `${Math.random() * 100 + 50}px`;
+          particle.style.height = '5px';
         }
         
         document.body.appendChild(particle);
@@ -674,6 +677,8 @@
         createEmojiRain();
       } else if (theme === 'dev') {
         createCodeMatrix();
+      } else if (theme === 'music') {
+        createMusicBars();
       }
     }
 
@@ -727,6 +732,20 @@
         code.textContent = chars[Math.floor(Math.random() * chars.length)];
         code.style.animation = `devPulse ${Math.random() * 3 + 1}s linear infinite`;
         document.body.appendChild(code);
+      }
+    }
+
+    // Special effect for music theme
+    function createMusicBars() {
+      for (let i = 0; i < 20; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'bg-particle music';
+        bar.style.width = `${Math.random() * 100 + 50}px`;
+        bar.style.left = `${Math.random() * 100}%`;
+        bar.style.top = `${Math.random() * 100}%`;
+        bar.style.animationDelay = `${Math.random() * 2}s`;
+        bar.style.animationDuration = `${Math.random() * 1 + 0.5}s`;
+        document.body.appendChild(bar);
       }
     }
 
@@ -784,17 +803,14 @@
     }
 
     function addReaction(button, sender, messageId) {
-  // Check if already reacted to this message
-  if (reactedMessages[messageId]) {
-    showNotification('You can only react once per message!');
-    return;
-  }
-  
-  // Mark as reacted
-  reactedMessages[messageId] = true;
-
-      // Mark this message as reacted to
-     
+      // Check if already reacted to this message
+      if (reactedMessages[messageId]) {
+        showNotification('You can only react once per message!');
+        return;
+      }
+      
+      // Mark as reacted
+      reactedMessages[messageId] = true;
 
       const countElement = button.querySelector('.reaction-count');
       let count = parseInt(countElement.textContent);
@@ -811,11 +827,6 @@
       
       // Create particles
       createReactionParticles(button, button.classList.contains('fire') ? 'fire' : 'ice');
-      
-      // Play sound (uncomment if you have sound files)
-      // const soundType = button.classList.contains('fire') ? 'fire' : 'ice';
-      // reactionSounds[soundType].currentTime = 0;
-      // reactionSounds[soundType].play();
       
       // Remove sparkle after animation
       setTimeout(() => {
@@ -903,7 +914,8 @@
             gaming: ["🎮 GG!", "1v1 me!", "Noob!", "Pro move!", "Lag!", "Hax!"],
             meme: ["😂 Ded!", "👌 Gold!", "💀 I'm dead!", "🤣 Too good!", "🙄 Ok boomer!", "👀 Sus!"],
             anime: ["🌸 Kawaii!", "💢 Nani?!", "👊 Ora ora ora!", "💔 YAMERO!", "👑 Baka!", "💖 Senpai noticed!"],
-            dev: ["💻 Syntax error!", "🚀 Merged!", "🐛 Bug found!", "⚡ Optimized!", "🤓 Actually...", "📦 npm install roast"]
+            dev: ["💻 Syntax error!", "🚀 Merged!", "🐛 Bug found!", "⚡ Optimized!", "🤓 Actually...", "📦 npm install roast"],
+            music: ["🎵 Fire beats!", "🔥 Drop the bass!", "🎶 Encore!", "👎 Off key!", "🎤 Mic drop!", "🎧 Sick tune!"]
           };
           
           const themeReplies = replies[currentTheme] || replies.roast;
