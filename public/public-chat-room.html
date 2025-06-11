@@ -735,11 +735,14 @@
     }
 
     function addReaction(button, sender, messageId) {
-      // Check if user already reacted to this message
-      if (localStorage.getItem(`reacted_${messageId}`)) {
-        showNotification('You can only react once per message!');
-        return;
-      }
+  // Check if already reacted to this message
+  if (reactedMessages[messageId]) {
+    showNotification('You can only react once per message!');
+    return;
+  }
+  
+  // Mark as reacted
+  reactedMessages[messageId] = true;
 
       // Mark this message as reacted to
      
