@@ -191,18 +191,67 @@
     }
 
     .message strong { color: var(--cyan); }
-    .message.opponent { float: left; border-left: 3px solid var(--purple); }
-    .message.you { float: right; border-right: 3px solid var(--cyan); text-align: right; }
-    .message.system { text-align: center; background: transparent; color: var(--secondary); box-shadow: none; }
+  
+/* Your messages - RIGHT side */
+.message.you {
+  float: right;
+  clear: both;
+  border-right: 3px solid var(--cyan);
+  text-align: right;
+  margin-left: auto;
+  margin-bottom: 12px;
+  width: fit-content;
+  max-width: 80%;
+}
 
+/* Opponent messages - LEFT side */
+.message.opponent {
+  float: left;
+  clear: both;
+  border-left: 3px solid var(--purple);
+  text-align: left;
+  margin-right: auto;
+  margin-bottom: 12px;
+  width: fit-content;
+  max-width: 80%;
+}
+
+/* Fix reaction buttons */
+.message.you .message-reactions {
+  float: right;
+}
+.message.opponent .message-reactions {
+  float: left;
+}
+.message.system {
+  text-align: center;
+  background: transparent;
+  color: var(--secondary);
+  box-shadow: none;
+  margin: 0 auto; /* Add this line */
+  float: none; /* Add this line */
+  max-width: 100%; /* Add this line */
+  padding: 12px 0; /* Adjust padding */
+}
+
+   
     /* Enhanced Message Reactions */
-    .message-reactions {
-      display: flex;
-      gap: 10px;
-      margin-top: 8px;
-      user-select: none;
-      clear: both;
-    }
+   .message-reactions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  user-select: none;
+  clear: both;
+  width: 100%;
+}
+
+.message.you .message-reactions {
+  justify-content: flex-end;
+}
+
+.message.opponent .message-reactions {
+  justify-content: flex-start;
+}
 
     .reaction-btn {
       display: flex;
