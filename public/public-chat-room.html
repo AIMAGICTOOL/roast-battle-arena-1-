@@ -193,22 +193,8 @@
     .message strong { color: var(--cyan); }
     .message.opponent { float: left; border-left: 3px solid var(--purple); }
     .message.you { float: right; border-right: 3px solid var(--cyan); text-align: right; }
-    .message.system {
-  text-align: center;
-  background: transparent;
-  color: var(--secondary);
-  box-shadow: none;
-  margin: 0 auto; /* Add this line */
-  float: none; /* Add this line */
-  max-width: 100%; /* Add this line */
-  padding: 12px 0; /* Adjust padding */
-}
-#messageArea {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* This will center all system messages */
-}
-    
+    .message.system { text-align: center; background: transparent; color: var(--secondary); box-shadow: none; }
+
     /* Enhanced Message Reactions */
     .message-reactions {
       display: flex;
