@@ -540,18 +540,19 @@
   </div>
 
   <script>
-    const messageInput = document.getElementById('messageInput');
-    const sendButton = document.getElementById('sendButton');
+  const messageInput = document.getElementById('messageInput');
+const sendButton = document.getElementById('sendButton');
     const messageArea = document.getElementById('messageArea');
     const toggleSidebar = document.getElementById('toggleSidebar');
     const sidebar = document.getElementById('sidebar');
     const closeSidebarBtn = document.getElementById('closeSidebarBtn');
     const hypeButton = document.getElementById('hypeButton');
     const roomTitle = document.getElementById('roomTitle');
-    let messageCount = 0;
-    let currentTheme = 'roast'; // Default theme
-    let hasReacted = false;
-    let currentMessageId = 0;
+   let messageCount = 0;
+let currentTheme = 'roast';
+let hasReacted = false;
+let currentMessageId = 0;
+let reactedMessages = new Set(); // 👈 ADD THIS LINE HERE
 
     // Uncomment to enable sound effects (requires sound files)
     // const reactionSounds = {
@@ -736,10 +737,10 @@
 
     function addReaction(button, sender, messageId) {
       // Check if user already reacted to this message
-      if (localStorage.getItem(`reacted_${messageId}`)) {
-        showNotification('You can only react once per message!');
-        return;
-      }
+      if (reactedMessages.has(messageId)) {
+    showNotification('You can only react once per message!');
+    return;
+  }
 
       // Mark this message as reacted to
       localStorage.setItem(`reacted_${messageId}`, 'true');
