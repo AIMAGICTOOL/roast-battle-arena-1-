@@ -548,11 +548,11 @@
     const closeSidebarBtn = document.getElementById('closeSidebarBtn');
     const hypeButton = document.getElementById('hypeButton');
     const roomTitle = document.getElementById('roomTitle');
-   let messageCount = 0;
-let currentTheme = 'roast';
-let reactedMessages = {};  // ← NEW TRACKING SYSTEM
-let currentMessageId = 0;
-    
+    let messageCount = 0;
+    let currentTheme = 'roast'; // Default theme
+    let hasReacted = false;
+    let currentMessageId = 0;
+
     // Uncomment to enable sound effects (requires sound files)
     // const reactionSounds = {
     //   fire: new Audio('fire-sound.mp3'),
@@ -742,7 +742,8 @@ let currentMessageId = 0;
       }
 
       // Mark this message as reacted to
-      
+      localStorage.setItem(`reacted_${messageId}`, 'true');
+
       const countElement = button.querySelector('.reaction-count');
       let count = parseInt(countElement.textContent);
       count++;
