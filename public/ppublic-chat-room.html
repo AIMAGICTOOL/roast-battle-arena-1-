@@ -567,12 +567,12 @@ let currentMessageId = 0;
     // };
 
     // Detect room theme from URL or title
-   function detectRoomTheme() {
+  function detectRoomTheme() {
     const urlParams = new URLSearchParams(window.location.search);
-    const theme = urlParams.get('theme') || 'roast';
-    setRoomTheme(theme);
+    const theme = urlParams.get('theme') || 'roast'; // Fallback to 'roast'
+    setRoomTheme(theme); // Apply animations
 }
-    }
+    
 
     // Set room theme and background animation
     function setRoomTheme(theme) {
