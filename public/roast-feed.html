@@ -357,19 +357,23 @@
             width: 100%;
         }
 
-        .upload-btn {
-    flex: 1;
+       .upload-btn {
+    flex: none;
+    padding: 10px 20px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
     max-width: 200px;
-        } padding: 10px 20px;
-            text-align: center;
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
+}
+.upload-btn:hover {
+    background: var(--secondary);
+    transform: translateY(-2px);
+}
+
 
         .upload-btn:hover {
             background: var(--secondary);
