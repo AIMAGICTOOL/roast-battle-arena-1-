@@ -691,31 +691,6 @@
             transform: translateY(0);
             opacity: 1;
         }
-.chat-container {
-    max-height: 500px;
-    overflow-y: auto;
-    margin-bottom: 15px;
-}
-
-.chat-input {
-    background: var(--bg-card);
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 15px;
-}
-
-.chat-input textarea {
-    width: calc(100% - 30px);
-    min-height: 60px;
-    background: var(--bg-dark);
-    border: 1px solid var(--border);
-    color: var(--text-main);
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    resize: vertical;
-    font-family: inherit;
-}        
     </style>
 </head>
 <body>
@@ -915,32 +890,24 @@
         </div>
 
         <!-- Chat Tab -->
-       <div id="chatTab" class="tab-content">
-    <h2>Direct Messages</h2>
-    <div class="chat-container">
-        <!-- Chat messages will appear here -->
-        <div class="roast-card">
-            <div class="roast-header">
-                <div class="user-avatar">
-                    <img src="https://i.pravatar.cc/150?img=7" alt="ChatBuddy">
+        <div id="chatTab" class="tab-content">
+            <h2>Direct Messages</h2>
+            <p>This would be your chat interface</p>
+            <div class="roast-card">
+                <div class="roast-header">
+                    <div class="user-avatar">
+                        <img src="https://i.pravatar.cc/150?img=7" alt="ChatBuddy">
+                    </div>
+                    <div class="user-info">
+                        <span class="username">@ChatBuddy</span>
+                        <span class="roast-time">Online</span>
+                    </div>
                 </div>
-                <div class="user-info">
-                    <span class="username">@ChatBuddy</span>
-                    <span class="roast-time">Online</span>
+                <div class="roast-content">
+                    Hey! Want to chat privately? This is where it would happen.
                 </div>
-            </div>
-            <div class="roast-content">
-                Hey! Want to chat privately? This is where it would happen.
             </div>
         </div>
-    </div>
-    
-    <!-- New chat input area -->
-    <div class="chat-input">
-        <textarea placeholder="Type your message here..." id="chatMessageInput"></textarea>
-        <button class="post-btn" onclick="sendMessage()">Send</button>
-    </div>
-</div>
 
         <!-- Profile Tab -->
         <div id="profileTab" class="tab-content">
@@ -1531,41 +1498,6 @@
                 }
             }
         });
-function sendMessage() {
-    const input = document.getElementById('chatMessageInput');
-    const message = input.value.trim();
-    
-    if (!message) {
-        showToast('Please enter a message');
-        return;
-    }
-    
-    // In a real app, this would send to the server
-    const chatContainer = document.querySelector('.chat-container');
-    const newMessage = document.createElement('div');
-    newMessage.className = 'roast-card';
-    
-    newMessage.innerHTML = `
-        <div class="roast-header">
-            <div class="user-avatar">
-                ${profilePic ? 
-                    `<img src="${URL.createObjectURL(profilePic)}" alt="You">` : 
-                    `<span>Y</span>`}
-            </div>
-            <div class="user-info">
-                <span class="username">@You</span>
-                <span class="roast-time">Just now</span>
-            </div>
-        </div>
-        <div class="roast-content">${message}</div>
-    `;
-    
-    chatContainer.appendChild(newMessage);
-    input.value = '';
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-    
-    showToast('Message sent!');
-}        
     </script>
 </body>
 </html>
