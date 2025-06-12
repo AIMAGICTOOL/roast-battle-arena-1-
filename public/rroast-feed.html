@@ -608,6 +608,53 @@
         .notification-dropdown:hover .notification-content {
             display: block;
         }
+        /* GLOWING HOME ORB */
+.home-orb {
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, #ff9e00 30%, transparent 70%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 15px #ff9e00;
+    transition: all 0.3s ease;
+    position: relative;
+    animation: pulse 2s infinite;
+}
+.home-orb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px #ff9e00;
+}
+.home-orb::before {
+    content: "⌂";
+    color: #0f0f0f;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+.home-orb-tooltip {
+    position: absolute;
+    top: 50px;
+    background: rgba(15, 15, 15, 0.9);
+    color: #ff9e00;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    pointer-events: none;
+}
+.home-orb:hover .home-orb-tooltip {
+    opacity: 1;
+}
+@keyframes pulse {
+    0% { box-shadow: 0 0 15px #ff9e00; }
+    50% { box-shadow: 0 0 25px #ff9e00; }
+    100% { box-shadow: 0 0 15px #ff9e00; }
+}
     </style>
 </head>
 <body>
@@ -621,7 +668,10 @@
     <button class="nav-tab" onclick="window.location.href='public-battle-hall.html'">Public Hall</button>
     <button class="nav-tab" onclick="switchTab('chat')">Chat</button>
 </div>
-                
+                <!-- Home Orb (placed between Chat & Notifications) -->
+<div class="home-orb" onclick="window.location.href='index.html'">
+    <div class="home-orb-tooltip">Back to Home</div>
+</div>                
                 <!-- Notification Button -->
                 <div class="notification-dropdown">
                     <button class="notification-btn" onclick="toggleNotifications()">
