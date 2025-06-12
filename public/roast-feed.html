@@ -622,7 +622,6 @@
     transition: all 0.3s ease;
     position: relative;
     animation: pulse 2s infinite;
-    margin-left: 15px;
 }
 .home-orb:hover {
     transform: scale(1.1);
@@ -672,7 +671,10 @@
     <button class="nav-tab" onclick="window.location.href='public-battle-hall.html'">Public Hall</button>
     <button class="nav-tab" onclick="switchTab('chat')">Chat</button>
 </div>
-                
+                <!-- Home Orb (placed between Chat & Notifications) -->
+<div class="home-orb" onclick="window.location.href='index.html'">
+    <div class="home-orb-tooltip">Back to Home</div>
+</div>                
                 <!-- Notification Button -->
                 <div class="notification-dropdown">
                     <button class="notification-btn" onclick="toggleNotifications()">
