@@ -1381,23 +1381,22 @@
         }
 
         // Reply function
-      function reply(roastId) {
+     function reply(roastId) {
     const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
-    const usernameEl = roastCard.querySelector('.username');
-    const username = usernameEl ? usernameEl.textContent.replace(/\s+/g, '') : '@User';
+    const username = roastCard?.querySelector('.username')?.textContent.trim() || '@User';
 
     const textarea = document.querySelector('.new-roast textarea');
-    textarea.value = `@${username} `;
-    textarea.focus();
-
-    // Scroll to the new roast box instead of jumping wrong
-    const newRoastForm = document.querySelector('.new-roast');
-    if (newRoastForm) {
-        newRoastForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const roastBox = document.querySelector('.new-roast');
+    
+    if (textarea && roastBox) {
+        textarea.value = `@${username} `;
+        roastBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        textarea.focus({ preventScroll: true }); // prevent it from jumping again
     }
 
     showToast(`Replying to ${username}`);
 }
+
 
 
         // Share function
