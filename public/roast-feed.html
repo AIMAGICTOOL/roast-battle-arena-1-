@@ -1380,28 +1380,34 @@
         }
 
         // Reply function
-       function reply(roastId) {
+      function reply(roastId) {
     const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
-    const username = roastCard.querySelector('.username').textContent;
+    const usernameEl = roastCard.querySelector('.username');
+    const username = usernameEl ? usernameEl.textContent.replace(/\s+/g, '') : '@User';
 
     const textarea = document.querySelector('.new-roast textarea');
     textarea.value = `@${username} `;
     textarea.focus();
 
-    textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Scroll to the new roast box instead of jumping wrong
+    const newRoastForm = document.querySelector('.new-roast');
+    if (newRoastForm) {
+        newRoastForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
-    showToast(`Replying to @${username}`);
+    showToast(`Replying to ${username}`);
 }
 
 
         // Share function
-       function share(roastId) {
-    const userToShare = prompt("Type a username to share with (or type @username):");
-    if (userToShare) {
-        showToast(`Shared with ${userToShare}`);
-        // Add your API call here later if needed
+      function share(roastId) {
+    const shareTo = prompt("Share roast with who? Type @username or choose from your following list.");
+    if (shareTo) {
+        showToast(`Shared roast ${roastId} with ${shareTo}`);
+        // You can integrate a sharing modal or backend API call here
     }
 }
+
 
 
         // Show toast notification
