@@ -358,7 +358,6 @@
         }
 
        .upload-btn {
-    flex: none;
     padding: 10px 20px;
     background: var(--bg-dark);
     border: 1px solid var(--border);
@@ -367,7 +366,9 @@
     cursor: pointer;
     font-weight: bold;
     transition: all 0.3s;
-    max-width: 200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .upload-btn:hover {
     background: var(--secondary);
