@@ -277,6 +277,7 @@
             transition: all 0.2s;
             padding: 5px 10px;
             border-radius: 5px;
+            position: relative;
         }
 
         .action-btn:hover {
@@ -284,12 +285,30 @@
             color: var(--primary);
         }
 
+        .action-btn svg {
+            width: 20px;
+            height: 20px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover svg {
+            transform: scale(1.1);
+        }
+
         .upvote.active {
             color: #00ff00;
         }
 
+        .upvote.active svg {
+            fill: #00ff00;
+        }
+
         .downvote.active {
             color: #ff0000;
+        }
+
+        .downvote.active svg {
+            fill: #ff0000;
         }
 
         /* === NEW ROAST FORM === */
@@ -302,7 +321,7 @@
         }
 
         .new-roast textarea {
-            width: calc(100% - 30px); /* Fixed alignment issue */
+            width: calc(100% - 30px);
             min-height: 100px;
             background: var(--bg-dark);
             border: 1px solid var(--border);
@@ -331,34 +350,29 @@
         }
 
         /* Media upload controls */
-       .media-upload {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-    width: 100%; /* Add this line */
+        .media-upload {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
             width: 100%;
-    margin-bottom: 10px;
-}}
+        }
 
-.upload-btn {
-   .upload-btn {
-    width: 100%; /* Match post button width */
-    padding: 10px 20px; /* Match post button padding */
-    text-align: center; /* Center text like post button */
-    background: var(--bg-dark);
-    border: 1px solid var(--border);
-    color: var(--text-main);
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s;
-}
+        .upload-btn {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            flex: 1;
+            text-align: center;
+        }
 
-.upload-btn:hover {
-    background: var(--secondary); /* Match post button hover state */
-    transform: translateY(-2px); /* Match post button hover effect */
-     width: 100%; /* Explicit width to match upload button */}
-
+        .upload-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
         }
 
         .media-preview {
@@ -609,52 +623,279 @@
             display: block;
         }
         /* GLOWING HOME ORB */
-.home-orb {
-    width: 40px;
-    height: 40px;
-    background: radial-gradient(circle, #ff9e00 30%, transparent 70%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 0 15px #ff9e00;
-    transition: all 0.3s ease;
-    position: relative;
-    animation: pulse 2s infinite;
-}
-.home-orb:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 25px #ff9e00;
-}
-.home-orb::before {
-    content: "⌂";
-    color: #0f0f0f;
-    font-size: 18px;
-    font-weight: bold;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-}
-.home-orb-tooltip {
-    position: absolute;
-    top: 50px;
-    background: rgba(15, 15, 15, 0.9);
-    color: #ff9e00;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 12px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    white-space: nowrap;
-    pointer-events: none;
-}
-.home-orb:hover .home-orb-tooltip {
-    opacity: 1;
-}
-@keyframes pulse {
-    0% { box-shadow: 0 0 15px #ff9e00; }
-    50% { box-shadow: 0 0 25px #ff9e00; }
-    100% { box-shadow: 0 0 15px #ff9e00; }
-}
+        .home-orb {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #ff9e00 30%, transparent 70%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ff9e00;
+            transition: all 0.3s ease;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+        .home-orb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px #ff9e00;
+        }
+        .home-orb::before {
+            content: "⌂";
+            color: #0f0f0f;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+        .home-orb-tooltip {
+            position: absolute;
+            top: 50px;
+            background: rgba(15, 15, 15, 0.9);
+            color: #ff9e00;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .home-orb:hover .home-orb-tooltip {
+            opacity: 1;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 15px #ff9e00; }
+            50% { box-shadow: 0 0 25px #ff9e00; }
+            100% { box-shadow: 0 0 15px #ff9e00; }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            color: var(--text-main);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* === COMMENT SECTION === */
+        .comment-section {
+            margin-top: 15px;
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            display: none; /* Hidden by default */
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .comment-input {
+            flex: 1;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 20px;
+            font-family: inherit;
+        }
+
+        .comment-submit {
+            background: var(--primary);
+            color: black;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .comment-submit:hover {
+            background: var(--secondary);
+        }
+
+        .comment-list {
+            margin-top: 10px;
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: black;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-username {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin-bottom: 3px;
+        }
+
+        .comment-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .comment-time {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-top: 3px;
+        }
+
+        /* Comment actions */
+        .comment-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .comment-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+
+        .comment-action-btn:hover {
+            background: rgba(157, 0, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .comment-action-btn svg {
+            width: 14px;
+            height: 14px;
+            transition: all 0.2s;
+        }
+
+        .comment-action-btn:hover svg {
+            transform: scale(1.1);
+        }
+
+        .comment-upvote.active {
+            color: #00ff00;
+        }
+
+        .comment-upvote.active svg {
+            fill: #00ff00;
+        }
+
+        .comment-downvote.active {
+            color: #ff0000;
+        }
+
+        .comment-downvote.active svg {
+            fill: #ff0000;
+        }
+
+        /* Edit forms */
+        .edit-form, .comment-edit-form {
+            margin: 10px 0;
+        }
+
+        .edit-textarea {
+            width: 100%;
+            min-height: 100px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .edit-actions, .comment-edit-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .edit-cancel-btn, .edit-save-btn,
+        .comment-edit-cancel, .comment-edit-save {
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .edit-cancel-btn, .comment-edit-cancel {
+            background: transparent;
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+
+        .edit-save-btn, .comment-edit-save {
+            background: var(--primary);
+            color: black;
+            border: none;
+        }
+
+        .edit-cancel-btn:hover, .comment-edit-cancel:hover {
+            background: var(--bg-dark);
+        }
+
+        .edit-save-btn:hover, .comment-edit-save:hover {
+            background: var(--secondary);
+        }
+
+        .comment-edit-input {
+            flex: 1;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-family: inherit;
+            width: 100%;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -725,7 +966,7 @@
                 <!-- Media upload controls -->
                 <div class="media-upload">
                     <button class="upload-btn" onclick="document.getElementById('mediaInput').click()">
-                        📷 Add Image/GIF
+                        📷 Add Media
                     </button>
                     <input type="file" id="mediaInput" accept="image/*, video/*" multiple onchange="handleMediaUpload(event)">
                 </div>
@@ -746,7 +987,7 @@
             <!-- Roasts Container -->
             <div id="roastsContainer">
                 <!-- Sample Roast 1 with image -->
-                <div class="roast-card">
+                <div class="roast-card" data-roast-id="1">
                     <div class="roast-header">
                         <div class="user-avatar">
                             <img src="https://i.pravatar.cc/150?img=3" alt="DragonRoaster">
@@ -764,23 +1005,98 @@
                         <img src="https://media.giphy.com/media/l0HU7JI6j1Jqk7vKU/giphy.gif" alt="Magic show fail">
                     </div>
                     <div class="roast-actions">
-                        <button class="action-btn upvote" onclick="vote(this)">
-                            👍 <span>24</span>
+                        <button class="action-btn upvote" onclick="vote(this, '1')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                            </svg>
+                            <span>24</span>
                         </button>
-                        <button class="action-btn downvote" onclick="vote(this)">
-                            👎 <span>2</span>
+                        <button class="action-btn downvote" onclick="vote(this, '1')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                            </svg>
+                            <span>2</span>
                         </button>
-                        <button class="action-btn" onclick="reply()">
-                            💬 Reply
+                        <button class="action-btn" onclick="reply('1')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            <span>Reply</span>
                         </button>
-                        <button class="action-btn" onclick="share()">
-                            🔗 Share
+                        <button class="action-btn" onclick="share('1')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                            <span>Share</span>
                         </button>
+                        <button class="action-btn edit-btn" onclick="editRoast('1')" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>Edit</span>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteRoast('1')" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                    <div class="comment-section">
+                        <div class="comment-form">
+                            <input type="text" class="comment-input" placeholder="Write a comment...">
+                            <button class="comment-submit" onclick="postComment(this, '1')">Post</button>
+                        </div>
+                        <div class="comment-list">
+                            <!-- Sample comment -->
+                            <div class="comment-item" data-comment-id="1-1">
+                                <div class="comment-avatar">Y</div>
+                                <div class="comment-content">
+                                    <div class="comment-username">@You</div>
+                                    <div class="comment-text">That's a sick burn! 🔥</div>
+                                    <div class="comment-time">Just now</div>
+                                    <div class="comment-actions">
+                                        <button class="comment-action-btn comment-upvote" onclick="voteComment(this, '1-1')">
+                                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                                            </svg>
+                                            <span>3</span>
+                                        </button>
+                                        <button class="comment-action-btn comment-downvote" onclick="voteComment(this, '1-1')">
+                                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                                            </svg>
+                                            <span>0</span>
+                                        </button>
+                                        <button class="comment-action-btn comment-edit-btn" onclick="editComment(this, '1-1')" style="display: none;">
+                                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                            <span>Edit</span>
+                                        </button>
+                                        <button class="comment-action-btn comment-delete-btn" onclick="deleteComment('1-1')" style="display: none;">
+                                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                            <span>Delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Sample Roast 2 with GIF -->
-                <div class="roast-card">
+                <div class="roast-card" data-roast-id="2">
                     <div class="roast-header">
                         <div class="user-avatar">
                             <img src="https://i.pravatar.cc/150?img=5" alt="SavageMaster">
@@ -798,18 +1114,57 @@
                         <img src="https://media.giphy.com/media/3o7aD2d7hy9ktXNDP2/giphy.gif" alt="Facepalm GIF">
                     </div>
                     <div class="roast-actions">
-                        <button class="action-btn upvote" onclick="vote(this)">
-                            👍 <span>42</span>
+                        <button class="action-btn upvote" onclick="vote(this, '2')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                            </svg>
+                            <span>42</span>
                         </button>
-                        <button class="action-btn downvote" onclick="vote(this)">
-                            👎 <span>5</span>
+                        <button class="action-btn downvote" onclick="vote(this, '2')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                            </svg>
+                            <span>5</span>
                         </button>
-                        <button class="action-btn" onclick="reply()">
-                            💬 Reply
+                        <button class="action-btn" onclick="reply('2')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            <span>Reply</span>
                         </button>
-                        <button class="action-btn" onclick="share()">
-                            🔗 Share
+                        <button class="action-btn" onclick="share('2')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                            <span>Share</span>
                         </button>
+                        <button class="action-btn edit-btn" onclick="editRoast('2')" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>Edit</span>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteRoast('2')" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                    <div class="comment-section">
+                        <div class="comment-form">
+                            <input type="text" class="comment-input" placeholder="Write a comment...">
+                            <button class="comment-submit" onclick="postComment(this, '2')">Post</button>
+                        </div>
+                        <div class="comment-list">
+                            <!-- Comments will appear here -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -861,11 +1216,11 @@
                     </div>
                 </div>
                 
-          <button class="follow-btn" style="width: 120px;" onclick="window.location.href='edit-profile.html'">Edit Profile</button>
+                <button class="follow-btn" style="width: 120px;" onclick="window.location.href='edit-profile.html'">Edit Profile</button>
             </div>
             
             <h3 style="padding: 0 20px;">Your Recent Roasts</h3>
-            <div class="roast-card">
+            <div class="roast-card" data-roast-id="3">
                 <div class="roast-header">
                     <div class="user-avatar">
                         <img id="profileFeedImage" src="" alt="You" style="display: none;">
@@ -880,45 +1235,281 @@
                     Just dropped the hottest roast of 2023. Fight me.
                 </div>
                 <div class="roast-actions">
-                    <button class="action-btn upvote">
-                        👍 <span>87</span>
+                    <button class="action-btn upvote" onclick="vote(this, '3')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                        </svg>
+                        <span>87</span>
                     </button>
-                    <button class="action-btn downvote">
-                        👎 <span>3</span>
+                    <button class="action-btn downvote" onclick="vote(this, '3')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                        </svg>
+                        <span>3</span>
                     </button>
+                    <button class="action-btn" onclick="reply('3')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <span>Reply</span>
+                    </button>
+                    <button class="action-btn" onclick="share('3')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        <span>Share</span>
+                    </button>
+                    <button class="action-btn edit-btn" onclick="editRoast('3')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        <span>Edit</span>
+                    </button>
+                    <button class="action-btn delete-btn" onclick="deleteRoast('3')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span>Delete</span>
+                    </button>
+                </div>
+                <div class="comment-section">
+                    <div class="comment-form">
+                        <input type="text" class="comment-input" placeholder="Write a comment...">
+                        <button class="comment-submit" onclick="postComment(this, '3')">Post</button>
+                    </div>
+                    <div class="comment-list">
+                        <!-- Comments will appear here -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
     <script>
         let mediaFiles = [];
-        let currentTab = 'public';
+        let currentTab = 'feeds';
         let profilePic = null;
         let notificationsEnabled = true;
+        let votedRoasts = {}; // Track which roasts user has voted on
+        let votedComments = {}; // Track which comments user has voted on
         
-        // Switch between tabs
-       function switchTab(tab) {
-    // Update active tab button
-    document.querySelectorAll('.nav-tab').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.textContent.toLowerCase().includes(tab)) {
-            btn.classList.add('active');
+        // Initialize with sample data
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load profile data if exists
+            const profileData = localStorage.getItem('profileData');
+            if (profileData) {
+                const profile = JSON.parse(profileData);
+                if (profile.profilePic) {
+                    document.getElementById('profileImage').src = profile.profilePic;
+                    document.getElementById('profileImage').style.display = 'block';
+                    document.getElementById('profileInitial').style.display = 'none';
+                    
+                    document.getElementById('profileTabImage').src = profile.profilePic;
+                    document.getElementById('profileTabImage').style.display = 'block';
+                    document.getElementById('profileTabInitial').style.display = 'none';
+                    
+                    document.getElementById('profileFeedImage').src = profile.profilePic;
+                    document.getElementById('profileFeedImage').style.display = 'block';
+                    document.getElementById('profileFeedInitial').style.display = 'none';
+                }
+            }
+            
+            // Load voted roasts from localStorage
+            const savedVotes = localStorage.getItem('votedRoasts');
+            if (savedVotes) {
+                votedRoasts = JSON.parse(savedVotes);
+            }
+            
+            // Load voted comments from localStorage
+            const savedCommentVotes = localStorage.getItem('votedComments');
+            if (savedCommentVotes) {
+                votedComments = JSON.parse(savedCommentVotes);
+            }
+            
+            // Check ownership of posts and comments
+            checkOwnership();
+        });
+
+        // Show edit/delete buttons only for user's own posts
+        function checkOwnership() {
+            document.querySelectorAll('.roast-card').forEach(card => {
+                const username = card.querySelector('.username').textContent;
+                const isOwnPost = username === '@You';
+                
+                card.querySelectorAll('.edit-btn, .delete-btn').forEach(btn => {
+                    btn.style.display = isOwnPost ? 'flex' : 'none';
+                });
+            });
+            
+            document.querySelectorAll('.comment-item').forEach(comment => {
+                const username = comment.querySelector('.comment-username').textContent;
+                const isOwnComment = username === '@You';
+                
+                comment.querySelectorAll('.comment-edit-btn, .comment-delete-btn').forEach(btn => {
+                    btn.style.display = isOwnComment ? 'flex' : 'none';
+                });
+            });
         }
-    });
-    
-    // Update active tab content
-    document.querySelectorAll('.tab-content').forEach(tabContent => {
-        tabContent.classList.remove('active');
-    });
-    document.getElementById(tab + 'Tab').classList.add('active');
-    
-    currentTab = tab;
-    
-    // Hide dropdowns when switching tabs
-    document.getElementById('profileDropdown').style.display = 'none';
-    document.querySelector('.notification-content').style.display = 'none';
-}
+
+        // Edit roast function
+        function editRoast(roastId) {
+            const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+            const content = roastCard.querySelector('.roast-content').textContent;
+            
+            // Create edit form
+            const editForm = document.createElement('div');
+            editForm.className = 'edit-form';
+            editForm.innerHTML = `
+                <textarea class="edit-textarea">${content}</textarea>
+                <div class="edit-actions">
+                    <button class="edit-cancel-btn" onclick="cancelEdit('${roastId}')">Cancel</button>
+                    <button class="edit-save-btn" onclick="saveRoastEdit('${roastId}')">Save</button>
+                </div>
+            `;
+            
+            // Replace content with edit form
+            roastCard.querySelector('.roast-content').replaceWith(editForm);
+            editForm.querySelector('textarea').focus();
+        }
+
+        // Save edited roast
+        function saveRoastEdit(roastId) {
+            const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+            const newContent = roastCard.querySelector('.edit-textarea').value.trim();
+            
+            if (!newContent) {
+                showToast('Roast cannot be empty');
+                return;
+            }
+            
+            // Create new content element
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'roast-content';
+            contentDiv.textContent = newContent;
+            
+            // Replace edit form with new content
+            roastCard.querySelector('.edit-form').replaceWith(contentDiv);
+            showToast('Roast updated!');
+        }
+
+        // Cancel edit
+        function cancelEdit(roastId) {
+            const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+            const originalContent = roastCard.querySelector('.edit-textarea').value.trim();
+            
+            // Recreate original content
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'roast-content';
+            contentDiv.textContent = originalContent;
+            
+            // Replace edit form with original content
+            roastCard.querySelector('.edit-form').replaceWith(contentDiv);
+        }
+
+        // Delete roast
+        function deleteRoast(roastId) {
+            if (confirm('Are you sure you want to delete this roast?')) {
+                const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+                roastCard.remove();
+                showToast('Roast deleted');
+            }
+        }
+
+        // Edit comment
+        function editComment(button, commentId) {
+            const commentItem = button.closest('.comment-item');
+            const commentText = commentItem.querySelector('.comment-text').textContent;
+            
+            // Create edit form
+            const editForm = document.createElement('div');
+            editForm.className = 'comment-edit-form';
+            editForm.innerHTML = `
+                <input type="text" class="comment-edit-input" value="${commentText}">
+                <div class="comment-edit-actions">
+                    <button class="comment-edit-cancel" onclick="cancelCommentEdit('${commentId}')">Cancel</button>
+                    <button class="comment-edit-save" onclick="saveCommentEdit('${commentId}')">Save</button>
+                </div>
+            `;
+            
+            // Replace text with edit form
+            commentItem.querySelector('.comment-text').replaceWith(editForm);
+            editForm.querySelector('input').focus();
+        }
+
+        // Save edited comment
+        function saveCommentEdit(commentId) {
+            const commentItem = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
+            const newContent = commentItem.querySelector('.comment-edit-input').value.trim();
+            
+            if (!newContent) {
+                showToast('Comment cannot be empty');
+                return;
+            }
+            
+            // Create new text element
+            const textDiv = document.createElement('div');
+            textDiv.className = 'comment-text';
+            textDiv.textContent = newContent;
+            
+            // Replace edit form with new content
+            commentItem.querySelector('.comment-edit-form').replaceWith(textDiv);
+            showToast('Comment updated!');
+        }
+
+        // Cancel comment edit
+        function cancelCommentEdit(commentId) {
+            const commentItem = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
+            const originalContent = commentItem.querySelector('.comment-edit-input').value.trim();
+            
+            // Recreate original content
+            const textDiv = document.createElement('div');
+            textDiv.className = 'comment-text';
+            textDiv.textContent = originalContent;
+            
+            // Replace edit form with original content
+            commentItem.querySelector('.comment-edit-form').replaceWith(textDiv);
+        }
+
+        // Delete comment
+        function deleteComment(commentId) {
+            if (confirm('Are you sure you want to delete this comment?')) {
+                const commentItem = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
+                commentItem.remove();
+                showToast('Comment deleted');
+            }
+        }
+
+        // Switch between tabs
+        function switchTab(tab) {
+            // Update active tab button
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(tab)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update active tab content
+            document.querySelectorAll('.tab-content').forEach(tabContent => {
+                tabContent.classList.remove('active');
+            });
+            document.getElementById(tab + 'Tab').classList.add('active');
+            
+            currentTab = tab;
+            
+            // Hide dropdowns when switching tabs
+            document.getElementById('profileDropdown').style.display = 'none';
+            document.querySelector('.notification-content').style.display = 'none';
+        }
         
         // Toggle profile dropdown
         function toggleProfileDropdown() {
@@ -970,7 +1561,10 @@
         // Handle profile picture upload
         function handleProfilePicUpload(event) {
             const file = event.target.files[0];
-            if (!file.type.match('image.*')) return;
+            if (!file.type.match('image.*')) {
+                showToast('Please select an image file');
+                return;
+            }
             
             profilePic = file;
             
@@ -993,11 +1587,18 @@
                 profileFeedImg.src = e.target.result;
                 profileFeedImg.style.display = 'block';
                 document.getElementById('profileFeedInitial').style.display = 'none';
+                
+                // Save to localStorage
+                const profileData = {
+                    profilePic: e.target.result,
+                    username: 'YourUsername',
+                    bio: 'Master Roaster | Savage since 2023'
+                };
+                localStorage.setItem('profileData', JSON.stringify(profileData));
+                
+                showToast('Profile picture updated!');
             };
             reader.readAsDataURL(file);
-            
-            // In a real app, you would upload this to your backend
-            console.log('Profile picture uploaded');
         }
         
         // Handle media upload
@@ -1005,9 +1606,22 @@
             const files = event.target.files;
             const previewContainer = document.getElementById('mediaPreview');
             
+            // Clear existing files if any
+            mediaFiles = [];
+            previewContainer.innerHTML = '';
+            
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                if (!file.type.match('image.*') && !file.type.match('video.*')) continue;
+                if (!file.type.match('image.*') && !file.type.match('video.*')) {
+                    showToast('Only images and videos are allowed');
+                    continue;
+                }
+                
+                // Limit to 4 files
+                if (mediaFiles.length >= 4) {
+                    showToast('Maximum 4 files allowed');
+                    break;
+                }
                 
                 mediaFiles.push(file);
                 
@@ -1081,88 +1695,197 @@
             const textarea = document.querySelector('.new-roast textarea');
             const content = textarea.value.trim();
             
-            if (content || mediaFiles.length > 0) {
-                const container = document.getElementById('roastsContainer');
-                const newRoast = document.createElement('div');
-                newRoast.className = 'roast-card';
-                
-                let mediaHTML = '';
-                if (mediaFiles.length > 0) {
-                    mediaHTML = '<div class="roast-media">';
-                    mediaFiles.forEach(file => {
-                        if (file.type.match('image.*')) {
-                            mediaHTML += `<img src="${URL.createObjectURL(file)}" alt="Uploaded media">`;
-                        } else if (file.type.match('video.*')) {
-                            mediaHTML += `
-                                <video controls>
-                                    <source src="${URL.createObjectURL(file)}" type="${file.type}">
-                                </video>
-                            `;
-                        }
-                    });
-                    mediaHTML += '</div>';
-                }
-                
-                newRoast.innerHTML = `
-                    <div class="roast-header">
-                        <div class="user-avatar">
-                            ${profilePic ? 
-                                `<img src="${URL.createObjectURL(profilePic)}" alt="You">` : 
-                                `<span>Y</span>`}
-                        </div>
-                        <div class="user-info">
-                            <span class="username">@You</span>
-                            <span class="roast-time">Just now</span>
-                        </div>
-                        <button class="follow-btn" style="visibility:hidden">Follow</button>
-                    </div>
-                    ${content ? `<div class="roast-content">${content}</div>` : ''}
-                    ${mediaHTML}
-                    <div class="roast-actions">
-                        <button class="action-btn upvote" onclick="vote(this)">
-                            👍 <span>0</span>
-                        </button>
-                        <button class="action-btn downvote" onclick="vote(this)">
-                            👎 <span>0</span>
-                        </button>
-                        <button class="action-btn" onclick="reply()">
-                            💬 Reply
-                        </button>
-                        <button class="action-btn" onclick="share()">
-                            🔗 Share
-                        </button>
-                    </div>
-                `;
-                
-                container.prepend(newRoast);
-                textarea.value = '';
-                mediaFiles = [];
-                document.getElementById('mediaPreview').innerHTML = '';
-                
-                // In a real app, you would send this to your backend
-                console.log('New roast posted:', { content, mediaFiles });
+            if (!content && mediaFiles.length === 0) {
+                showToast('Please write a roast or add media');
+                return;
             }
+            
+            const container = document.getElementById('roastsContainer');
+            const newRoast = document.createElement('div');
+            newRoast.className = 'roast-card';
+            const roastId = 'roast-' + Date.now();
+            newRoast.dataset.roastId = roastId;
+            
+            let mediaHTML = '';
+            if (mediaFiles.length > 0) {
+                mediaHTML = '<div class="roast-media">';
+                mediaFiles.forEach(file => {
+                    if (file.type.match('image.*')) {
+                        mediaHTML += `<img src="${URL.createObjectURL(file)}" alt="Uploaded media">`;
+                    } else if (file.type.match('video.*')) {
+                        mediaHTML += `
+                            <video controls>
+                                <source src="${URL.createObjectURL(file)}" type="${file.type}">
+                            </video>
+                        `;
+                    }
+                });
+                mediaHTML += '</div>';
+            }
+            
+            newRoast.innerHTML = `
+                <div class="roast-header">
+                    <div class="user-avatar">
+                        ${profilePic ? 
+                            `<img src="${URL.createObjectURL(profilePic)}" alt="You">` : 
+                            `<span>Y</span>`}
+                    </div>
+                    <div class="user-info">
+                        <span class="username">@You</span>
+                        <span class="roast-time">Just now</span>
+                    </div>
+                    <button class="follow-btn" style="visibility:hidden">Follow</button>
+                </div>
+                ${content ? `<div class="roast-content">${content}</div>` : ''}
+                ${mediaHTML}
+                <div class="roast-actions">
+                    <button class="action-btn upvote" onclick="vote(this, '${roastId}')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                        </svg>
+                        <span>0</span>
+                    </button>
+                    <button class="action-btn downvote" onclick="vote(this, '${roastId}')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                        </svg>
+                        <span>0</span>
+                    </button>
+                    <button class="action-btn" onclick="reply('${roastId}')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <span>Reply</span>
+                    </button>
+                    <button class="action-btn" onclick="share('${roastId}')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        <span>Share</span>
+                    </button>
+                    <button class="action-btn edit-btn" onclick="editRoast('${roastId}')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        <span>Edit</span>
+                    </button>
+                    <button class="action-btn delete-btn" onclick="deleteRoast('${roastId}')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span>Delete</span>
+                    </button>
+                </div>
+                <div class="comment-section">
+                    <div class="comment-form">
+                        <input type="text" class="comment-input" placeholder="Write a comment...">
+                        <button class="comment-submit" onclick="postComment(this, '${roastId}')">Post</button>
+                    </div>
+                    <div class="comment-list">
+                        <!-- Comments will appear here -->
+                    </div>
+                </div>
+            `;
+            
+            container.prepend(newRoast);
+            textarea.value = '';
+            mediaFiles = [];
+            document.getElementById('mediaPreview').innerHTML = '';
+            
+            showToast('Roast posted successfully!');
+            
+            // Check ownership for the new post
+            checkOwnership();
         }
 
-        // Voting system
-        function vote(button) {
+        // Voting system with restrictions
+        function vote(button, roastId) {
+            const isUpvote = button.classList.contains('upvote');
+            const isDownvote = button.classList.contains('downvote');
             const countSpan = button.querySelector('span');
             let count = parseInt(countSpan.textContent);
             
-            // Toggle active state
-            if (button.classList.contains('active')) {
-                button.classList.remove('active');
-                countSpan.textContent = count - 1;
-            } else {
-                // Remove active from sibling buttons
-                const parent = button.parentElement;
-                parent.querySelectorAll('.upvote, .downvote').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                button.classList.add('active');
-                countSpan.textContent = count + 1;
+            // Check if user already voted on this roast
+            if (votedRoasts[roastId]) {
+                if ((votedRoasts[roastId] === 'up' && isUpvote) || 
+                    (votedRoasts[roastId] === 'down' && isDownvote)) {
+                    showToast('You already voted on this roast');
+                    return;
+                }
             }
+            
+            // Remove any existing vote
+            const parent = button.parentElement;
+            parent.querySelectorAll('.upvote, .downvote').forEach(btn => {
+                btn.classList.remove('active');
+                
+                // If user is changing their vote, decrement the opposite count
+                if (btn !== button && votedRoasts[roastId]) {
+                    const oppositeCountSpan = btn.querySelector('span');
+                    let oppositeCount = parseInt(oppositeCountSpan.textContent);
+                    if (oppositeCount > 0) {
+                        oppositeCountSpan.textContent = oppositeCount - 1;
+                    }
+                }
+            });
+            
+            // Apply new vote
+            button.classList.add('active');
+            countSpan.textContent = count + 1;
+            
+            // Record the vote
+            votedRoasts[roastId] = isUpvote ? 'up' : 'down';
+            localStorage.setItem('votedRoasts', JSON.stringify(votedRoasts));
+            
+            showToast(isUpvote ? 'Upvoted!' : 'Downvoted!');
+        }
+
+        // Comment voting system
+        function voteComment(button, commentId) {
+            const isUpvote = button.classList.contains('comment-upvote');
+            const isDownvote = button.classList.contains('comment-downvote');
+            const countSpan = button.querySelector('span');
+            let count = parseInt(countSpan.textContent);
+            
+            // Check if user already voted on this comment
+            if (votedComments[commentId]) {
+                if ((votedComments[commentId] === 'up' && isUpvote) || 
+                    (votedComments[commentId] === 'down' && isDownvote)) {
+                    showToast('You already voted on this comment');
+                    return;
+                }
+            }
+            
+            // Remove any existing vote
+            const parent = button.parentElement.parentElement;
+            parent.querySelectorAll('.comment-upvote, .comment-downvote').forEach(btn => {
+                btn.classList.remove('active');
+                
+                // If user is changing their vote, decrement the opposite count
+                if (btn !== button && votedComments[commentId]) {
+                    const oppositeCountSpan = btn.querySelector('span');
+                    let oppositeCount = parseInt(oppositeCountSpan.textContent);
+                    if (oppositeCount > 0) {
+                        oppositeCountSpan.textContent = oppositeCount - 1;
+                    }
+                }
+            });
+            
+            // Apply new vote
+            button.classList.add('active');
+            countSpan.textContent = count + 1;
+            
+            // Record the vote
+            votedComments[commentId] = isUpvote ? 'up' : 'down';
+            localStorage.setItem('votedComments', JSON.stringify(votedComments));
+            
+            showToast(isUpvote ? 'Comment upvoted!' : 'Comment downvoted!');
         }
 
         // Filter roasts
@@ -1173,112 +1896,212 @@
             });
             event.target.classList.add('active');
             
-            console.log('Filtering by:', type);
-            // You would implement actual filtering logic here
+            showToast(`Showing ${type} roasts`);
         }
 
-        // Reply function
-        function reply() {
-            console.log('Reply clicked');
-            // Implement reply functionality
+        // Reply function - now toggles comment section
+        function reply(roastId) {
+            const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+            const commentSection = roastCard.querySelector('.comment-section');
+            
+            // Toggle comment section visibility
+            if (commentSection.style.display === 'block') {
+                commentSection.style.display = 'none';
+            } else {
+                // Hide all other comment sections first
+                document.querySelectorAll('.comment-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                commentSection.style.display = 'block';
+                commentSection.querySelector('.comment-input').focus();
+            }
+        }
+
+        // Post comment function
+        function postComment(button, roastId) {
+            const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+            const commentInput = roastCard.querySelector('.comment-input');
+            const commentText = commentInput.value.trim();
+            
+            if (!commentText) {
+                showToast('Please write a comment');
+                return;
+            }
+            
+            const commentList = roastCard.querySelector('.comment-list');
+            const newComment = document.createElement('div');
+            newComment.className = 'comment-item';
+            const commentId = `${roastId}-${Date.now()}`;
+            newComment.dataset.commentId = commentId;
+            
+            // In a real app, you'd use the actual user's profile pic and name
+            newComment.innerHTML = `
+                <div class="comment-avatar">Y</div>
+                <div class="comment-content">
+                    <div class="comment-username">@You</div>
+                    <div class="comment-text">${commentText}</div>
+                    <div class="comment-time">Just now</div>
+                    <div class="comment-actions">
+                        <button class="comment-action-btn comment-upvote" onclick="voteComment(this, '${commentId}')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                            </svg>
+                            <span>0</span>
+                        </button>
+                        <button class="comment-action-btn comment-downvote" onclick="voteComment(this, '${commentId}')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                            </svg>
+                            <span>0</span>
+                        </button>
+                        <button class="comment-action-btn comment-edit-btn" onclick="editComment(this, '${commentId}')">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>Edit</span>
+                        </button>
+                        <button class="comment-action-btn comment-delete-btn" onclick="deleteComment('${commentId}')">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            commentList.prepend(newComment);
+            commentInput.value = '';
+            showToast('Comment posted!');
+            
+            // Check ownership for the new comment
+            checkOwnership();
         }
 
         // Share function
-        function share() {
-            console.log('Share clicked');
-            // Implement share functionality
+        function share(roastId) {
+            // In a real app, this would share the roast URL
+            const tempInput = document.createElement('input');
+            tempInput.value = `${window.location.origin}/roast/${roastId}`;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            
+            showToast('Roast link copied to clipboard!');
         }
 
-        // Handle Enter key for posting
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Handle Enter key for posting (Shift+Enter for new line)
         document.querySelector('.new-roast textarea').addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 postRoast();
             }
         });
-   
 
-window.addEventListener('load', function () {
-    const profile = JSON.parse(localStorage.getItem('profileData'));
-    if (!profile) return;
-
-    // Load profile pic
-    if (profile.profilePic) {
-        ['profileImage', 'profileTabImage', 'profileFeedImage'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.src = profile.profilePic;
-                el.style.display = 'block';
+        // Handle Enter key for comments
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey && e.target.classList.contains('comment-input')) {
+                e.preventDefault();
+                const roastId = e.target.closest('.roast-card').dataset.roastId;
+                const button = e.target.closest('.comment-form').querySelector('.comment-submit');
+                postComment(button, roastId);
             }
         });
 
-        ['profileInitial', 'profileTabInitial', 'profileFeedInitial'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = 'none';
+        // Load profile data if exists
+        window.addEventListener('load', function() {
+            const profile = JSON.parse(localStorage.getItem('profileData'));
+            if (!profile) return;
+
+            // Load profile pic
+            if (profile.profilePic) {
+                ['profileImage', 'profileTabImage', 'profileFeedImage'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.src = profile.profilePic;
+                        el.style.display = 'block';
+                    }
+                });
+
+                ['profileInitial', 'profileTabInitial', 'profileFeedInitial'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.style.display = 'none';
+                });
+            }
+
+            // Load username + bio
+            const nameEl = document.querySelector('#profileTab h2');
+            const bioEl = document.querySelector('#profileTab p');
+            if (nameEl && profile.username) nameEl.textContent = '@' + profile.username;
+            if (bioEl && profile.bio) bioEl.textContent = profile.bio;
+
+            // Insert link below bio
+            if (profile.links && profile.links.length > 0 && profile.links[0]) {
+                const linkContainer = document.createElement('div');
+                linkContainer.style.marginTop = '8px';
+                linkContainer.style.marginBottom = '12px';
+
+                const url = profile.links[0];
+
+                // Choose correct icon based on link
+                let iconSrc = 'icons/web-icon.png'; // default
+                if (url.includes('twitter.com')) iconSrc = 'icons/twitter-icon.png';
+                else if (url.includes('instagram.com')) iconSrc = 'icons/instagram-icon.png';
+                else if (url.includes('facebook.com')) iconSrc = 'icons/facebook-icon.png';
+                else if (url.includes('github.com')) iconSrc = 'icons/github-icon.png';
+                else if (url.includes('linkedin.com')) iconSrc = 'icons/linkedin-icon.png';
+                else if (url.includes('youtube.com')) iconSrc = 'icons/youtube-icon.png';
+
+                // Create icon image
+                const iconImg = document.createElement('img');
+                iconImg.src = iconSrc;
+                iconImg.alt = 'icon';
+                iconImg.style.width = '20px';
+                iconImg.style.height = '20px';
+                iconImg.style.marginRight = '6px';
+                iconImg.style.verticalAlign = 'middle';
+
+                // Create the link
+                const link = document.createElement('a');
+                link.href = url;
+                link.target = '_blank';
+                link.style.color = 'var(--secondary)';
+                link.style.textDecoration = 'none';
+                link.style.fontSize = '0.9rem';
+
+                // Add icon + link text
+                link.appendChild(iconImg);
+                link.appendChild(document.createTextNode(url));
+
+                // Insert under bio
+                linkContainer.appendChild(link);
+                const bioParagraph = document.querySelector('#profileTab .profile-section p');
+                if (bioParagraph) {
+                    bioParagraph.insertAdjacentElement('afterend', linkContainer);
+                }
+            }
+
+            // Switch to profile tab if needed
+            if (window.location.hash === '#profileTab') {
+                if (typeof switchTab === 'function') {
+                    switchTab('profile');
+                }
+            }
         });
-    }
-
-    // Load username + bio
-    const nameEl = document.querySelector('#profileTab h2');
-    const bioEl = document.querySelector('#profileTab p');
-    if (nameEl && profile.username) nameEl.textContent = '@' + profile.username;
-    if (bioEl && profile.bio) bioEl.textContent = profile.bio;
-
-    // ✅ Insert 1 link below bio (not below followers)
-  if (profile.links && profile.links.length > 0 && profile.links[0]) {
-    const linkContainer = document.createElement('div');
-    linkContainer.style.marginTop = '8px';
-    linkContainer.style.marginBottom = '12px';
-
-    const url = profile.links[0];
-
-    // Choose correct icon based on link
-    let iconSrc = 'icons/web-icon.png'; // default
-    if (url.includes('twitter.com')) iconSrc = 'icons/twitter-icon.png';
-    else if (url.includes('instagram.com')) iconSrc = 'icons/instagram-icon.png';
-    else if (url.includes('facebook.com')) iconSrc = 'icons/facebook-icon.png';
-    else if (url.includes('github.com')) iconSrc = 'icons/github-icon.png';
-    else if (url.includes('linkedin.com')) iconSrc = 'icons/linkedin-icon.png';
-    else if (url.includes('youtube.com')) iconSrc = 'icons/youtube-icon.png';
-
-    // Create icon image
-    const iconImg = document.createElement('img');
-    iconImg.src = iconSrc;
-    iconImg.alt = 'icon';
-    iconImg.style.width = '20px';
-    iconImg.style.height = '20px';
-    iconImg.style.marginRight = '6px';
-    iconImg.style.verticalAlign = 'middle';
-
-    // Create the link
-    const link = document.createElement('a');
-    link.href = url;
-    link.target = '_blank';
-    link.style.color = 'var(--secondary)';
-    link.style.textDecoration = 'none';
-    link.style.fontSize = '0.9rem';
-
-    // Add icon + link text
-    link.appendChild(iconImg);
-    link.appendChild(document.createTextNode(url));
-
-    // Insert under bio
-    linkContainer.appendChild(link);
-    const bioParagraph = document.querySelector('#profileTab .profile-section p');
-    if (bioParagraph) {
-        bioParagraph.insertAdjacentElement('afterend', linkContainer);
-    }
-}
-
-
-    // ✅ Switch to profile tab if needed
-    if (window.location.hash === '#profileTab') {
-        if (typeof switchTab === 'function') {
-            switchTab('profile');
-        }
-    }
-});
-</script>
-
+    </script>
 </body>
 </html>
