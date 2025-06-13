@@ -697,6 +697,34 @@
             transform: translateY(0);
             opacity: 1;
         }
+        .comment-box {
+    margin-top: 10px;
+    background: var(--bg-dark);
+    padding: 10px;
+    border-radius: 6px;
+}
+.comment-textarea {
+    width: 100%;
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    padding: 8px;
+    border-radius: 4px;
+    resize: vertical;
+    margin-bottom: 8px;
+}
+.comment-btn {
+    padding: 6px 14px;
+    background: var(--primary);
+    color: black;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.comment-btn:hover {
+    background: var(--secondary);
+}
     </style>
 </head>
 <body>
@@ -837,6 +865,10 @@
                             </svg>
                             <span>Share</span>
                         </button>
+                        <div class="comment-box">
+  <textarea class="comment-textarea" placeholder="Write a comment..."></textarea>
+  <button class="comment-btn" onclick="postComment('1', this)">Reply</button>
+</div>
                     </div>
                 </div>
 
@@ -890,6 +922,10 @@
                             </svg>
                             <span>Share</span>
                         </button>
+                        <div class="comment-box">
+  <textarea class="comment-textarea" placeholder="Write a comment..."></textarea>
+  <button class="comment-btn" onclick="postComment('1', this)">Reply</button>
+</div>
                     </div>
                 </div>
             </div>
@@ -1509,6 +1545,26 @@
                 }
             }
         });
+        function postComment(roastId, button) {
+    const card = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+    const textarea = card.querySelector('.comment-textarea');
+    const text = textarea.value.trim();
+
+    if (!text) {
+        showToast("Write something before replying!");
+        return;
+    }
+
+    const comment = document.createElement('div');
+    comment.innerHTML = `
+        <div style="margin-top:10px;padding:10px;border-left:2px solid var(--primary);background:var(--bg-dark);border-radius:5px;">
+            <strong>@You:</strong> ${text}
+        </div>
+    `;
+    card.appendChild(comment);
+    textarea.value = '';
+    showToast('Comment posted!');
+}
     </script>
 </body>
 </html>
