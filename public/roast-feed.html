@@ -117,21 +117,20 @@
         }
 
         .profile-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--primary);
-            border: none;
-            color: black;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            overflow: hidden;
-            position: relative;
-        }
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: transparent; /* <-- remove purple */
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
 
         .profile-btn img {
             width: 100%;
@@ -141,6 +140,10 @@
 
         .profile-btn:hover {
             transform: scale(1.1);
+            .profile-btn:hover img {
+  box-shadow: 0 0 8px 2px rgba(255, 100, 0, 0.8);
+  transform: scale(1.1);
+}
         }
 
         /* === MAIN CONTENT === */
