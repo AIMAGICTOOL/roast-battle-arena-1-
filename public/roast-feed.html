@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -358,24 +357,18 @@
             width: 100%;
         }
 
-       .upload-btn {
-    padding: 10px 20px;
-    background: var(--bg-dark);
-    border: 1px solid var(--border);
-    color: var(--text-main);
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.upload-btn:hover {
-    background: var(--secondary);
-    transform: translateY(-2px);
-}
-
+        .upload-btn {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            flex: 1;
+            text-align: center;
+        }
 
         .upload-btn:hover {
             background: var(--secondary);
@@ -698,34 +691,211 @@
             transform: translateY(0);
             opacity: 1;
         }
-        .comment-box {
-    margin-top: 10px;
-    background: var(--bg-dark);
-    padding: 10px;
-    border-radius: 6px;
-}
-.comment-textarea {
-    width: 100%;
-    background: var(--bg-card);
-    color: var(--text-main);
-    border: 1px solid var(--border);
-    padding: 8px;
-    border-radius: 4px;
-    resize: vertical;
-    margin-bottom: 8px;
-}
-.comment-btn {
-    padding: 6px 14px;
-    background: var(--primary);
-    color: black;
-    font-weight: bold;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.comment-btn:hover {
-    background: var(--secondary);
-}
+
+        /* === COMMENT SECTION === */
+        .comment-section {
+            margin-top: 15px;
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            display: none; /* Hidden by default */
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .comment-input {
+            flex: 1;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 20px;
+            font-family: inherit;
+        }
+
+        .comment-submit {
+            background: var(--primary);
+            color: black;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .comment-submit:hover {
+            background: var(--secondary);
+        }
+
+        .comment-list {
+            margin-top: 10px;
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: black;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-username {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin-bottom: 3px;
+        }
+
+        .comment-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .comment-time {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-top: 3px;
+        }
+
+        /* Comment actions */
+        .comment-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .comment-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+
+        .comment-action-btn:hover {
+            background: rgba(157, 0, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .comment-action-btn svg {
+            width: 14px;
+            height: 14px;
+            transition: all 0.2s;
+        }
+
+        .comment-action-btn:hover svg {
+            transform: scale(1.1);
+        }
+
+        .comment-upvote.active {
+            color: #00ff00;
+        }
+
+        .comment-upvote.active svg {
+            fill: #00ff00;
+        }
+
+        .comment-downvote.active {
+            color: #ff0000;
+        }
+
+        .comment-downvote.active svg {
+            fill: #ff0000;
+        }
+
+        /* Edit forms */
+        .edit-form, .comment-edit-form {
+            margin: 10px 0;
+        }
+
+        .edit-textarea {
+            width: 100%;
+            min-height: 100px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .edit-actions, .comment-edit-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .edit-cancel-btn, .edit-save-btn,
+        .comment-edit-cancel, .comment-edit-save {
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .edit-cancel-btn, .comment-edit-cancel {
+            background: transparent;
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+
+        .edit-save-btn, .comment-edit-save {
+            background: var(--primary);
+            color: black;
+            border: none;
+        }
+
+        .edit-cancel-btn:hover, .comment-edit-cancel:hover {
+            background: var(--bg-dark);
+        }
+
+        .edit-save-btn:hover, .comment-edit-save:hover {
+            background: var(--secondary);
+        }
+
+        .comment-edit-input {
+            flex: 1;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-family: inherit;
+            width: 100%;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -796,7 +966,7 @@
                 <!-- Media upload controls -->
                 <div class="media-upload">
                     <button class="upload-btn" onclick="document.getElementById('mediaInput').click()">
-                        📷 Add Image/GIF
+                        📷 Add Media
                     </button>
                     <input type="file" id="mediaInput" accept="image/*, video/*" multiple onchange="handleMediaUpload(event)">
                 </div>
@@ -849,10 +1019,7 @@
                         </button>
                         <button class="action-btn" onclick="reply('1')">
                             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="17 1 21 5 17 9"></polyline>
-                                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                                <polyline points="7 23 3 19 7 15"></polyline>
-                                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                             </svg>
                             <span>Reply</span>
                         </button>
@@ -866,13 +1033,64 @@
                             </svg>
                             <span>Share</span>
                         </button>
-                        <div class="comment-box">
-  <textarea class="comment-textarea" placeholder="Write a comment..."></textarea>
-  <button class="comment-btn" onclick="postComment('1', this)">Reply</button>
-<div class="comment-box" style="display: none;">
-  <textarea class="comment-textarea" placeholder="Write a comment..."></textarea>
-  <button class="comment-btn" onclick="postComment('1', this)">Reply</button>
-</div>
+                        <button class="action-btn edit-btn" onclick="editRoast('1')" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>Edit</span>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteRoast('1')" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                    <div class="comment-section">
+                        <div class="comment-form">
+                            <input type="text" class="comment-input" placeholder="Write a comment...">
+                            <button class="comment-submit" onclick="postComment(this, '1')">Post</button>
+                        </div>
+                        <div class="comment-list">
+                            <!-- Sample comment -->
+                            <div class="comment-item" data-comment-id="1-1">
+                                <div class="comment-avatar">Y</div>
+                                <div class="comment-content">
+                                    <div class="comment-username">@You</div>
+                                    <div class="comment-text">That's a sick burn! 🔥</div>
+                                    <div class="comment-time">Just now</div>
+                                    <div class="comment-actions">
+                                        <button class="comment-action-btn comment-upvote" onclick="voteComment(this, '1-1')">
+                                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                                            </svg>
+                                            <span>3</span>
+                                        </button>
+                                        <button class="comment-action-btn comment-downvote" onclick="voteComment(this, '1-1')">
+                                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                                            </svg>
+                                            <span>0</span>
+                                        </button>
+                                        <button class="comment-action-btn comment-edit-btn" onclick="editComment(this, '1-1')" style="display: none;">
+                                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                            <span>Edit</span>
+                                        </button>
+                                        <button class="comment-action-btn comment-delete-btn" onclick="deleteComment('1-1')" style="display: none;">
+                                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                            <span>Delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -910,10 +1128,7 @@
                         </button>
                         <button class="action-btn" onclick="reply('2')">
                             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="17 1 21 5 17 9"></polyline>
-                                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                                <polyline points="7 23 3 19 7 15"></polyline>
-                                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                             </svg>
                             <span>Reply</span>
                         </button>
@@ -927,13 +1142,28 @@
                             </svg>
                             <span>Share</span>
                         </button>
-                        <div class="comment-box">
-  <textarea class="comment-textarea" placeholder="Write a comment..."></textarea>
-  <button class="comment-btn" onclick="postComment('1', this)">Reply</button>
-<div class="comment-box" style="display: none;">
-  <textarea class="comment-textarea" placeholder="Write a comment..."></textarea>
-  <button class="comment-btn" onclick="postComment('1', this)">Reply</button>
-</div>
+                        <button class="action-btn edit-btn" onclick="editRoast('2')" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>Edit</span>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteRoast('2')" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                    <div class="comment-section">
+                        <div class="comment-form">
+                            <input type="text" class="comment-input" placeholder="Write a comment...">
+                            <button class="comment-submit" onclick="postComment(this, '2')">Post</button>
+                        </div>
+                        <div class="comment-list">
+                            <!-- Comments will appear here -->
                         </div>
                     </div>
                 </div>
@@ -1019,10 +1249,7 @@
                     </button>
                     <button class="action-btn" onclick="reply('3')">
                         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="17 1 21 5 17 9"></polyline>
-                            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                            <polyline points="7 23 3 19 7 15"></polyline>
-                            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                         </svg>
                         <span>Reply</span>
                     </button>
@@ -1036,6 +1263,29 @@
                         </svg>
                         <span>Share</span>
                     </button>
+                    <button class="action-btn edit-btn" onclick="editRoast('3')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        <span>Edit</span>
+                    </button>
+                    <button class="action-btn delete-btn" onclick="deleteRoast('3')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span>Delete</span>
+                    </button>
+                </div>
+                <div class="comment-section">
+                    <div class="comment-form">
+                        <input type="text" class="comment-input" placeholder="Write a comment...">
+                        <button class="comment-submit" onclick="postComment(this, '3')">Post</button>
+                    </div>
+                    <div class="comment-list">
+                        <!-- Comments will appear here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -1050,6 +1300,7 @@
         let profilePic = null;
         let notificationsEnabled = true;
         let votedRoasts = {}; // Track which roasts user has voted on
+        let votedComments = {}; // Track which comments user has voted on
         
         // Initialize with sample data
         document.addEventListener('DOMContentLoaded', function() {
@@ -1077,7 +1328,165 @@
             if (savedVotes) {
                 votedRoasts = JSON.parse(savedVotes);
             }
+            
+            // Load voted comments from localStorage
+            const savedCommentVotes = localStorage.getItem('votedComments');
+            if (savedCommentVotes) {
+                votedComments = JSON.parse(savedCommentVotes);
+            }
+            
+            // Check ownership of posts and comments
+            checkOwnership();
         });
+
+        // Show edit/delete buttons only for user's own posts
+        function checkOwnership() {
+            document.querySelectorAll('.roast-card').forEach(card => {
+                const username = card.querySelector('.username').textContent;
+                const isOwnPost = username === '@You';
+                
+                card.querySelectorAll('.edit-btn, .delete-btn').forEach(btn => {
+                    btn.style.display = isOwnPost ? 'flex' : 'none';
+                });
+            });
+            
+            document.querySelectorAll('.comment-item').forEach(comment => {
+                const username = comment.querySelector('.comment-username').textContent;
+                const isOwnComment = username === '@You';
+                
+                comment.querySelectorAll('.comment-edit-btn, .comment-delete-btn').forEach(btn => {
+                    btn.style.display = isOwnComment ? 'flex' : 'none';
+                });
+            });
+        }
+
+        // Edit roast function
+        function editRoast(roastId) {
+            const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+            const content = roastCard.querySelector('.roast-content').textContent;
+            
+            // Create edit form
+            const editForm = document.createElement('div');
+            editForm.className = 'edit-form';
+            editForm.innerHTML = `
+                <textarea class="edit-textarea">${content}</textarea>
+                <div class="edit-actions">
+                    <button class="edit-cancel-btn" onclick="cancelEdit('${roastId}')">Cancel</button>
+                    <button class="edit-save-btn" onclick="saveRoastEdit('${roastId}')">Save</button>
+                </div>
+            `;
+            
+            // Replace content with edit form
+            roastCard.querySelector('.roast-content').replaceWith(editForm);
+            editForm.querySelector('textarea').focus();
+        }
+
+        // Save edited roast
+        function saveRoastEdit(roastId) {
+            const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+            const newContent = roastCard.querySelector('.edit-textarea').value.trim();
+            
+            if (!newContent) {
+                showToast('Roast cannot be empty');
+                return;
+            }
+            
+            // Create new content element
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'roast-content';
+            contentDiv.textContent = newContent;
+            
+            // Replace edit form with new content
+            roastCard.querySelector('.edit-form').replaceWith(contentDiv);
+            showToast('Roast updated!');
+        }
+
+        // Cancel edit
+        function cancelEdit(roastId) {
+            const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+            const originalContent = roastCard.querySelector('.edit-textarea').value.trim();
+            
+            // Recreate original content
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'roast-content';
+            contentDiv.textContent = originalContent;
+            
+            // Replace edit form with original content
+            roastCard.querySelector('.edit-form').replaceWith(contentDiv);
+        }
+
+        // Delete roast
+        function deleteRoast(roastId) {
+            if (confirm('Are you sure you want to delete this roast?')) {
+                const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+                roastCard.remove();
+                showToast('Roast deleted');
+            }
+        }
+
+        // Edit comment
+        function editComment(button, commentId) {
+            const commentItem = button.closest('.comment-item');
+            const commentText = commentItem.querySelector('.comment-text').textContent;
+            
+            // Create edit form
+            const editForm = document.createElement('div');
+            editForm.className = 'comment-edit-form';
+            editForm.innerHTML = `
+                <input type="text" class="comment-edit-input" value="${commentText}">
+                <div class="comment-edit-actions">
+                    <button class="comment-edit-cancel" onclick="cancelCommentEdit('${commentId}')">Cancel</button>
+                    <button class="comment-edit-save" onclick="saveCommentEdit('${commentId}')">Save</button>
+                </div>
+            `;
+            
+            // Replace text with edit form
+            commentItem.querySelector('.comment-text').replaceWith(editForm);
+            editForm.querySelector('input').focus();
+        }
+
+        // Save edited comment
+        function saveCommentEdit(commentId) {
+            const commentItem = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
+            const newContent = commentItem.querySelector('.comment-edit-input').value.trim();
+            
+            if (!newContent) {
+                showToast('Comment cannot be empty');
+                return;
+            }
+            
+            // Create new text element
+            const textDiv = document.createElement('div');
+            textDiv.className = 'comment-text';
+            textDiv.textContent = newContent;
+            
+            // Replace edit form with new content
+            commentItem.querySelector('.comment-edit-form').replaceWith(textDiv);
+            showToast('Comment updated!');
+        }
+
+        // Cancel comment edit
+        function cancelCommentEdit(commentId) {
+            const commentItem = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
+            const originalContent = commentItem.querySelector('.comment-edit-input').value.trim();
+            
+            // Recreate original content
+            const textDiv = document.createElement('div');
+            textDiv.className = 'comment-text';
+            textDiv.textContent = originalContent;
+            
+            // Replace edit form with original content
+            commentItem.querySelector('.comment-edit-form').replaceWith(textDiv);
+        }
+
+        // Delete comment
+        function deleteComment(commentId) {
+            if (confirm('Are you sure you want to delete this comment?')) {
+                const commentItem = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
+                commentItem.remove();
+                showToast('Comment deleted');
+            }
+        }
 
         // Switch between tabs
         function switchTab(tab) {
@@ -1344,10 +1753,7 @@
                     </button>
                     <button class="action-btn" onclick="reply('${roastId}')">
                         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="17 1 21 5 17 9"></polyline>
-                            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                            <polyline points="7 23 3 19 7 15"></polyline>
-                            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                         </svg>
                         <span>Reply</span>
                     </button>
@@ -1361,6 +1767,29 @@
                         </svg>
                         <span>Share</span>
                     </button>
+                    <button class="action-btn edit-btn" onclick="editRoast('${roastId}')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        <span>Edit</span>
+                    </button>
+                    <button class="action-btn delete-btn" onclick="deleteRoast('${roastId}')">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span>Delete</span>
+                    </button>
+                </div>
+                <div class="comment-section">
+                    <div class="comment-form">
+                        <input type="text" class="comment-input" placeholder="Write a comment...">
+                        <button class="comment-submit" onclick="postComment(this, '${roastId}')">Post</button>
+                    </div>
+                    <div class="comment-list">
+                        <!-- Comments will appear here -->
+                    </div>
                 </div>
             `;
             
@@ -1370,6 +1799,9 @@
             document.getElementById('mediaPreview').innerHTML = '';
             
             showToast('Roast posted successfully!');
+            
+            // Check ownership for the new post
+            checkOwnership();
         }
 
         // Voting system with restrictions
@@ -1414,6 +1846,48 @@
             showToast(isUpvote ? 'Upvoted!' : 'Downvoted!');
         }
 
+        // Comment voting system
+        function voteComment(button, commentId) {
+            const isUpvote = button.classList.contains('comment-upvote');
+            const isDownvote = button.classList.contains('comment-downvote');
+            const countSpan = button.querySelector('span');
+            let count = parseInt(countSpan.textContent);
+            
+            // Check if user already voted on this comment
+            if (votedComments[commentId]) {
+                if ((votedComments[commentId] === 'up' && isUpvote) || 
+                    (votedComments[commentId] === 'down' && isDownvote)) {
+                    showToast('You already voted on this comment');
+                    return;
+                }
+            }
+            
+            // Remove any existing vote
+            const parent = button.parentElement.parentElement;
+            parent.querySelectorAll('.comment-upvote, .comment-downvote').forEach(btn => {
+                btn.classList.remove('active');
+                
+                // If user is changing their vote, decrement the opposite count
+                if (btn !== button && votedComments[commentId]) {
+                    const oppositeCountSpan = btn.querySelector('span');
+                    let oppositeCount = parseInt(oppositeCountSpan.textContent);
+                    if (oppositeCount > 0) {
+                        oppositeCountSpan.textContent = oppositeCount - 1;
+                    }
+                }
+            });
+            
+            // Apply new vote
+            button.classList.add('active');
+            countSpan.textContent = count + 1;
+            
+            // Record the vote
+            votedComments[commentId] = isUpvote ? 'up' : 'down';
+            localStorage.setItem('votedComments', JSON.stringify(votedComments));
+            
+            showToast(isUpvote ? 'Comment upvoted!' : 'Comment downvoted!');
+        }
+
         // Filter roasts
         function filterRoasts(type) {
             // In a real app, this would fetch different roast lists
@@ -1425,35 +1899,99 @@
             showToast(`Showing ${type} roasts`);
         }
 
-        // Reply function
-     function reply(roastId) {
-    const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
-    const username = roastCard?.querySelector('.username')?.textContent.trim() || '@User';
+        // Reply function - now toggles comment section
+        function reply(roastId) {
+            const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+            const commentSection = roastCard.querySelector('.comment-section');
+            
+            // Toggle comment section visibility
+            if (commentSection.style.display === 'block') {
+                commentSection.style.display = 'none';
+            } else {
+                // Hide all other comment sections first
+                document.querySelectorAll('.comment-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                commentSection.style.display = 'block';
+                commentSection.querySelector('.comment-input').focus();
+            }
+        }
 
-    const textarea = document.querySelector('.new-roast textarea');
-    const roastBox = document.querySelector('.new-roast');
-    
-    if (textarea && roastBox) {
-        textarea.value = `@${username} `;
-        roastBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        textarea.focus({ preventScroll: true }); // prevent it from jumping again
-    }
-
-    showToast(`Replying to ${username}`);
-}
-
-
+        // Post comment function
+        function postComment(button, roastId) {
+            const roastCard = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
+            const commentInput = roastCard.querySelector('.comment-input');
+            const commentText = commentInput.value.trim();
+            
+            if (!commentText) {
+                showToast('Please write a comment');
+                return;
+            }
+            
+            const commentList = roastCard.querySelector('.comment-list');
+            const newComment = document.createElement('div');
+            newComment.className = 'comment-item';
+            const commentId = `${roastId}-${Date.now()}`;
+            newComment.dataset.commentId = commentId;
+            
+            // In a real app, you'd use the actual user's profile pic and name
+            newComment.innerHTML = `
+                <div class="comment-avatar">Y</div>
+                <div class="comment-content">
+                    <div class="comment-username">@You</div>
+                    <div class="comment-text">${commentText}</div>
+                    <div class="comment-time">Just now</div>
+                    <div class="comment-actions">
+                        <button class="comment-action-btn comment-upvote" onclick="voteComment(this, '${commentId}')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                            </svg>
+                            <span>0</span>
+                        </button>
+                        <button class="comment-action-btn comment-downvote" onclick="voteComment(this, '${commentId}')">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                            </svg>
+                            <span>0</span>
+                        </button>
+                        <button class="comment-action-btn comment-edit-btn" onclick="editComment(this, '${commentId}')">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>Edit</span>
+                        </button>
+                        <button class="comment-action-btn comment-delete-btn" onclick="deleteComment('${commentId}')">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            commentList.prepend(newComment);
+            commentInput.value = '';
+            showToast('Comment posted!');
+            
+            // Check ownership for the new comment
+            checkOwnership();
+        }
 
         // Share function
-      function share(roastId) {
-    const shareTo = prompt("Share roast with who? Type @username or choose from your following list.");
-    if (shareTo) {
-        showToast(`Shared roast ${roastId} with ${shareTo}`);
-        // You can integrate a sharing modal or backend API call here
-    }
-}
-
-
+        function share(roastId) {
+            // In a real app, this would share the roast URL
+            const tempInput = document.createElement('input');
+            tempInput.value = `${window.location.origin}/roast/${roastId}`;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            
+            showToast('Roast link copied to clipboard!');
+        }
 
         // Show toast notification
         function showToast(message) {
@@ -1471,6 +2009,16 @@
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 postRoast();
+            }
+        });
+
+        // Handle Enter key for comments
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey && e.target.classList.contains('comment-input')) {
+                e.preventDefault();
+                const roastId = e.target.closest('.roast-card').dataset.roastId;
+                const button = e.target.closest('.comment-form').querySelector('.comment-submit');
+                postComment(button, roastId);
             }
         });
 
@@ -1554,26 +2102,6 @@
                 }
             }
         });
-        function postComment(roastId, button) {
-    const card = document.querySelector(`.roast-card[data-roast-id="${roastId}"]`);
-    const textarea = card.querySelector('.comment-textarea');
-    const text = textarea.value.trim();
-
-    if (!text) {
-        showToast("Write something before replying!");
-        return;
-    }
-
-    const comment = document.createElement('div');
-    comment.innerHTML = `
-        <div style="margin-top:10px;padding:10px;border-left:2px solid var(--primary);background:var(--bg-dark);border-radius:5px;">
-            <strong>@You:</strong> ${text}
-        </div>
-    `;
-    card.appendChild(comment);
-    textarea.value = '';
-    showToast('Comment posted!');
-}
     </script>
 </body>
 </html>
