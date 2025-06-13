@@ -116,11 +116,11 @@
             justify-content: center;
         }
 
-        .profile-btn {
+      .profile-btn {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: transparent; /* <-- remove purple */
+  background: transparent;
   border: none;
   cursor: pointer;
   display: flex;
@@ -132,11 +132,12 @@
 }
 
 
-        .profile-btn img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+       .profile-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
 
         .profile-btn:hover {
             transform: scale(1.1);
@@ -939,12 +940,10 @@
                 </div>
                 
                 <!-- Profile Button -->
-                <div class="profile-dropdown">
-                    <button class="profile-btn" id="profileButton" onclick="toggleProfileDropdown()">
-                       <img id="profileImage" src="login-icon.png" alt="Profile" style="display: block; border-radius: 50%; width: 100%; height: 100%; object-fit: cover;">
+                <button class="profile-btn" id="profileButton" onclick="toggleProfileDropdown()">
+  <img src="login-icon.png" alt="Profile" />
+</button>
 
-                        <span id="profileInitial">Y</span>
-                    </button>
                     <div class="dropdown-content" id="profileDropdown">
                         <a href="#" onclick="switchTab('profile'); return false;">👤 My Profile</a>
                         <a href="#" onclick="document.getElementById('profilePicInput').click(); return false;">📷 Change Profile Picture</a>
