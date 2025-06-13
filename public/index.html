@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Roast Battle Portal</title>
   <style>
+.auth-icons {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+}
+.auth-icons img {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(255, 80, 0, 0.8);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.auth-icons img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px rgba(255, 120, 0, 1);
+}
+    
     :root {
       --bg-dark: #0f0e17;
       --bg-light: #1b1a2e;
@@ -109,7 +127,12 @@
 </head>
 <body>
   <h1><span class="fire-title">🔥</span> ROAST BATTLE PORTAL <span class="fire-title">🔥</span></h1>
-  
+
+  <div class="auth-icons">
+  <a href="login.html" title="Login / Sign Up">
+    <img src="ChatGPT Image Jun 13, 2025 at 06_46_53 PM.png" alt="Login Icon" />
+  </a>
+</div>
   <div class="status-message">Choose your battle dimension:</div>
   
   <div class="portal-options">
