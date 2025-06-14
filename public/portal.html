@@ -84,6 +84,13 @@
       object-fit: cover;
     }
     
+    .username-display {
+      color: #00f5d4;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    
     .avatar-options {
       display: flex;
       gap: 10px;
@@ -395,31 +402,20 @@
   </style>
 </head>
 <body>
- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Roast Battle Arena</title>
-  <style>
-    /* KEEPING ALL YOUR CSS INTACT (unchanged from your original deepseek_html) */
-    /* Modal, glowing orb, chat UI, buttons, avatars — all preserved exactly */
-    /* You can paste your CSS back here from deepseek_html if needed */
-  </style>
-</head>
-<body>
-
   <!-- Entry Modal -->
   <div class="modal-overlay" id="entryModal">
     <div class="modal-content">
       <h2 class="modal-title">👊 Enter the Roast Arena</h2>
+      
       <div class="avatar-section">
         <div class="avatar-preview" id="avatarPreview"></div>
+        <div class="username-display" id="usernameDisplay"></div>
         <div class="avatar-options">
           <button class="avatar-btn" id="changeAvatarBtn">Change Avatar</button>
-          <button class="avatar-btn" id="randomAvatarBtn">Randomize</button>
+          <button class="avatar-btn" id="randomizeAllBtn">Randomize All</button>
         </div>
       </div>
+      
       <div class="gender-selection">
         <label class="gender-option">
           <input type="radio" name="gender" class="gender-radio" value="male">
@@ -434,6 +430,7 @@
           <span>Other</span>
         </label>
       </div>
+      
       <div class="modal-actions">
         <button class="modal-btn enter-btn" id="enterAnonymouslyBtn">Enter Anonymously</button>
         <button class="modal-btn login-btn" id="loginBtn">Login / Sign Up</button>
@@ -457,14 +454,16 @@
     <a href="rules.html" style="background: #f15bb5; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Rules</a>
     <a href="privacy.html" style="background: #6247aa; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Privacy</a>
   </div>
-
   <div id="status">🌌 Connecting to neural network...</div>
   <div id="roast-quote"></div>
-
+  
   <div id="chat"></div>
-
   <div id="typing-indicator">
-    <div class="typing-dots"><span></span><span></span><span></span></div>
+    <div class="typing-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
     <div class="typing-text">is typing...</div>
   </div>
 
@@ -477,112 +476,325 @@
     <input type="text" id="messageInput" placeholder="Type your killer roast..." />
     <button id="sendBtn">Fire!</button>
   </div>
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roast Battle Arena</title>
+  <style>
+    /* [Previous CSS styles remain the same] */
+    
+    /* New styles for avatar upload */
+    .avatar-upload-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    
+    .avatar-upload-btn {
+      background: #6247aa;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .username-input {
+      background: #25233d;
+      color: #e2f3f5;
+      border: 1px solid #00f5d4;
+      border-radius: 8px;
+      padding: 8px 12px;
+      width: 80%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- [Previous HTML remains the same until the script section] -->
 
-  <!-- SOCKET.IO -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roast Battle Arena</title>
+  <style>
+    /* [All previous CSS styles remain exactly the same] */
+    /* Added new avatar upload styles */
+    .avatar-upload-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    
+    .avatar-upload-btn {
+      background: #6247aa;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .avatar-upload-btn:hover {
+      background: #00f5d4;
+      color: #0f0e17;
+    }
+    
+    .username-input {
+      background: #25233d;
+      color: #e2f3f5;
+      border: 1px solid #00f5d4;
+      border-radius: 8px;
+      padding: 8px 12px;
+      width: 80%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- [Previous HTML remains the same until the script section] -->
+
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script>
-    const socket = io(); // 🔥 Early connect
-    let mode = 'public';
+    // Supercharged random username generator with 3000+ combinations
+    const adjectives = [
+      "Atomic", "Banana", "Cosmic", "Dank", "Epic", "Flaming", "Galactic", "Hyper", 
+      "Inferno", "Jolly", "Killer", "Lucky", "Mighty", "Nuclear", "Omega", "Psycho",
+      "Quantum", "Ruthless", "Supreme", "Turbo", "Ultra", "Vicious", "Wicked", "Xtra",
+      "Yummy", "Zesty", "Alpha", "Blazing", "Chaotic", "Divine", "Electric", "Frozen",
+      "Golden", "Hollow", "Iron", "Jumpy", "Kooky", "Lunar", "Magic", "Nasty", "Onyx",
+      "Phat", "Quick", "Rad", "Swift", "Toxic", "Unreal", "Vapor", "Wild", "Xeno", "Yolo",
+      "Angry", "Bitter", "Crunchy", "Dirty", "Evil", "Funky", "Grim", "Hot", "Ice", "Jazzy"
+    ];
+    
+    const nouns = [
+      "Slayer", "Bandit", "Crusher", "Dragon", "Emperor", "Falcon", "Gladiator", "Hawk",
+      "Invader", "Jester", "Knight", "Legend", "Mage", "Ninja", "Overlord", "Pirate",
+      "Quasar", "Raider", "Samurai", "Titan", "Unicorn", "Viking", "Wizard", "Xerox",
+      "Yeti", "Zombie", "Assassin", "Brawler", "Champion", "Destroyer", "Executioner",
+      "Fighter", "Gangster", "Hunter", "Illusionist", "Juggernaut", "King", "Lord",
+      "Mercenary", "Nomad", "Outlaw", "Phoenix", "Queen", "Ronin", "Spartan", "Tyrant",
+      "Undertaker", "Vagabond", "Warrior", "Yakuza", "Zealot", "Aviator", "Berserker",
+      "Cyclops", "Daredevil", "Enigma", "Freak", "Goblin", "Hulk", "Icon", "Joker",
+      "Koala", "Llama", "Moose", "Narwhal", "Ocelot", "Panda", "Quokka", "Raccoon"
+    ];
 
-    document.addEventListener('DOMContentLoaded', function () {
-      const statusEl = document.getElementById('status');
-      const chat = document.getElementById('chat');
+    // 12 different avatar styles for maximum variety
+    const avatarStyles = [
+      "bottts", "lorelei", "pixel-art", "avataaars", 
+      "micah", "big-ears", "identicon", "croodles",
+      "adventurer", "big-smile", "notionists", "thumbs"
+    ];
 
+    function generateRandomUsername() {
+      const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+      const noun = nouns[Math.floor(Math.random() * nouns.length)];
+      const num = Math.floor(Math.random() * 900) + 100; // 100-999
+      return `${adj}${noun}${num}`;
+    }
+
+    function generateRandomAvatar() {
+      const style = avatarStyles[Math.floor(Math.random() * avatarStyles.length)];
+      return `https://api.dicebear.com/7.x/${style}/svg?seed=${Math.random().toString(36).substring(2, 15)}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize all elements
+      const modal = document.getElementById('entryModal');
       const avatarPreview = document.getElementById('avatarPreview');
-      avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Avatar">`;
-
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('mode') === 'private') {
-        mode = 'private';
-      }
-
-      function generateRandomAvatar() {
-        const avatars = [
-          'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + Math.random(),
-          'https://api.dicebear.com/7.x/lorelei-neutral/svg?seed=' + Math.random(),
-          'https://api.dicebear.com/7.x/pixel-art-neutral/svg?seed=' + Math.random()
-        ];
-        return avatars[Math.floor(Math.random() * avatars.length)];
-      }
-
-      function connectToRoom() {
-        document.getElementById('startBtn').style.display = 'block';
-
-        if (mode === 'private') {
-          document.querySelector('h1').textContent = "🔥 Private Roast Battle";
-          socket.emit('join_private');
-        } else {
-          document.querySelector('h1').textContent = "🔥 Public Roast Arena";
-          socket.emit('join_public');
-          document.getElementById('skipBtn').style.display = 'block';
+      const usernameDisplay = document.getElementById('usernameDisplay');
+      const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+      const randomizeAllBtn = document.getElementById('randomizeAllBtn');
+      const enterAnonymouslyBtn = document.getElementById('enterAnonymouslyBtn');
+      const loginBtn = document.getElementById('loginBtn');
+      const skipCustomizationBtn = document.getElementById('skipCustomizationBtn');
+      const startBtn = document.getElementById('startBtn');
+      const skipBtn = document.getElementById('skipBtn');
+      const sendBtn = document.getElementById('sendBtn');
+      
+      // Create avatar upload container
+      const uploadContainer = document.createElement('div');
+      uploadContainer.className = 'avatar-upload-container';
+      
+      // Create file input
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.id = 'avatarUpload';
+      fileInput.style.display = 'none';
+      
+      // Create upload button
+      const uploadBtn = document.createElement('button');
+      uploadBtn.className = 'avatar-upload-btn';
+      uploadBtn.textContent = 'Choose Avatar';
+      uploadBtn.addEventListener('click', () => fileInput.click());
+      
+      // Create username input
+      const usernameInput = document.createElement('input');
+      usernameInput.type = 'text';
+      usernameInput.className = 'username-input';
+      usernameInput.placeholder = 'Enter custom username';
+      usernameInput.maxLength = 20;
+      
+      // Create save button
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'avatar-btn';
+      saveBtn.textContent = 'Save Changes';
+      saveBtn.style.marginTop = '10px';
+      
+      // Assemble upload container
+      uploadContainer.appendChild(uploadBtn);
+      uploadContainer.appendChild(usernameInput);
+      uploadContainer.appendChild(saveBtn);
+      avatarPreview.parentNode.insertBefore(uploadContainer, avatarPreview.nextSibling);
+      
+      // Set initial random avatar and username
+      let currentAvatar = localStorage.getItem('userAvatar') || generateRandomAvatar();
+      let currentUsername = localStorage.getItem('username') || generateRandomUsername();
+      updateUserDisplay(currentAvatar, currentUsername);
+      
+      // Handle file selection
+      fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file && file.type.match('image.*')) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            currentAvatar = event.target.result;
+            avatarPreview.innerHTML = `<img src="${currentAvatar}" alt="Avatar">`;
+          };
+          reader.readAsDataURL(file);
         }
-      }
-
-      // Modal Events
-      document.getElementById('randomAvatarBtn').onclick = () => {
-        avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Avatar">`;
-      };
-
-      document.getElementById('changeAvatarBtn').onclick = () => {
-        alert("In full version, you can upload avatars.");
-      };
-
-      document.getElementById('loginBtn').onclick = () => {
+      });
+      
+      // Save changes
+      saveBtn.addEventListener('click', function() {
+        currentUsername = usernameInput.value.trim() || generateRandomUsername();
+        updateUserDisplay(currentAvatar, currentUsername);
+        toggleUploadContainer();
+      });
+      
+      // Randomize All button
+      randomizeAllBtn.addEventListener('click', function() {
+        currentAvatar = generateRandomAvatar();
+        currentUsername = generateRandomUsername();
+        updateUserDisplay(currentAvatar, currentUsername);
+      });
+      
+      // Change avatar button
+      changeAvatarBtn.addEventListener('click', toggleUploadContainer);
+      
+      // Enter anonymously button
+      enterAnonymouslyBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        startBtn.style.display = 'block';
+        saveToLocalStorage(currentAvatar, currentUsername);
+      });
+      
+      // Skip customization button
+      skipCustomizationBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        startBtn.style.display = 'block';
+        saveToLocalStorage(generateRandomAvatar(), generateRandomUsername());
+      });
+      
+      // Login button
+      loginBtn.addEventListener('click', function() {
         window.location.href = 'login.html';
-      };
-
-      document.getElementById('skipCustomizationBtn').onclick = () => {
-        document.getElementById('entryModal').style.display = 'none';
-        localStorage.setItem('userAvatar', generateRandomAvatar());
-        connectToRoom();
-      };
-
-      document.getElementById('enterAnonymouslyBtn').onclick = () => {
-        document.getElementById('entryModal').style.display = 'none';
-        const img = avatarPreview.querySelector('img');
-        localStorage.setItem('userAvatar', img ? img.src : generateRandomAvatar());
-        connectToRoom();
-      };
-
-      // Core socket events
-      socket.on('connect', () => {
-        statusEl.textContent = "✅ Connected! Waiting for match...";
       });
-
-      socket.on('disconnect', () => {
-        statusEl.textContent = "❌ Disconnected - trying to reconnect...";
+      
+      // Start battle button
+      startBtn.addEventListener('click', initializeSocketConnection);
+      
+      // Skip opponent button
+      skipBtn.addEventListener('click', function() {
+        if (socket) socket.emit('skip_opponent');
+        statusElement.textContent = "🔍 Finding new opponent...";
       });
-
-      socket.on('match_found', () => {
-        statusEl.textContent = "⚔️ Opponent found! Roast them!";
+      
+      // Send message button
+      sendBtn.addEventListener('click', sendMessage);
+      
+      // Handle Enter key in message input
+      document.getElementById('messageInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendMessage();
       });
-
-      socket.on('new_message', (data) => {
-        const className = data.sender === 'you' ? 'message you' : 'message stranger';
-        chat.innerHTML += `<div class="${className}">${data.text}</div>`;
-        chat.scrollTop = chat.scrollHeight;
-      });
-
-      // User actions
-      document.getElementById('skipBtn').onclick = () => {
-        socket.emit('skip_opponent');
-        statusEl.textContent = "🔍 Finding new opponent...";
-      };
-
-      document.getElementById('sendBtn').onclick = () => {
-        const input = document.getElementById('messageInput');
-        const msg = input.value.trim();
-        if (msg) {
-          socket.emit('send_roast', { text: msg });
-          input.value = '';
+      
+      // Helper functions
+      function toggleUploadContainer() {
+        uploadContainer.style.display = uploadContainer.style.display === 'flex' ? 'none' : 'flex';
+        changeAvatarBtn.textContent = uploadContainer.style.display === 'flex' ? 'Cancel' : 'Change Avatar';
+      }
+      
+      function updateUserDisplay(avatar, username) {
+        avatarPreview.innerHTML = `<img src="${avatar}" alt="Avatar">`;
+        usernameDisplay.textContent = username;
+        usernameInput.value = username;
+      }
+      
+      function saveToLocalStorage(avatar, username) {
+        localStorage.setItem('userAvatar', avatar);
+        localStorage.setItem('username', username);
+      }
+      
+      function initializeSocketConnection() {
+        statusElement.textContent = "🌠 Connecting to roast servers...";
+        socket = io();
+        
+        socket.on('connect', () => {
+          statusElement.textContent = "✅ Connected! Finding opponents...";
+          const userData = {
+            avatar: localStorage.getItem('userAvatar'),
+            username: localStorage.getItem('username')
+          };
+          
+          const mode = new URLSearchParams(window.location.search).get('mode');
+          if (mode === 'private') {
+            document.querySelector('h1').textContent = "🔥 Private Roast Battle";
+            socket.emit('join_private', userData);
+          } else {
+            document.querySelector('h1').textContent = "🔥 Public Roast Arena";
+            socket.emit('join_public', userData);
+            skipBtn.style.display = 'block';
+          }
+        });
+        
+        socket.on('match_found', (data) => {
+          statusElement.textContent = `⚔️ Matched with ${data.opponentName}!`;
+        });
+        
+        socket.on('new_message', (data) => {
+          const chat = document.getElementById('chat');
+          const msgClass = data.sender === 'you' ? 'message you' : 'message stranger';
+          chat.innerHTML += `
+            <div class="${msgClass}">
+              <img src="${data.avatar}" width="30" style="border-radius:50%;margin-right:8px;">
+              <strong>${data.username}:</strong> ${data.text}
+            </div>`;
+          chat.scrollTop = chat.scrollHeight;
+        });
+      }
+      
+      function sendMessage() {
+        const messageInput = document.getElementById('messageInput');
+        const message = messageInput.value.trim();
+        if (message && socket) {
+          socket.emit('send_roast', { 
+            text: message,
+            avatar: localStorage.getItem('userAvatar'),
+            username: localStorage.getItem('username')
+          });
+          messageInput.value = '';
         }
-      };
-
-      document.getElementById('messageInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          document.getElementById('sendBtn').click();
-        }
-      });
+      }
     });
   </script>
 </body>
