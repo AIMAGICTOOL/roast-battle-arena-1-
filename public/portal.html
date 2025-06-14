@@ -399,10 +399,39 @@
       50% { box-shadow: 0 0 25px #ff9e00; }
       100% { box-shadow: 0 0 15px #ff9e00; }
     }
-  </style>
+     /* Add this new style for age verification */
+    #ageVerificationModal .policy-links {
+      margin-top: 20px;
+      text-align: center;
+    }
+    #ageVerificationModal .policy-links a {
+      color: #00f5d4;
+      text-decoration: underline;
+    }
+      </style>
 </head>
 <body>
-  <!-- Entry Modal -->
+ <!-- Age Verification Modal (NEW) - Added at top of body -->
+  <div class="modal-overlay" id="ageVerificationModal">
+    <div class="modal-content">
+      <h2 class="modal-title">⚠️ Age Verification</h2>
+      <p style="text-align: center; margin-bottom: 25px;">
+        This arena contains uncensored roasts. You must be 18+ to enter.
+      </p>
+      
+      <div class="modal-actions" style="gap: 15px;">
+        <button class="modal-btn enter-btn" id="ageYesBtn">I'm 18+</button>
+        <button class="modal-btn login-btn" id="ageNoBtn">I'm Under 18</button>
+      </div>
+      
+      <div class="policy-links">
+        <p>By entering, you agree to our:</p>
+        <a href="rules.html">Rules</a> • 
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+    <!-- Entry Modal -->
   <div class="modal-overlay" id="entryModal">
     <div class="modal-content">
       <h2 class="modal-title">👊 Enter the Roast Arena</h2>
@@ -561,11 +590,34 @@
   </style>
 </head>
 <body>
-  <!-- [Previous HTML remains the same until the script section] -->
+ <script>
+    // Age Verification Logic (ADD THIS AT THE START OF YOUR SCRIPT)
+    const ageModal = document.getElementById('ageVerificationModal');
+    const entryModal = document.getElementById('entryModal');
+    
+    // Show age modal only if not previously verified THIS SESSION
+    if (!sessionStorage.getItem('ageVerified')) {
+      ageModal.style.display = 'flex';
+      entryModal.style.display = 'none';
+    } else {
+      ageModal.style.display = 'none';
+      entryModal.style.display = 'flex';
+    }
+    
+    document.getElementById('ageYesBtn').addEventListener('click', function() {
+      sessionStorage.setItem('ageVerified', 'true');
+      ageModal.style.display = 'none';
+      entryModal.style.display = 'flex';
+    });
+    
+    document.getElementById('ageNoBtn').addEventListener('click', function() {
+      alert("You must be 18+ to access this content");
+      window.location.href = 'https://www.google.com';
+    });
 
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script>
-    // Supercharged random username generator with 3000+ combinations
+    // [YOUR EXISTING JAVASCRIPT CODE FOLLOWS HERE]
+
+   // Supercharged random username generator with 3000+ combinations
     const adjectives = [
       "Atomic", "Banana", "Cosmic", "Dank", "Epic", "Flaming", "Galactic", "Hyper", 
       "Inferno", "Jolly", "Killer", "Lucky", "Mighty", "Nuclear", "Omega", "Psycho",
