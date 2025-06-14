@@ -797,20 +797,24 @@
         localStorage.setItem('username', username);
       }
       
-      function initializeSocketConnection() {
-        statusElement.textContent = "🌠 Connecting to roast servers...";
-    const socket = io("https://roast-battle-arena-1.onrender.com", {
+     let socket; // Global socket
 
+function initializeSocketConnection() {
+  statusElement.textContent = "🌠 Connecting to roast servers...";
 
-  transports: ['websocket'], // Force WebSocket only
-  reconnection: true,
-  reconnectionAttempts: 5
-});
+  socket = io("https://roast-battle-arena-1.onrender.com", {
+    transports: ['websocket'],
+    reconnection: true,
+    reconnectionAttempts: 5
+  });
 
+  socket.on('connect', () => {
+    console.log("✅ Socket connected!");
+    // your emit join logic...
+  });
 
-        
-        socket.on('connect', () => {
-          statusElement.textContent = "✅ Connected! Finding opponents...";
+  // all other socket.on(...) here
+}
           const userData = {
             avatar: localStorage.getItem('userAvatar'),
             username: localStorage.getItem('username')
