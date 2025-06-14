@@ -796,7 +796,7 @@
         localStorage.setItem('userAvatar', avatar);
         localStorage.setItem('username', username);
       }
-      
+      let socket; // define it globally
       function initializeSocketConnection() {
         statusElement.textContent = "🌠 Connecting to roast servers...";
    socket = io("/", {
