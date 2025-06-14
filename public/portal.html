@@ -469,111 +469,61 @@
   </div>
 
   <!-- 🔌 Socket -->
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script>
-    let socket;
-    const statusElement = document.getElementById('status');
+ <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+  const socket = io(); // 🔥 initialize like in portal.html
+  const statusElement = document.getElementById('status');
 
-    function generateRandomAvatar() {
-      const avatars = [
-        'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + Math.random(),
-        'https://api.dicebear.com/7.x/lorelei-neutral/svg?seed=' + Math.random(),
-        'https://api.dicebear.com/7.x/pixel-art-neutral/svg?seed=' + Math.random()
-      ];
-      return avatars[Math.floor(Math.random() * avatars.length)];
+  // Detect mode early
+  const urlParams = new URLSearchParams(window.location.search);
+  const mode = urlParams.get('mode');
+
+  if (mode === 'private') {
+    document.querySelector('h1').textContent = "🔥 Private Roast Battle";
+    socket.emit('join_private');
+  } else {
+    document.querySelector('h1').textContent = "🔥 Public Roast Arena";
+    socket.emit('join_public');
+    document.getElementById('skipBtn').style.display = 'block';
+  }
+
+  socket.on('connect', () => {
+    statusElement.textContent = "✅ Connected! Finding opponents...";
+  });
+
+  socket.on('disconnect', () => {
+    statusElement.textContent = "❌ Disconnected - Trying to reconnect...";
+  });
+
+  socket.on('match_found', () => {
+    statusElement.textContent = "⚔️ Opponent found! Battle begins...";
+  });
+
+  socket.on('new_message', (data) => {
+    const chat = document.getElementById('chat');
+    const msgClass = data.sender === 'you' ? 'message you' : 'message stranger';
+    chat.innerHTML += `<div class="${msgClass}">${data.text}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  });
+
+  // Button actions
+  document.getElementById('skipBtn').addEventListener('click', () => {
+    socket.emit('skip_opponent');
+    statusElement.textContent = "🔍 Finding new opponent...";
+  });
+
+  document.getElementById('sendBtn').addEventListener('click', () => {
+    const input = document.getElementById('messageInput');
+    const msg = input.value.trim();
+    if (msg !== '') {
+      socket.emit('send_roast', { text: msg });
+      input.value = '';
     }
+  });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const modal = document.getElementById('entryModal');
-      const avatarPreview = document.getElementById('avatarPreview');
-
-      avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Avatar">`;
-
-      document.getElementById('randomAvatarBtn').addEventListener('click', () => {
-        avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Avatar">`;
-      });
-
-      document.getElementById('changeAvatarBtn').addEventListener('click', () => {
-        alert("Upload feature coming soon!");
-      });
-
-      document.getElementById('loginBtn').addEventListener('click', () => {
-        window.location.href = 'login.html';
-      });
-
-      document.getElementById('skipCustomizationBtn').addEventListener('click', () => {
-        modal.style.display = 'none';
-        document.getElementById('startBtn').style.display = 'block';
-        localStorage.setItem('userAvatar', generateRandomAvatar());
-        initSocket();
-      });
-
-      document.getElementById('enterAnonymouslyBtn').addEventListener('click', () => {
-        modal.style.display = 'none';
-        document.getElementById('startBtn').style.display = 'block';
-        localStorage.setItem('userAvatar', avatarPreview.querySelector('img').src);
-        initSocket();
-      });
-
-      document.getElementById('startBtn').addEventListener('click', () => {
-        statusElement.textContent = "🌠 Connecting to roast servers...";
-      });
-
-      document.getElementById('skipBtn').addEventListener('click', () => {
-        socket.emit('skip_opponent');
-        statusElement.textContent = "🔍 Finding new opponent...";
-      });
-
-      document.getElementById('sendBtn').addEventListener('click', () => {
-        const messageInput = document.getElementById('messageInput');
-        const message = messageInput.value.trim();
-        if (message !== '') {
-          socket.emit('send_roast', { text: message });
-          messageInput.value = '';
-        }
-      });
-
-      document.getElementById('messageInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          document.getElementById('sendBtn').click();
-        }
-      });
-    });
-
-    function initSocket() {
-      socket = io();
-
-      socket.on('connect', () => {
-        statusElement.textContent = "✅ Connected! Finding opponents...";
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode');
-
-        if (mode === 'private') {
-          document.querySelector('h1').textContent = "🔥 Private Roast Battle";
-          socket.emit('join_private');
-        } else {
-          document.querySelector('h1').textContent = "🔥 Public Roast Arena";
-          socket.emit('join_public');
-          document.getElementById('skipBtn').style.display = 'block';
-        }
-      });
-
-      socket.on('disconnect', () => {
-        statusElement.textContent = "❌ Disconnected - Trying to reconnect...";
-      });
-
-      socket.on('match_found', () => {
-        statusElement.textContent = "⚔️ Opponent found! Battle begins...";
-      });
-
-      socket.on('new_message', (data) => {
-        const chat = document.getElementById('chat');
-        const msgClass = data.sender === 'you' ? 'message you' : 'message stranger';
-        chat.innerHTML += `<div class="${msgClass}">${data.text}</div>`;
-        chat.scrollTop = chat.scrollHeight;
-      });
+  document.getElementById('messageInput').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      document.getElementById('sendBtn').click();
     }
-  </script>
-</body>
-</html>
+  });
+</script>
