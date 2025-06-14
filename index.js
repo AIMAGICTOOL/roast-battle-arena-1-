@@ -1,54 +1,110 @@
-import express from 'express';
-import http from 'http';
-import { Server } from 'socket.io';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Get directory path for ES module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
 
-const PORT = process.env.PORT || 3000;
+app.use(cors());
+app.use(express.static(path.join(__dirname, "public"))); // your portal.html is here
 
-// Serve static files from 'public'
-app.use(express.static(path.join(__dirname, 'public')));
+const io = new Server(server, {
+  cors: {
+    origin: "*", // allow all for now (for Render hosting)
+    methods: ["GET", "POST"]
+  }
+});
 
-// Socket.IO events
-io.on('connection', (socket) => {
-  console.log('✅ A user connected');
+let publicQueue = [];
+let privateRooms = {};
 
-  socket.on('join_public', () => {
-    console.log('🌐 User joined public room');
-    socket.join('public');
-    socket.emit('match_found');
+io.on("connection", (socket) => {
+  console.log("🔌 New client:", socket.id);
+
+  socket.on("join_public", (userData) => {
+    socket.userData = userData;
+    publicQueue.push(socket);
+    matchPublicUsers();
   });
 
-  socket.on('join_private', () => {
-    console.log('🔒 User joined private room');
-    socket.join(socket.id);
-    socket.emit('match_found');
+  socket.on("join_private", (userData) => {
+    const roomCode = socket.handshake.query.room || generateRoomCode();
+    socket.join(roomCode);
+    socket.userData = userData;
+
+    if (!privateRooms[roomCode]) {
+      privateRooms[roomCode] = [socket];
+    } else {
+      privateRooms[roomCode].push(socket);
+      if (privateRooms[roomCode].length === 2) {
+        const [s1, s2] = privateRooms[roomCode];
+        s1.to(roomCode).emit("match_found", { opponentName: s2.userData.username });
+        s2.to(roomCode).emit("match_found", { opponentName: s1.userData.username });
+      }
+    }
   });
 
-  socket.on('send_roast', (data) => {
-    socket.emit('new_message', { text: data.text, sender: 'you' });
-    socket.broadcast.emit('new_message', { text: data.text, sender: 'stranger' });
+  socket.on("send_roast", (data) => {
+    const partner = socket.partner;
+    if (partner) {
+      partner.emit("new_message", {
+        text: data.text,
+        username: socket.userData.username,
+        avatar: socket.userData.avatar,
+        sender: "stranger"
+      });
+
+      socket.emit("new_message", {
+        text: data.text,
+        username: socket.userData.username,
+        avatar: socket.userData.avatar,
+        sender: "you"
+      });
+    }
   });
 
-  socket.on('skip_opponent', () => {
-    console.log('⏭️ User skipped opponent');
-    socket.emit('match_found');
+  socket.on("skip_opponent", () => {
+    removeFromQueue(socket);
+    socket.partner?.emit("partner_skipped");
+    socket.partner = null;
+    matchPublicUsers(); // try again
   });
 
-  socket.on('disconnect', () => {
-    console.log('❌ User disconnected');
+  socket.on("disconnect", () => {
+    console.log("❌ Disconnected:", socket.id);
+    removeFromQueue(socket);
+    if (socket.partner) {
+      socket.partner.emit("partner_skipped");
+      socket.partner.partner = null;
+    }
   });
 });
 
-// Start the server
+function matchPublicUsers() {
+  while (publicQueue.length >= 2) {
+    const user1 = publicQueue.shift();
+    const user2 = publicQueue.shift();
+
+    user1.partner = user2;
+    user2.partner = user1;
+
+    user1.emit("match_found", { opponentName: user2.userData.username });
+    user2.emit("match_found", { opponentName: user1.userData.username });
+  }
+}
+
+function removeFromQueue(socket) {
+  const index = publicQueue.indexOf(socket);
+  if (index !== -1) publicQueue.splice(index, 1);
+}
+
+function generateRoomCode() {
+  return Math.random().toString(36).substring(2, 8);
+}
+
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
