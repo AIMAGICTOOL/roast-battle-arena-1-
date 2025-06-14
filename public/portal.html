@@ -801,10 +801,12 @@
       let socket; // define it globally
       function initializeSocketConnection() {
         statusElement.textContent = "🌠 Connecting to roast servers...";
-   socket = io("/", {
-  transports: ['websocket'], // Force WebSocket only
+   socket = io("https://roast-battle-arena-1.onrender.com", {
+  transports: ['websocket'],
   reconnection: true,
   reconnectionAttempts: 5
+});
+
 });
 
 
