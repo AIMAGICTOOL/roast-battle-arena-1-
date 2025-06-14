@@ -4,45 +4,47 @@ import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Fix for __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = http.createServer(app);
 
-// Socket.IO with CORS for Render deployment
+// Fixed WebSocket config for Render
 const io = new Server(server, {
   cors: {
-    origin: "*", // Allow all origins (update in production)
+    origin: "*",
     methods: ["GET", "POST"]
-  }
+  },
+  transports: ['websocket']
 });
 
 const PORT = process.env.PORT || 3000;
 
-// Serve static files (HTML, CSS, JS, images)
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Handle all routes to serve the main HTML
+// Health check endpoint
+app.get('/health', (req, res) => res.send('OK'));
+
+// Handle all routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'portal.html'));
 });
 
-// Track connected users
+// Track users
 const users = new Map();
 
-// Socket.IO connection handler
 io.on('connection', (socket) => {
-  console.log('🔌 New connection:', socket.id);
+  console.log('✅ New connection:', socket.id);
+  
+  // Immediately confirm connection
+  socket.emit('connection_confirmed');
 
   // Public room handler
   socket.on('join_public', (userData) => {
     users.set(socket.id, userData);
     socket.join('public');
-    console.log(`👤 ${userData.username} joined public arena`);
-
-    // Mock matchmaking (replace with real logic later)
     socket.emit('match_found', {
       opponentName: 'AnonymousRoaster',
       opponentAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Opponent'
@@ -52,21 +54,18 @@ io.on('connection', (socket) => {
   // Private room handler
   socket.on('join_private', (userData) => {
     users.set(socket.id, userData);
-    socket.join(socket.id); // Room = socket ID
-    console.log(`🔒 ${userData.username} created private room`);
-    
+    socket.join(socket.id);
     socket.emit('match_found', {
       opponentName: 'PrivateOpponent',
       opponentAvatar: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=Private'
     });
   });
 
-  // Roast message handler
+  // Message handler
   socket.on('send_roast', (data) => {
     const user = users.get(socket.id);
     if (!user) return;
 
-    // Broadcast to all in the same room
     io.to(Array.from(socket.rooms)[1]).emit('new_message', {
       text: data.text,
       avatar: user.avatar,
@@ -75,7 +74,7 @@ io.on('connection', (socket) => {
     });
   });
 
-  // Skip opponent handler
+  // Skip opponent
   socket.on('skip_opponent', () => {
     socket.emit('match_found', {
       opponentName: 'NewOpponent',
@@ -83,14 +82,12 @@ io.on('connection', (socket) => {
     });
   });
 
-  // Cleanup on disconnect
+  // Cleanup
   socket.on('disconnect', () => {
-    console.log('❌ Disconnected:', socket.id);
     users.delete(socket.id);
   });
 });
 
-// Start server
-server.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
