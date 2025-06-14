@@ -395,11 +395,10 @@
   </style>
 </head>
 <body>
-  <!-- Entry Modal -->
+   <!-- 🔥 Entry Modal -->
   <div class="modal-overlay" id="entryModal">
     <div class="modal-content">
       <h2 class="modal-title">👊 Enter the Roast Arena</h2>
-      
       <div class="avatar-section">
         <div class="avatar-preview" id="avatarPreview"></div>
         <div class="avatar-options">
@@ -407,7 +406,6 @@
           <button class="avatar-btn" id="randomAvatarBtn">Randomize</button>
         </div>
       </div>
-      
       <div class="gender-selection">
         <label class="gender-option">
           <input type="radio" name="gender" class="gender-radio" value="male">
@@ -422,7 +420,6 @@
           <span>Other</span>
         </label>
       </div>
-      
       <div class="modal-actions">
         <button class="modal-btn enter-btn" id="enterAnonymouslyBtn">Enter Anonymously</button>
         <button class="modal-btn login-btn" id="loginBtn">Login / Sign Up</button>
@@ -431,12 +428,14 @@
     </div>
   </div>
 
+  <!-- 🔐 Auth Icon -->
   <div class="auth-icons">
     <a href="login.html" title="Login / Sign Up">
       <img src="login-icon.png" alt="Login Icon" />
     </a>
   </div>
 
+  <!-- 🔥 Main Content -->
   <h1>Roast Battle Arena</h1>
   <div class="nav-links">
     <div class="home-orb" onclick="window.location.href='index.html'">
@@ -446,15 +445,15 @@
     <a href="rules.html" style="background: #f15bb5; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Rules</a>
     <a href="privacy.html" style="background: #6247aa; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Privacy</a>
   </div>
+
   <div id="status">🌌 Connecting to neural network...</div>
   <div id="roast-quote"></div>
-  
+
   <div id="chat"></div>
+
   <div id="typing-indicator">
     <div class="typing-dots">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </div>
     <div class="typing-text">is typing...</div>
   </div>
@@ -469,13 +468,12 @@
     <button id="sendBtn">Fire!</button>
   </div>
 
+  <!-- 🔌 Socket -->
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script>
-    // Global socket variable
     let socket;
     const statusElement = document.getElementById('status');
-    
-    // Avatar generator
+
     function generateRandomAvatar() {
       const avatars = [
         'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + Math.random(),
@@ -485,103 +483,97 @@
       return avatars[Math.floor(Math.random() * avatars.length)];
     }
 
-    // Initialize when DOM loads
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', () => {
       const modal = document.getElementById('entryModal');
       const avatarPreview = document.getElementById('avatarPreview');
-      
-      // Set initial random avatar
+
       avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Avatar">`;
-      
-      // Modal button handlers
-      document.getElementById('randomAvatarBtn').addEventListener('click', function() {
+
+      document.getElementById('randomAvatarBtn').addEventListener('click', () => {
         avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Avatar">`;
       });
-      
-      document.getElementById('changeAvatarBtn').addEventListener('click', function() {
-        alert("In full version, this would let you upload an image");
+
+      document.getElementById('changeAvatarBtn').addEventListener('click', () => {
+        alert("Upload feature coming soon!");
       });
-      
-      document.getElementById('loginBtn').addEventListener('click', function() {
+
+      document.getElementById('loginBtn').addEventListener('click', () => {
         window.location.href = 'login.html';
       });
-      
-      document.getElementById('skipCustomizationBtn').addEventListener('click', function() {
+
+      document.getElementById('skipCustomizationBtn').addEventListener('click', () => {
         modal.style.display = 'none';
         document.getElementById('startBtn').style.display = 'block';
         localStorage.setItem('userAvatar', generateRandomAvatar());
+        initSocket();
       });
-      
-      document.getElementById('enterAnonymouslyBtn').addEventListener('click', function() {
+
+      document.getElementById('enterAnonymouslyBtn').addEventListener('click', () => {
         modal.style.display = 'none';
         document.getElementById('startBtn').style.display = 'block';
         localStorage.setItem('userAvatar', avatarPreview.querySelector('img').src);
+        initSocket();
       });
-      
-      // Start battle button
-      document.getElementById('startBtn').addEventListener('click', function() {
+
+      document.getElementById('startBtn').addEventListener('click', () => {
         statusElement.textContent = "🌠 Connecting to roast servers...";
-        
-        // Initialize socket connection
-        socket = io();
-        
-        socket.on('connect', () => {
-          statusElement.textContent = "✅ Connected! Finding opponents...";
-          
-          const urlParams = new URLSearchParams(window.location.search);
-          const mode = urlParams.get('mode');
-          
-          if (mode === 'private') {
-            document.querySelector('h1').textContent = "🔥 Private Roast Battle";
-            socket.emit('join_private');
-          } else {
-            document.querySelector('h1').textContent = "🔥 Public Roast Arena";
-            socket.emit('join_public');
-            document.getElementById('skipBtn').style.display = 'block';
-          }
-        });
-        
-        socket.on('disconnect', () => {
-          statusElement.textContent = "❌ Disconnected - Trying to reconnect...";
-        });
-        
-        socket.on('match_found', () => {
-          statusElement.textContent = "⚔️ Opponent found! Battle begins...";
-        });
-        
-        socket.on('new_message', (data) => {
-          // Handle incoming messages
-          const chat = document.getElementById('chat');
-          const msgClass = data.sender === 'you' ? 'message you' : 'message stranger';
-          chat.innerHTML += `<div class="${msgClass}">${data.text}</div>`;
-          chat.scrollTop = chat.scrollHeight;
-        });
       });
-      
-      // Skip opponent button
-      document.getElementById('skipBtn').addEventListener('click', function() {
+
+      document.getElementById('skipBtn').addEventListener('click', () => {
         socket.emit('skip_opponent');
         statusElement.textContent = "🔍 Finding new opponent...";
       });
-      
-      // Send message button
-      document.getElementById('sendBtn').addEventListener('click', function() {
+
+      document.getElementById('sendBtn').addEventListener('click', () => {
         const messageInput = document.getElementById('messageInput');
         const message = messageInput.value.trim();
-        
         if (message !== '') {
           socket.emit('send_roast', { text: message });
           messageInput.value = '';
         }
       });
-      
-      // Handle Enter key in message input
-      document.getElementById('messageInput').addEventListener('keypress', function(e) {
+
+      document.getElementById('messageInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           document.getElementById('sendBtn').click();
         }
       });
     });
+
+    function initSocket() {
+      socket = io();
+
+      socket.on('connect', () => {
+        statusElement.textContent = "✅ Connected! Finding opponents...";
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+
+        if (mode === 'private') {
+          document.querySelector('h1').textContent = "🔥 Private Roast Battle";
+          socket.emit('join_private');
+        } else {
+          document.querySelector('h1').textContent = "🔥 Public Roast Arena";
+          socket.emit('join_public');
+          document.getElementById('skipBtn').style.display = 'block';
+        }
+      });
+
+      socket.on('disconnect', () => {
+        statusElement.textContent = "❌ Disconnected - Trying to reconnect...";
+      });
+
+      socket.on('match_found', () => {
+        statusElement.textContent = "⚔️ Opponent found! Battle begins...";
+      });
+
+      socket.on('new_message', (data) => {
+        const chat = document.getElementById('chat');
+        const msgClass = data.sender === 'you' ? 'message you' : 'message stranger';
+        chat.innerHTML += `<div class="${msgClass}">${data.text}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+      });
+    }
   </script>
 </body>
 </html>
