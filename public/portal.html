@@ -799,7 +799,9 @@
       
       function initializeSocketConnection() {
         statusElement.textContent = "🌠 Connecting to roast servers...";
-     const socket = io("https://your-render-app-url.onrender.com", {
+    const socket = io("https://roast-battle-arena-1.onrender.com", {
+
+
   transports: ['websocket'], // Force WebSocket only
   reconnection: true,
   reconnectionAttempts: 5
