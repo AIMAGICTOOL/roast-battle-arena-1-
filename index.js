@@ -4,51 +4,73 @@ import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Get directory path for ES module
+// Required to use __dirname with ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from 'public'
+// Serve static files from public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Socket.IO events
-io.on('connection', (socket) => {
-  console.log('✅ A user connected');
+// Store temporary data
+const users = new Map();
 
-  socket.on('join_public', () => {
-    console.log('🌐 User joined public room');
+io.on('connection', (socket) => {
+  console.log('🔌 New user connected');
+
+  socket.on('join_public', (userData) => {
+    users.set(socket.id, userData);
     socket.join('public');
-    socket.emit('match_found');
+    console.log(`👤 ${userData.username} joined public`);
+
+    // Fake opponent name (in real, find another user)
+    socket.emit('match_found', {
+      opponentName: 'AnonymousRoaster'
+    });
   });
 
-  socket.on('join_private', () => {
-    console.log('🔒 User joined private room');
+  socket.on('join_private', (userData) => {
+    users.set(socket.id, userData);
     socket.join(socket.id);
-    socket.emit('match_found');
+    console.log(`🔒 ${userData.username} joined private`);
+    socket.emit('match_found', {
+      opponentName: 'PrivateOpponent'
+    });
   });
 
   socket.on('send_roast', (data) => {
-    socket.emit('new_message', { text: data.text, sender: 'you' });
-    socket.broadcast.emit('new_message', { text: data.text, sender: 'stranger' });
+    const user = users.get(socket.id);
+    if (!user) return;
+
+    const messageData = {
+      text: data.text,
+      avatar: data.avatar,
+      username: data.username,
+      sender: 'you'
+    };
+
+    socket.emit('new_message', messageData);
+
+    messageData.sender = 'stranger';
+    socket.broadcast.emit('new_message', messageData);
   });
 
   socket.on('skip_opponent', () => {
-    console.log('⏭️ User skipped opponent');
-    socket.emit('match_found');
+    socket.emit('match_found', {
+      opponentName: 'NewOpponent'
+    });
   });
 
   socket.on('disconnect', () => {
     console.log('❌ User disconnected');
+    users.delete(socket.id);
   });
 });
 
-// Start the server
 server.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
