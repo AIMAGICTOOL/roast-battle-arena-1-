@@ -471,59 +471,60 @@
   <!-- 🔌 Socket -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
-  const socket = io(); // 🔥 initialize like in portal.html
-  const statusElement = document.getElementById('status');
+  const socket = io(); // ✅ Initialize early
 
-  // Detect mode early
-  const urlParams = new URLSearchParams(window.location.search);
-  const mode = urlParams.get('mode');
+  document.addEventListener("DOMContentLoaded", function () {
+    const statusElement = document.getElementById('status');
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
 
-  if (mode === 'private') {
-    document.querySelector('h1').textContent = "🔥 Private Roast Battle";
-    socket.emit('join_private');
-  } else {
-    document.querySelector('h1').textContent = "🔥 Public Roast Arena";
-    socket.emit('join_public');
-    document.getElementById('skipBtn').style.display = 'block';
-  }
-
-  socket.on('connect', () => {
-    statusElement.textContent = "✅ Connected! Finding opponents...";
-  });
-
-  socket.on('disconnect', () => {
-    statusElement.textContent = "❌ Disconnected - Trying to reconnect...";
-  });
-
-  socket.on('match_found', () => {
-    statusElement.textContent = "⚔️ Opponent found! Battle begins...";
-  });
-
-  socket.on('new_message', (data) => {
-    const chat = document.getElementById('chat');
-    const msgClass = data.sender === 'you' ? 'message you' : 'message stranger';
-    chat.innerHTML += `<div class="${msgClass}">${data.text}</div>`;
-    chat.scrollTop = chat.scrollHeight;
-  });
-
-  // Button actions
-  document.getElementById('skipBtn').addEventListener('click', () => {
-    socket.emit('skip_opponent');
-    statusElement.textContent = "🔍 Finding new opponent...";
-  });
-
-  document.getElementById('sendBtn').addEventListener('click', () => {
-    const input = document.getElementById('messageInput');
-    const msg = input.value.trim();
-    if (msg !== '') {
-      socket.emit('send_roast', { text: msg });
-      input.value = '';
+    if (mode === 'private') {
+      document.querySelector('h1').textContent = "🔥 Private Roast Battle";
+      socket.emit('join_private');
+    } else {
+      document.querySelector('h1').textContent = "🔥 Public Roast Arena";
+      socket.emit('join_public');
+      document.getElementById('skipBtn').style.display = 'block';
     }
-  });
 
-  document.getElementById('messageInput').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-      document.getElementById('sendBtn').click();
-    }
+    socket.on('connect', () => {
+      statusElement.textContent = "✅ Connected! Finding opponents...";
+    });
+
+    socket.on('disconnect', () => {
+      statusElement.textContent = "❌ Disconnected - Trying to reconnect...";
+    });
+
+    socket.on('match_found', () => {
+      statusElement.textContent = "⚔️ Opponent found! Battle begins...";
+    });
+
+    socket.on('new_message', (data) => {
+      const chat = document.getElementById('chat');
+      const msgClass = data.sender === 'you' ? 'message you' : 'message stranger';
+      chat.innerHTML += `<div class="${msgClass}">${data.text}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+    });
+
+    // Buttons
+    document.getElementById('skipBtn').addEventListener('click', () => {
+      socket.emit('skip_opponent');
+      statusElement.textContent = "🔍 Finding new opponent...";
+    });
+
+    document.getElementById('sendBtn').addEventListener('click', () => {
+      const input = document.getElementById('messageInput');
+      const msg = input.value.trim();
+      if (msg !== '') {
+        socket.emit('send_roast', { text: msg });
+        input.value = '';
+      }
+    });
+
+    document.getElementById('messageInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('sendBtn').click();
+      }
+    });
   });
 </script>
