@@ -1,21 +1,30 @@
-const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
-const cors = require("cors");
-const path = require("path");
+import express from "express";
+import http from "http";
+import { Server } from "socket.io";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
+// Required to simulate __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Setup express
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors());
-app.use(express.static(path.join(__dirname, "public"))); // your portal.html is here
-
+// Setup socket.io server with CORS
 const io = new Server(server, {
   cors: {
-    origin: "*", // allow all for now (for Render hosting)
+    origin: "*",
     methods: ["GET", "POST"]
   }
 });
+
+// Serve static frontend (portal.html) from public folder
+app.use(cors());
+app.use(express.static(path.join(__dirname, "public")));
 
 let publicQueue = [];
 let privateRooms = {};
@@ -67,9 +76,12 @@ io.on("connection", (socket) => {
 
   socket.on("skip_opponent", () => {
     removeFromQueue(socket);
-    socket.partner?.emit("partner_skipped");
+    if (socket.partner) {
+      socket.partner.emit("partner_skipped");
+      socket.partner.partner = null;
+    }
     socket.partner = null;
-    matchPublicUsers(); // try again
+    matchPublicUsers();
   });
 
   socket.on("disconnect", () => {
