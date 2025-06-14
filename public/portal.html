@@ -476,77 +476,40 @@
 
  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
-  // Avatar generation function
-  function generateRandomAvatar() {
-    const avatars = [
-      'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + Math.random().toString(36).substring(2),
-      'https://api.dicebear.com/7.x/lorelei-neutral/svg?seed=' + Math.random().toString(36).substring(2),
-      'https://api.dicebear.com/7.x/pixel-art-neutral/svg?seed=' + Math.random().toString(36).substring(2)
-    ];
-    return avatars[Math.floor(Math.random() * avatars.length)];
-  }
-
+  // Global socket variable
   let socket;
+  const statusElement = document.getElementById('status');
 
-  document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('entryModal');
-    const avatarPreview = document.getElementById('avatarPreview');
-    const statusElement = document.getElementById('status');
-    const startBtn = document.getElementById('startBtn');
+  // Initialize connection when Enter Arena is clicked
+  document.getElementById('startBtn').addEventListener('click', function() {
+    statusElement.textContent = "🌠 Connecting to roast servers...";
     
-    avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Your Avatar">`;
+    // Initialize socket connection
+    socket = io(); // Connect to your server
 
-    document.getElementById('changeAvatarBtn').addEventListener('click', function() {
-      alert("Avatar upload would be implemented here in production");
+    socket.on('connect', () => {
+      statusElement.textContent = "✅ Connected! Finding opponents...";
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const mode = urlParams.get('mode');
+
+      if (mode === 'private') {
+        document.querySelector('h1').textContent = "🔥 Private Roast Battle";
+        socket.emit('join_private');
+      } else {
+        document.querySelector('h1').textContent = "🔥 Public Roast Arena";
+        socket.emit('join_public');
+        document.getElementById('skipBtn').style.display = 'block';
+      }
     });
 
-    document.getElementById('randomAvatarBtn').addEventListener('click', function() {
-      avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Your Avatar">`;
+    socket.on('disconnect', () => {
+      statusElement.textContent = "❌ Disconnected - Trying to reconnect...";
     });
 
-    function initializeConnection() {
-      statusElement.textContent = "🌠 Connecting to roast servers...";
-      socket = io();
-
-      socket.on('connect', () => {
-        statusElement.textContent = "✅ Connected! Finding opponents...";
-        
-        const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode');
-
-        if (mode === 'private') {
-          document.querySelector('h1').textContent = "🔥 Private Roast Battle";
-          socket.emit('join_private');
-        } else {
-          document.querySelector('h1').textContent = "🔥 Public Roast Arena";
-          socket.emit('join_public');
-          document.getElementById('skipBtn').style.display = 'block';
-        }
-      });
-
-      socket.on('disconnect', () => {
-        statusElement.textContent = "❌ Disconnected - Trying to reconnect...";
-      });
-    }
-
-    document.getElementById('enterAnonymouslyBtn').addEventListener('click', function() {
-      modal.style.display = 'none';
-      startBtn.style.display = 'block';
-      localStorage.setItem('userAvatar', avatarPreview.querySelector('img').src);
-      localStorage.setItem('userGender', document.querySelector('input[name="gender"]:checked').value);
-      initializeConnection();
-    });
-
-    document.getElementById('skipCustomizationBtn').addEventListener('click', function() {
-      modal.style.display = 'none';
-      startBtn.style.display = 'block';
-      localStorage.setItem('userAvatar', 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Anonymous');
-      localStorage.setItem('userGender', 'other');
-      initializeConnection();
-    });
-
-    startBtn.addEventListener('click', function() {
-      statusElement.textContent = "⚔️ Entering the arena...";
+    socket.on('match_found', (data) => {
+      statusElement.textContent = "⚔️ Opponent found! Battle begins...";
+      // Add your match start logic here
     });
   });
 </script>
