@@ -1,76 +1,99 @@
-import express from 'express';
-import http from 'http';
-import { Server } from 'socket.io';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import express from "express";
+import http from "http";
+import { Server } from "socket.io";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-// Required to use __dirname with ES modules
+// Simulate __dirname for ES module
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
-const PORT = process.env.PORT || 3000;
 
-// Serve static files from public folder
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files (portal.html must be in 'public' folder)
+app.use(express.static(path.join(__dirname, "public")));
+app.use(cors());
 
-// Store temporary data
-const users = new Map();
+const io = new Server(server, {
+  cors: {
+    origin: "*", // allow all origins (you can restrict later)
+    methods: ["GET", "POST"]
+  }
+});
 
-io.on('connection', (socket) => {
-  console.log('🔌 New user connected');
+// 🔥 Store public chat queue
+let publicQueue = [];
 
-  socket.on('join_public', (userData) => {
-    users.set(socket.id, userData);
-    socket.join('public');
-    console.log(`👤 ${userData.username} joined public`);
+io.on("connection", (socket) => {
+  console.log("🔌 New user connected:", socket.id);
 
-    // Fake opponent name (in real, find another user)
-    socket.emit('match_found', {
-      opponentName: 'AnonymousRoaster'
-    });
+  socket.on("join_public", (userData) => {
+    socket.userData = userData;
+    publicQueue.push(socket);
+    tryToMatchUsers();
   });
 
-  socket.on('join_private', (userData) => {
-    users.set(socket.id, userData);
-    socket.join(socket.id);
-    console.log(`🔒 ${userData.username} joined private`);
-    socket.emit('match_found', {
-      opponentName: 'PrivateOpponent'
-    });
+  socket.on("send_roast", (data) => {
+    const partner = socket.partner;
+    if (partner) {
+      partner.emit("new_message", {
+        text: data.text,
+        username: socket.userData.username,
+        avatar: socket.userData.avatar,
+        sender: "stranger"
+      });
+
+      socket.emit("new_message", {
+        text: data.text,
+        username: socket.userData.username,
+        avatar: socket.userData.avatar,
+        sender: "you"
+      });
+    }
   });
 
-  socket.on('send_roast', (data) => {
-    const user = users.get(socket.id);
-    if (!user) return;
-
-    const messageData = {
-      text: data.text,
-      avatar: data.avatar,
-      username: data.username,
-      sender: 'you'
-    };
-
-    socket.emit('new_message', messageData);
-
-    messageData.sender = 'stranger';
-    socket.broadcast.emit('new_message', messageData);
+  socket.on("skip_opponent", () => {
+    if (socket.partner) {
+      socket.partner.emit("partner_skipped");
+      socket.partner.partner = null;
+    }
+    socket.partner = null;
+    removeFromQueue(socket);
+    tryToMatchUsers();
   });
 
-  socket.on('skip_opponent', () => {
-    socket.emit('match_found', {
-      opponentName: 'NewOpponent'
-    });
-  });
-
-  socket.on('disconnect', () => {
-    console.log('❌ User disconnected');
-    users.delete(socket.id);
+  socket.on("disconnect", () => {
+    console.log("❌ User disconnected:", socket.id);
+    if (socket.partner) {
+      socket.partner.emit("partner_skipped");
+      socket.partner.partner = null;
+    }
+    removeFromQueue(socket);
   });
 });
 
+function tryToMatchUsers() {
+  while (publicQueue.length >= 2) {
+    const user1 = publicQueue.shift();
+    const user2 = publicQueue.shift();
+
+    user1.partner = user2;
+    user2.partner = user1;
+
+    user1.emit("match_found", { opponentName: user2.userData.username });
+    user2.emit("match_found", { opponentName: user1.userData.username });
+  }
+}
+
+function removeFromQueue(socket) {
+  const index = publicQueue.indexOf(socket);
+  if (index !== -1) publicQueue.splice(index, 1);
+}
+
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
