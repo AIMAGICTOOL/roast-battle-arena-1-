@@ -4,90 +4,51 @@ import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Get directory path for ES module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = http.createServer(app);
-
-// Fixed WebSocket config for Render
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  },
-  transports: ['websocket']
-});
+const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
 
-// Serve static files
+// Serve static files from 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Health check endpoint
-app.get('/health', (req, res) => res.send('OK'));
-
-// Handle all routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'portal.html'));
-});
-
-// Track users
-const users = new Map();
-
+// Socket.IO events
 io.on('connection', (socket) => {
-  console.log('✅ New connection:', socket.id);
-  
-  // Immediately confirm connection
-  socket.emit('connection_confirmed');
+  console.log('✅ A user connected');
 
-  // Public room handler
-  socket.on('join_public', (userData) => {
-    users.set(socket.id, userData);
+  socket.on('join_public', () => {
+    console.log('🌐 User joined public room');
     socket.join('public');
-    socket.emit('match_found', {
-      opponentName: 'AnonymousRoaster',
-      opponentAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Opponent'
-    });
+    socket.emit('match_found');
   });
 
-  // Private room handler
-  socket.on('join_private', (userData) => {
-    users.set(socket.id, userData);
+  socket.on('join_private', () => {
+    console.log('🔒 User joined private room');
     socket.join(socket.id);
-    socket.emit('match_found', {
-      opponentName: 'PrivateOpponent',
-      opponentAvatar: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=Private'
-    });
+    socket.emit('match_found');
   });
 
-  // Message handler
   socket.on('send_roast', (data) => {
-    const user = users.get(socket.id);
-    if (!user) return;
-
-    io.to(Array.from(socket.rooms)[1]).emit('new_message', {
-      text: data.text,
-      avatar: user.avatar,
-      username: user.username,
-      sender: socket.id === data.sender ? 'you' : 'stranger'
-    });
+    socket.emit('new_message', { text: data.text, sender: 'you' });
+    socket.broadcast.emit('new_message', { text: data.text, sender: 'stranger' });
   });
 
-  // Skip opponent
   socket.on('skip_opponent', () => {
-    socket.emit('match_found', {
-      opponentName: 'NewOpponent',
-      opponentAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=New' + Math.random()
-    });
+    console.log('⏭️ User skipped opponent');
+    socket.emit('match_found');
   });
 
-  // Cleanup
   socket.on('disconnect', () => {
-    users.delete(socket.id);
+    console.log('❌ User disconnected');
   });
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+// Start the server
+server.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
