@@ -590,10 +590,8 @@
   </style>
 </head>
 <body>
-  <script src="/socket.io/socket.io.js"></script>
  <script>
-
-      // Age Verification Logic (ADD THIS AT THE START OF YOUR SCRIPT)
+    // Age Verification Logic (ADD THIS AT THE START OF YOUR SCRIPT)
     const ageModal = document.getElementById('ageVerificationModal');
     const entryModal = document.getElementById('entryModal');
     
@@ -798,15 +796,13 @@
         localStorage.setItem('userAvatar', avatar);
         localStorage.setItem('username', username);
       }
-      let socket; // define it globally
+      
       function initializeSocketConnection() {
         statusElement.textContent = "🌠 Connecting to roast servers...";
-   socket = io("https://roast-battle-arena-1.onrender.com", {
-  transports: ['websocket'],
+     const socket = io("https://roast-battle-arena-1.onrender.com", {
+  transports: ['websocket'], // Force WebSocket only
   reconnection: true,
   reconnectionAttempts: 5
-});
-
 });
 
 
