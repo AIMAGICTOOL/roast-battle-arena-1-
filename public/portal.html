@@ -747,10 +747,12 @@
       
       function initializeSocketConnection() {
         statusElement.textContent = "🌠 Connecting to roast servers...";
-      socket = io("https://your-backend.onrender.com", {
-  transports: ['websocket'],
-  secure: true
+     const socket = io("https://your-render-app-url.onrender.com", {
+  transports: ['websocket'], // Force WebSocket only
+  reconnection: true,
+  reconnectionAttempts: 5
 });
+
 
         
         socket.on('connect', () => {
