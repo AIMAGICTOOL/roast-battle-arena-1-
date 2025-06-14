@@ -395,7 +395,21 @@
   </style>
 </head>
 <body>
-   <!-- 🔥 Entry Modal -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roast Battle Arena</title>
+  <style>
+    /* KEEPING ALL YOUR CSS INTACT (unchanged from your original deepseek_html) */
+    /* Modal, glowing orb, chat UI, buttons, avatars — all preserved exactly */
+    /* You can paste your CSS back here from deepseek_html if needed */
+  </style>
+</head>
+<body>
+
+  <!-- Entry Modal -->
   <div class="modal-overlay" id="entryModal">
     <div class="modal-content">
       <h2 class="modal-title">👊 Enter the Roast Arena</h2>
@@ -428,14 +442,12 @@
     </div>
   </div>
 
-  <!-- 🔐 Auth Icon -->
   <div class="auth-icons">
     <a href="login.html" title="Login / Sign Up">
       <img src="login-icon.png" alt="Login Icon" />
     </a>
   </div>
 
-  <!-- 🔥 Main Content -->
   <h1>Roast Battle Arena</h1>
   <div class="nav-links">
     <div class="home-orb" onclick="window.location.href='index.html'">
@@ -452,9 +464,7 @@
   <div id="chat"></div>
 
   <div id="typing-indicator">
-    <div class="typing-dots">
-      <span></span><span></span><span></span>
-    </div>
+    <div class="typing-dots"><span></span><span></span><span></span></div>
     <div class="typing-text">is typing...</div>
   </div>
 
@@ -468,63 +478,112 @@
     <button id="sendBtn">Fire!</button>
   </div>
 
-  <!-- 🔌 Socket -->
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-<script>
-  const socket = io(); // ✅ Initialize early
+  <!-- SOCKET.IO -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io(); // 🔥 Early connect
+    let mode = 'public';
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const statusElement = document.getElementById('status');
-    const urlParams = new URLSearchParams(window.location.search);
-    const mode = urlParams.get('mode');
-
-    if (mode === 'private') {
-      document.querySelector('h1').textContent = "🔥 Private Roast Battle";
-      socket.emit('join_private');
-    } else {
-      document.querySelector('h1').textContent = "🔥 Public Roast Arena";
-      socket.emit('join_public');
-      document.getElementById('skipBtn').style.display = 'block';
-    }
-
-    socket.on('connect', () => {
-      statusElement.textContent = "✅ Connected! Finding opponents...";
-    });
-
-    socket.on('disconnect', () => {
-      statusElement.textContent = "❌ Disconnected - Trying to reconnect...";
-    });
-
-    socket.on('match_found', () => {
-      statusElement.textContent = "⚔️ Opponent found! Battle begins...";
-    });
-
-    socket.on('new_message', (data) => {
+    document.addEventListener('DOMContentLoaded', function () {
+      const statusEl = document.getElementById('status');
       const chat = document.getElementById('chat');
-      const msgClass = data.sender === 'you' ? 'message you' : 'message stranger';
-      chat.innerHTML += `<div class="${msgClass}">${data.text}</div>`;
-      chat.scrollTop = chat.scrollHeight;
-    });
 
-    // Buttons
-    document.getElementById('skipBtn').addEventListener('click', () => {
-      socket.emit('skip_opponent');
-      statusElement.textContent = "🔍 Finding new opponent...";
-    });
+      const avatarPreview = document.getElementById('avatarPreview');
+      avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Avatar">`;
 
-    document.getElementById('sendBtn').addEventListener('click', () => {
-      const input = document.getElementById('messageInput');
-      const msg = input.value.trim();
-      if (msg !== '') {
-        socket.emit('send_roast', { text: msg });
-        input.value = '';
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('mode') === 'private') {
+        mode = 'private';
       }
-    });
 
-    document.getElementById('messageInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        document.getElementById('sendBtn').click();
+      function generateRandomAvatar() {
+        const avatars = [
+          'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + Math.random(),
+          'https://api.dicebear.com/7.x/lorelei-neutral/svg?seed=' + Math.random(),
+          'https://api.dicebear.com/7.x/pixel-art-neutral/svg?seed=' + Math.random()
+        ];
+        return avatars[Math.floor(Math.random() * avatars.length)];
       }
+
+      function connectToRoom() {
+        document.getElementById('startBtn').style.display = 'block';
+
+        if (mode === 'private') {
+          document.querySelector('h1').textContent = "🔥 Private Roast Battle";
+          socket.emit('join_private');
+        } else {
+          document.querySelector('h1').textContent = "🔥 Public Roast Arena";
+          socket.emit('join_public');
+          document.getElementById('skipBtn').style.display = 'block';
+        }
+      }
+
+      // Modal Events
+      document.getElementById('randomAvatarBtn').onclick = () => {
+        avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Avatar">`;
+      };
+
+      document.getElementById('changeAvatarBtn').onclick = () => {
+        alert("In full version, you can upload avatars.");
+      };
+
+      document.getElementById('loginBtn').onclick = () => {
+        window.location.href = 'login.html';
+      };
+
+      document.getElementById('skipCustomizationBtn').onclick = () => {
+        document.getElementById('entryModal').style.display = 'none';
+        localStorage.setItem('userAvatar', generateRandomAvatar());
+        connectToRoom();
+      };
+
+      document.getElementById('enterAnonymouslyBtn').onclick = () => {
+        document.getElementById('entryModal').style.display = 'none';
+        const img = avatarPreview.querySelector('img');
+        localStorage.setItem('userAvatar', img ? img.src : generateRandomAvatar());
+        connectToRoom();
+      };
+
+      // Core socket events
+      socket.on('connect', () => {
+        statusEl.textContent = "✅ Connected! Waiting for match...";
+      });
+
+      socket.on('disconnect', () => {
+        statusEl.textContent = "❌ Disconnected - trying to reconnect...";
+      });
+
+      socket.on('match_found', () => {
+        statusEl.textContent = "⚔️ Opponent found! Roast them!";
+      });
+
+      socket.on('new_message', (data) => {
+        const className = data.sender === 'you' ? 'message you' : 'message stranger';
+        chat.innerHTML += `<div class="${className}">${data.text}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+      });
+
+      // User actions
+      document.getElementById('skipBtn').onclick = () => {
+        socket.emit('skip_opponent');
+        statusEl.textContent = "🔍 Finding new opponent...";
+      };
+
+      document.getElementById('sendBtn').onclick = () => {
+        const input = document.getElementById('messageInput');
+        const msg = input.value.trim();
+        if (msg) {
+          socket.emit('send_roast', { text: msg });
+          input.value = '';
+        }
+      };
+
+      document.getElementById('messageInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          document.getElementById('sendBtn').click();
+        }
+      });
     });
-  });
-</script>
+  </script>
+</body>
+</html>
