@@ -5,24 +5,185 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Roast Battle Arena</title>
   <style>
+    /* Existing styles... */
     .auth-icons {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 999;
-}
-.auth-icons img {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(255, 80, 0, 0.8);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.auth-icons img:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 25px rgba(255, 120, 0, 1);
-}
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+    }
+    .auth-icons img {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 80, 0, 0.8);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .auth-icons img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(255, 120, 0, 1);
+    }
 
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 14, 23, 0.9);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+    }
+    
+    .modal-content {
+      background: #1b1a2e;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 30px rgba(0, 245, 212, 0.3);
+      animation: modalFadeIn 0.4s ease-out;
+    }
+    
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .modal-title {
+      color: #00f5d4;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+    
+    .avatar-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .avatar-preview {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: #6247aa;
+      margin-bottom: 15px;
+      overflow: hidden;
+      position: relative;
+      border: 3px solid #00f5d4;
+    }
+    
+    .avatar-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .avatar-options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+    
+    .avatar-btn {
+      background: #25233d;
+      color: #e2f3f5;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .avatar-btn:hover {
+      background: #00f5d4;
+      color: #0f0e17;
+    }
+    
+    .gender-selection {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .gender-option {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+    
+    .gender-radio {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #00f5d4;
+      border-radius: 50%;
+      outline: none;
+      cursor: pointer;
+    }
+    
+    .gender-radio:checked {
+      background: #00f5d4;
+    }
+    
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .modal-btn {
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .enter-btn {
+      background: #00f5d4;
+      color: #0f0e17;
+    }
+    
+    .enter-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 15px rgba(0, 245, 212, 0.5);
+    }
+    
+    .login-btn {
+      background: #f15bb5;
+      color: white;
+    }
+    
+    .login-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 15px rgba(241, 91, 181, 0.5);
+    }
+    
+    .skip-btn {
+      background: transparent;
+      color: #b8b8ff;
+      text-decoration: underline;
+      cursor: pointer;
+      border: none;
+      margin-top: 10px;
+    }
+    
+    .skip-btn:hover {
+      color: #00f5d4;
+    }
+
+    /* Rest of your existing styles... */
     :root {
       --bg-dark: #0f0e17;
       --bg-light: #1b1a2e;
@@ -237,11 +398,49 @@
   </style>
 </head>
 <body>
+  <!-- Modal Overlay -->
+  <div class="modal-overlay" id="entryModal">
+    <div class="modal-content">
+      <h2 class="modal-title">👊 Enter the Roast Arena</h2>
+      
+      <div class="avatar-section">
+        <div class="avatar-preview" id="avatarPreview">
+          <!-- Avatar will be generated here -->
+        </div>
+        <div class="avatar-options">
+          <button class="avatar-btn" id="changeAvatarBtn">Change Avatar</button>
+          <button class="avatar-btn" id="randomAvatarBtn">Randomize</button>
+        </div>
+      </div>
+      
+      <div class="gender-selection">
+        <label class="gender-option">
+          <input type="radio" name="gender" class="gender-radio" value="male">
+          <span>Male</span>
+        </label>
+        <label class="gender-option">
+          <input type="radio" name="gender" class="gender-radio" value="female">
+          <span>Female</span>
+        </label>
+        <label class="gender-option">
+          <input type="radio" name="gender" class="gender-radio" value="other" checked>
+          <span>Other</span>
+        </label>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="modal-btn enter-btn" id="enterAnonymouslyBtn">Enter Anonymously</button>
+        <button class="modal-btn login-btn" onclick="window.location.href='login.html'">Login / Sign Up</button>
+        <button class="skip-btn" id="skipCustomizationBtn">Skip customization</button>
+      </div>
+    </div>
+  </div>
+
   <div class="auth-icons">
-  <a href="login.html" title="Login / Sign Up">
-    <img src="login-icon.png" alt="Login Icon" />
-  </a>
-</div>
+    <a href="login.html" title="Login / Sign Up">
+      <img src="login-icon.png" alt="Login Icon" />
+    </a>
+  </div>
 
   <h1>Roast Battle Arena</h1>
   <div class="nav-links">
@@ -266,7 +465,7 @@
   </div>
 
   <div class="action-buttons">
-    <button id="startBtn">Enter Arena</button>
+    <button id="startBtn" style="display: none;">Enter Arena</button>
     <button id="skipBtn" style="display: none;">Next Opponent</button>
   </div>
 
@@ -276,24 +475,82 @@
   </div>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="script.js"></script>
   <script>
-    // Detect private mode from URL
-   // Detect mode from URL
-const urlParams = new URLSearchParams(window.location.search);
-const mode = urlParams.get('mode');
+    // Avatar generation function
+    function generateRandomAvatar() {
+      // These are placeholder cartoon avatars from a free service
+      const avatars = [
+        'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + Math.random().toString(36).substring(2),
+        'https://api.dicebear.com/7.x/lorelei-neutral/svg?seed=' + Math.random().toString(36).substring(2),
+        'https://api.dicebear.com/7.x/pixel-art-neutral/svg?seed=' + Math.random().toString(36).substring(2),
+        'https://api.dicebear.com/7.x/identicon/svg?seed=' + Math.random().toString(36).substring(2)
+      ];
+      
+      return avatars[Math.floor(Math.random() * avatars.length)];
+    }
 
-if (mode === 'private') {
-    // Private battle logic (existing)
-    document.querySelector('h1').textContent = "🔥 Private Roast Battle";
-    socket.emit('join_private');
-} else {
-    // Public battle logic
-    document.querySelector('h1').textContent = "🔥 Public Roast Arena";
-    socket.emit('join_public');  // Add this event in your server
-    document.getElementById('skipBtn').style.display = 'block'; // Show "Next Opponent"
-}
+    // Set up modal functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const modal = document.getElementById('entryModal');
+      const avatarPreview = document.getElementById('avatarPreview');
+      const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+      const randomAvatarBtn = document.getElementById('randomAvatarBtn');
+      const enterAnonymouslyBtn = document.getElementById('enterAnonymouslyBtn');
+      const skipCustomizationBtn = document.getElementById('skipCustomizationBtn');
+      const startBtn = document.getElementById('startBtn');
+      
+      // Generate initial random avatar
+      const initialAvatar = generateRandomAvatar();
+      avatarPreview.innerHTML = `<img src="${initialAvatar}" alt="Your Avatar">`;
+      
+      // Change avatar button
+      changeAvatarBtn.addEventListener('click', function() {
+        // In a real app, you'd implement file upload here
+        alert("In a full implementation, this would open a file picker to upload your own image");
+      });
+      
+      // Random avatar button
+      randomAvatarBtn.addEventListener('click', function() {
+        const newAvatar = generateRandomAvatar();
+        avatarPreview.innerHTML = `<img src="${newAvatar}" alt="Your Avatar">`;
+      });
+      
+      // Enter anonymously button
+      enterAnonymouslyBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        startBtn.style.display = 'block';
+        // Save avatar to localStorage if you want to use it later
+        const avatarImg = avatarPreview.querySelector('img').src;
+        localStorage.setItem('userAvatar', avatarImg);
+        
+        // Get selected gender
+        const selectedGender = document.querySelector('input[name="gender"]:checked').value;
+        localStorage.setItem('userGender', selectedGender);
+      });
+      
+      // Skip customization button
+      skipCustomizationBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        startBtn.style.display = 'block';
+        // Use default avatar
+        localStorage.setItem('userAvatar', 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Anonymous');
+        localStorage.setItem('userGender', 'other');
+      });
+    });
+
+    // Detect private mode from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+
+    if (mode === 'private') {
+      document.querySelector('h1').textContent = "🔥 Private Roast Battle";
+      // socket.emit('join_private'); // Uncomment when socket is connected
+    } else {
+      document.querySelector('h1').textContent = "🔥 Public Roast Arena";
+      // socket.emit('join_public'); // Uncomment when socket is connected
+      document.getElementById('skipBtn').style.display = 'block';
     }
   </script>
+  <script src="script.js"></script>
 </body>
 </html>
