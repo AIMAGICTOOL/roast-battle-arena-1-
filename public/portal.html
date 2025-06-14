@@ -474,83 +474,80 @@
     <button id="sendBtn">Fire!</button>
   </div>
 
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script>
-    // Avatar generation function
-    function generateRandomAvatar() {
-      // These are placeholder cartoon avatars from a free service
-      const avatars = [
-        'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + Math.random().toString(36).substring(2),
-        'https://api.dicebear.com/7.x/lorelei-neutral/svg?seed=' + Math.random().toString(36).substring(2),
-        'https://api.dicebear.com/7.x/pixel-art-neutral/svg?seed=' + Math.random().toString(36).substring(2),
-        'https://api.dicebear.com/7.x/identicon/svg?seed=' + Math.random().toString(36).substring(2)
-      ];
-      
-      return avatars[Math.floor(Math.random() * avatars.length)];
-    }
+ <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+  // Avatar generation function
+  function generateRandomAvatar() {
+    const avatars = [
+      'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + Math.random().toString(36).substring(2),
+      'https://api.dicebear.com/7.x/lorelei-neutral/svg?seed=' + Math.random().toString(36).substring(2),
+      'https://api.dicebear.com/7.x/pixel-art-neutral/svg?seed=' + Math.random().toString(36).substring(2)
+    ];
+    return avatars[Math.floor(Math.random() * avatars.length)];
+  }
 
-    // Set up modal functionality
-    document.addEventListener('DOMContentLoaded', function() {
-      const modal = document.getElementById('entryModal');
-      const avatarPreview = document.getElementById('avatarPreview');
-      const changeAvatarBtn = document.getElementById('changeAvatarBtn');
-      const randomAvatarBtn = document.getElementById('randomAvatarBtn');
-      const enterAnonymouslyBtn = document.getElementById('enterAnonymouslyBtn');
-      const skipCustomizationBtn = document.getElementById('skipCustomizationBtn');
-      const startBtn = document.getElementById('startBtn');
-      
-      // Generate initial random avatar
-      const initialAvatar = generateRandomAvatar();
-      avatarPreview.innerHTML = `<img src="${initialAvatar}" alt="Your Avatar">`;
-      
-      // Change avatar button
-      changeAvatarBtn.addEventListener('click', function() {
-        // In a real app, you'd implement file upload here
-        alert("In a full implementation, this would open a file picker to upload your own image");
-      });
-      
-      // Random avatar button
-      randomAvatarBtn.addEventListener('click', function() {
-        const newAvatar = generateRandomAvatar();
-        avatarPreview.innerHTML = `<img src="${newAvatar}" alt="Your Avatar">`;
-      });
-      
-      // Enter anonymously button
-      enterAnonymouslyBtn.addEventListener('click', function() {
-        modal.style.display = 'none';
-        startBtn.style.display = 'block';
-        // Save avatar to localStorage if you want to use it later
-        const avatarImg = avatarPreview.querySelector('img').src;
-        localStorage.setItem('userAvatar', avatarImg);
-        
-        // Get selected gender
-        const selectedGender = document.querySelector('input[name="gender"]:checked').value;
-        localStorage.setItem('userGender', selectedGender);
-      });
-      
-      // Skip customization button
-      skipCustomizationBtn.addEventListener('click', function() {
-        modal.style.display = 'none';
-        startBtn.style.display = 'block';
-        // Use default avatar
-        localStorage.setItem('userAvatar', 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Anonymous');
-        localStorage.setItem('userGender', 'other');
-      });
+  let socket;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('entryModal');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const statusElement = document.getElementById('status');
+    const startBtn = document.getElementById('startBtn');
+    
+    avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Your Avatar">`;
+
+    document.getElementById('changeAvatarBtn').addEventListener('click', function() {
+      alert("Avatar upload would be implemented here in production");
     });
 
-    // Detect private mode from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const mode = urlParams.get('mode');
+    document.getElementById('randomAvatarBtn').addEventListener('click', function() {
+      avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Your Avatar">`;
+    });
 
-    if (mode === 'private') {
-      document.querySelector('h1').textContent = "🔥 Private Roast Battle";
-      // socket.emit('join_private'); // Uncomment when socket is connected
-    } else {
-      document.querySelector('h1').textContent = "🔥 Public Roast Arena";
-      // socket.emit('join_public'); // Uncomment when socket is connected
-      document.getElementById('skipBtn').style.display = 'block';
+    function initializeConnection() {
+      statusElement.textContent = "🌠 Connecting to roast servers...";
+      socket = io();
+
+      socket.on('connect', () => {
+        statusElement.textContent = "✅ Connected! Finding opponents...";
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+
+        if (mode === 'private') {
+          document.querySelector('h1').textContent = "🔥 Private Roast Battle";
+          socket.emit('join_private');
+        } else {
+          document.querySelector('h1').textContent = "🔥 Public Roast Arena";
+          socket.emit('join_public');
+          document.getElementById('skipBtn').style.display = 'block';
+        }
+      });
+
+      socket.on('disconnect', () => {
+        statusElement.textContent = "❌ Disconnected - Trying to reconnect...";
+      });
     }
-  </script>
-  <script src="script.js"></script>
-</body>
-</html>
+
+    document.getElementById('enterAnonymouslyBtn').addEventListener('click', function() {
+      modal.style.display = 'none';
+      startBtn.style.display = 'block';
+      localStorage.setItem('userAvatar', avatarPreview.querySelector('img').src);
+      localStorage.setItem('userGender', document.querySelector('input[name="gender"]:checked').value);
+      initializeConnection();
+    });
+
+    document.getElementById('skipCustomizationBtn').addEventListener('click', function() {
+      modal.style.display = 'none';
+      startBtn.style.display = 'block';
+      localStorage.setItem('userAvatar', 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Anonymous');
+      localStorage.setItem('userGender', 'other');
+      initializeConnection();
+    });
+
+    startBtn.addEventListener('click', function() {
+      statusElement.textContent = "⚔️ Entering the arena...";
+    });
+  });
+</script>
+<script src="script.js"></script>
