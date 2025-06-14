@@ -474,42 +474,127 @@
     <button id="sendBtn">Fire!</button>
   </div>
 
- <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<!-- Add this modal HTML right before the auth-icons div -->
+<div class="modal-overlay" id="entryModal">
+  <div class="modal-content">
+    <h2 class="modal-title">👊 Enter the Roast Arena</h2>
+    
+    <div class="avatar-section">
+      <div class="avatar-preview" id="avatarPreview"></div>
+      <div class="avatar-options">
+        <button class="avatar-btn" id="changeAvatarBtn">Change Avatar</button>
+        <button class="avatar-btn" id="randomAvatarBtn">Randomize</button>
+      </div>
+    </div>
+    
+    <div class="gender-selection">
+      <label class="gender-option">
+        <input type="radio" name="gender" class="gender-radio" value="male">
+        <span>Male</span>
+      </label>
+      <label class="gender-option">
+        <input type="radio" name="gender" class="gender-radio" value="female">
+        <span>Female</span>
+      </label>
+      <label class="gender-option">
+        <input type="radio" name="gender" class="gender-radio" value="other" checked>
+        <span>Other</span>
+      </label>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="modal-btn enter-btn" id="enterAnonymouslyBtn">Enter Anonymously</button>
+      <button class="modal-btn login-btn" id="loginBtn">Login / Sign Up</button>
+      <button class="skip-btn" id="skipCustomizationBtn">Skip customization</button>
+    </div>
+  </div>
+</div>
+
+<!-- Keep all your existing HTML here (auth-icons through input-container) -->
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
   // Global socket variable
   let socket;
-  const statusElement = document.getElementById('status');
+  
+  // Avatar generator
+  function generateRandomAvatar() {
+    const avatars = [
+      'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + Math.random(),
+      'https://api.dicebear.com/7.x/lorelei-neutral/svg?seed=' + Math.random(),
+      'https://api.dicebear.com/7.x/pixel-art-neutral/svg?seed=' + Math.random()
+    ];
+    return avatars[Math.floor(Math.random() * avatars.length)];
+  }
 
-  // Initialize connection when Enter Arena is clicked
-  document.getElementById('startBtn').addEventListener('click', function() {
-    statusElement.textContent = "🌠 Connecting to roast servers...";
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize modal
+    const modal = document.getElementById('entryModal');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const statusElement = document.getElementById('status');
     
-    // Initialize socket connection
-    socket = io(); // Connect to your server
+    // Set initial random avatar
+    avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Avatar">`;
 
-    socket.on('connect', () => {
-      statusElement.textContent = "✅ Connected! Finding opponents...";
+    // Button event listeners
+    document.getElementById('changeAvatarBtn').addEventListener('click', function() {
+      alert("Avatar upload would go here in full version");
+    });
+
+    document.getElementById('randomAvatarBtn').addEventListener('click', function() {
+      avatarPreview.innerHTML = `<img src="${generateRandomAvatar()}" alt="Avatar">`;
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', function() {
+      window.location.href = 'login.html';
+    });
+
+    document.getElementById('skipCustomizationBtn').addEventListener('click', function() {
+      modal.style.display = 'none';
+      localStorage.setItem('userAvatar', generateRandomAvatar());
+    });
+
+    document.getElementById('enterAnonymouslyBtn').addEventListener('click', function() {
+      modal.style.display = 'none';
+      localStorage.setItem('userAvatar', avatarPreview.querySelector('img').src);
+    });
+
+    // Start battle button
+    document.getElementById('startBtn').addEventListener('click', function() {
+      statusElement.textContent = "🌌 Connecting to neural network...";
       
-      const urlParams = new URLSearchParams(window.location.search);
-      const mode = urlParams.get('mode');
+      // Initialize socket connection
+      socket = io();
+      
+      socket.on('connect', () => {
+        statusElement.textContent = "✅ Connected! Finding opponents...";
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        
+        if (mode === 'private') {
+          document.querySelector('h1').textContent = "🔥 Private Roast Battle";
+          socket.emit('join_private');
+        } else {
+          document.querySelector('h1').textContent = "🔥 Public Roast Arena";
+          socket.emit('join_public');
+          document.getElementById('skipBtn').style.display = 'block';
+        }
+      });
+    });
 
-      if (mode === 'private') {
-        document.querySelector('h1').textContent = "🔥 Private Roast Battle";
-        socket.emit('join_private');
-      } else {
-        document.querySelector('h1').textContent = "🔥 Public Roast Arena";
-        socket.emit('join_public');
-        document.getElementById('skipBtn').style.display = 'block';
+    // Skip opponent button
+    document.getElementById('skipBtn').addEventListener('click', function() {
+      socket.emit('skip_opponent');
+    });
+
+    // Send message button
+    document.getElementById('sendBtn').addEventListener('click', function() {
+      const message = document.getElementById('messageInput').value;
+      if (message.trim() !== '') {
+        socket.emit('send_roast', { text: message });
+        document.getElementById('messageInput').value = '';
       }
-    });
-
-    socket.on('disconnect', () => {
-      statusElement.textContent = "❌ Disconnected - Trying to reconnect...";
-    });
-
-    socket.on('match_found', (data) => {
-      statusElement.textContent = "⚔️ Opponent found! Battle begins...";
-      // Add your match start logic here
     });
   });
 </script>
