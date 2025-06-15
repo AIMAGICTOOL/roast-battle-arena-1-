@@ -38,14 +38,21 @@ skipBtn.addEventListener('click', () => startBtn.click());
 sendBtn.addEventListener('click', () => {
   const text = input.value.trim();
   if (!text) return;
-  const msg = { text, ...currentUser };
 
-  socket.emit('send_roast', msg);
-  push(ref(db, 'roasts/public'), msg);
-  appendMessage(msg, 'you');
+  const msg = {
+    text,
+    username: currentUser.username,
+    avatar: currentUser.avatar
+  };
+
+  socket.emit('send_roast', msg);            // 🔁 Live via socket
+  push(ref(db, 'roasts/public'), msg);       // 💾 Save to DB
+
+  appendMessage(msg, 'you');                 // 💬 Show to self
   input.value = '';
   chat.scrollTop = chat.scrollHeight;
 });
+
 
 socket.on('match_found', opp => {
   status.textContent = `🔥 Matched with: ${opp.username}`;
@@ -58,9 +65,13 @@ socket.on('receive_roast', msg => {
 
 function loadHistory() {
   const messagesRef = query(ref(db, 'roasts/public'), limitToLast(50));
-  onChildAdded(messagesRef, snapshot => {
+  onChildAdded(messagesRef, (snapshot) => {
     const msg = snapshot.val();
-    appendMessage(msg, msg.username === currentUser.username ? 'you' : 'stranger');
+
+    // ✅ Avoid duplicate if already added by sender
+    if (msg.username !== currentUser.username) {
+      appendMessage(msg, 'stranger');
+    }
   });
 }
 
