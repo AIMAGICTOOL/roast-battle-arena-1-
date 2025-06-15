@@ -16,16 +16,20 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 io.on('connection', (socket) => {
-  let user;
-  socket.on('join_public', (u) => {
-    user = u;
-    socket.join('public_room');
-    io.to('public_room').emit('match_found', user);
+  socket.on('join_public', (user) => {
+    socket.join('public_room', () => {
+      console.log(`🛡 ${user.username} joined public_room`);
+      socket.emit('joined_room');
+      socket.to('public_room').emit('match_found', user);
+    });
   });
-  socket.on('send_roast', (data) => {
-    socket.to('public_room').emit('receive_roast', data);
+
+  socket.on('send_roast', (msg) => {
+    console.log('Roast sent:', msg);
+    io.to('public_room').emit('receive_roast', msg);
   });
 });
+
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'portal.html'));
