@@ -23,7 +23,6 @@
       box-shadow: 0 0 25px rgba(255, 120, 0, 1);
     }
 
-    /* Modal Styles */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -316,12 +315,28 @@
       box-shadow: 0 0 10px rgba(241, 91, 181, 0.3);
     }
     .message {
-      padding: 10px 15px;
-      margin-bottom: 10px;
+      padding: 12px 15px;
+      margin-bottom: 12px;
       border-radius: 18px;
       max-width: 70%;
       word-wrap: break-word;
       animation: slideIn 0.3s ease-out;
+    }
+    .message-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .message-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      margin-right: 8px;
+      object-fit: cover;
+    }
+    .message-content {
+      margin-left: 36px;
+      line-height: 1.4;
     }
     .message.you {
       background: linear-gradient(135deg, #00f5d4 0%, #00bbf9 100%);
@@ -399,7 +414,6 @@
       50% { box-shadow: 0 0 25px #ff9e00; }
       100% { box-shadow: 0 0 15px #ff9e00; }
     }
-     /* Add this new style for age verification */
     #ageVerificationModal .policy-links {
       margin-top: 20px;
       text-align: center;
@@ -408,22 +422,48 @@
       color: #00f5d4;
       text-decoration: underline;
     }
-      </style>
+    .avatar-upload-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    .avatar-upload-btn {
+      background: #6247aa;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .avatar-upload-btn:hover {
+      background: #00f5d4;
+      color: #0f0e17;
+    }
+    .username-input {
+      background: #25233d;
+      color: #e2f3f5;
+      border: 1px solid #00f5d4;
+      border-radius: 8px;
+      padding: 8px 12px;
+      width: 80%;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
- <!-- Age Verification Modal (NEW) - Added at top of body -->
-  <div class="modal-overlay" id="ageVerificationModal">
+  <div class="modal-overlay" id="ageVerificationModal" style="display: flex">
     <div class="modal-content">
       <h2 class="modal-title">⚠️ Age Verification</h2>
       <p style="text-align: center; margin-bottom: 25px;">
         This arena contains uncensored roasts. You must be 18+ to enter.
       </p>
-      
       <div class="modal-actions" style="gap: 15px;">
         <button class="modal-btn enter-btn" id="ageYesBtn">I'm 18+</button>
         <button class="modal-btn login-btn" id="ageNoBtn">I'm Under 18</button>
       </div>
-      
       <div class="policy-links">
         <p>By entering, you agree to our:</p>
         <a href="rules.html">Rules</a> • 
@@ -431,11 +471,10 @@
       </div>
     </div>
   </div>
-    <!-- Entry Modal -->
-  <div class="modal-overlay" id="entryModal">
+
+  <div class="modal-overlay" id="entryModal" style="display: none">
     <div class="modal-content">
       <h2 class="modal-title">👊 Enter the Roast Arena</h2>
-      
       <div class="avatar-section">
         <div class="avatar-preview" id="avatarPreview"></div>
         <div class="username-display" id="usernameDisplay"></div>
@@ -444,7 +483,6 @@
           <button class="avatar-btn" id="randomizeAllBtn">Randomize All</button>
         </div>
       </div>
-      
       <div class="gender-selection">
         <label class="gender-option">
           <input type="radio" name="gender" class="gender-radio" value="male">
@@ -459,7 +497,6 @@
           <span>Other</span>
         </label>
       </div>
-      
       <div class="modal-actions">
         <button class="modal-btn enter-btn" id="enterAnonymouslyBtn">Enter Anonymously</button>
         <button class="modal-btn login-btn" id="loginBtn">Login / Sign Up</button>
@@ -483,7 +520,7 @@
     <a href="rules.html" style="background: #f15bb5; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Rules</a>
     <a href="privacy.html" style="background: #6247aa; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">Privacy</a>
   </div>
-  <div id="status">🌌 Connecting to neural network...</div>
+  <div id="status">✅ Connected! Ready to roast!</div>
   <div id="roast-quote"></div>
   
   <div id="chat"></div>
@@ -505,109 +542,13 @@
     <input type="text" id="messageInput" placeholder="Type your killer roast..." />
     <button id="sendBtn">Fire!</button>
   </div>
- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Roast Battle Arena</title>
-  <style>
-    /* [Previous CSS styles remain the same] */
-    
-    /* New styles for avatar upload */
-    .avatar-upload-container {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      margin: 15px 0;
-    }
-    
-    .avatar-upload-btn {
-      background: #6247aa;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      border: none;
-      cursor: pointer;
-    }
-    
-    .username-input {
-      background: #25233d;
-      color: #e2f3f5;
-      border: 1px solid #00f5d4;
-      border-radius: 8px;
-      padding: 8px 12px;
-      width: 80%;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <!-- [Previous HTML remains the same until the script section] -->
 
- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Roast Battle Arena</title>
-  <style>
-    /* [All previous CSS styles remain exactly the same] */
-    /* Added new avatar upload styles */
-    .avatar-upload-container {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      margin: 15px 0;
-    }
-    
-    .avatar-upload-btn {
-      background: #6247aa;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    
-    .avatar-upload-btn:hover {
-      background: #00f5d4;
-      color: #0f0e17;
-    }
-    
-    .username-input {
-      background: #25233d;
-      color: #e2f3f5;
-      border: 1px solid #00f5d4;
-      border-radius: 8px;
-      padding: 8px 12px;
-      width: 80%;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
- <script>
-    // Age Verification Logic (ADD THIS AT THE START OF YOUR SCRIPT)
-    const ageModal = document.getElementById('ageVerificationModal');
-    const entryModal = document.getElementById('entryModal');
-    
-    // Show age modal only if not previously verified THIS SESSION
-    if (!sessionStorage.getItem('ageVerified')) {
-      ageModal.style.display = 'flex';
-      entryModal.style.display = 'none';
-    } else {
-      ageModal.style.display = 'none';
-      entryModal.style.display = 'flex';
-    }
-    
+  <script>
+    // Age Verification
     document.getElementById('ageYesBtn').addEventListener('click', function() {
       sessionStorage.setItem('ageVerified', 'true');
-      ageModal.style.display = 'none';
-      entryModal.style.display = 'flex';
+      document.getElementById('ageVerificationModal').style.display = 'none';
+      document.getElementById('entryModal').style.display = 'flex';
     });
     
     document.getElementById('ageNoBtn').addEventListener('click', function() {
@@ -615,9 +556,7 @@
       window.location.href = 'https://www.google.com';
     });
 
-    // [YOUR EXISTING JAVASCRIPT CODE FOLLOWS HERE]
-
-   // Supercharged random username generator with 3000+ combinations
+    // Random Username Generator
     const adjectives = [
       "Atomic", "Banana", "Cosmic", "Dank", "Epic", "Flaming", "Galactic", "Hyper", 
       "Inferno", "Jolly", "Killer", "Lucky", "Mighty", "Nuclear", "Omega", "Psycho",
@@ -640,7 +579,6 @@
       "Koala", "Llama", "Moose", "Narwhal", "Ocelot", "Panda", "Quokka", "Raccoon"
     ];
 
-    // 12 different avatar styles for maximum variety
     const avatarStyles = [
       "bottts", "lorelei", "pixel-art", "avataaars", 
       "micah", "big-ears", "identicon", "croodles",
@@ -650,7 +588,7 @@
     function generateRandomUsername() {
       const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
       const noun = nouns[Math.floor(Math.random() * nouns.length)];
-      const num = Math.floor(Math.random() * 900) + 100; // 100-999
+      const num = Math.floor(Math.random() * 900) + 100;
       return `${adj}${noun}${num}`;
     }
 
@@ -660,7 +598,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      // Initialize all elements
       const modal = document.getElementById('entryModal');
       const avatarPreview = document.getElementById('avatarPreview');
       const usernameDisplay = document.getElementById('usernameDisplay');
@@ -673,121 +610,95 @@
       const skipBtn = document.getElementById('skipBtn');
       const sendBtn = document.getElementById('sendBtn');
       
-      // Create avatar upload container
+      // Avatar Upload Setup
       const uploadContainer = document.createElement('div');
       uploadContainer.className = 'avatar-upload-container';
+      uploadContainer.style.display = 'none';
       
-      // Create file input
       const fileInput = document.createElement('input');
       fileInput.type = 'file';
       fileInput.accept = 'image/*';
       fileInput.id = 'avatarUpload';
       fileInput.style.display = 'none';
       
-      // Create upload button
       const uploadBtn = document.createElement('button');
       uploadBtn.className = 'avatar-upload-btn';
       uploadBtn.textContent = 'Choose Avatar';
       uploadBtn.addEventListener('click', () => fileInput.click());
       
-      // Create username input
       const usernameInput = document.createElement('input');
       usernameInput.type = 'text';
       usernameInput.className = 'username-input';
       usernameInput.placeholder = 'Enter custom username';
       usernameInput.maxLength = 20;
       
-      // Create save button
       const saveBtn = document.createElement('button');
       saveBtn.className = 'avatar-btn';
       saveBtn.textContent = 'Save Changes';
       saveBtn.style.marginTop = '10px';
       
-      // Assemble upload container
       uploadContainer.appendChild(uploadBtn);
       uploadContainer.appendChild(usernameInput);
       uploadContainer.appendChild(saveBtn);
       avatarPreview.parentNode.insertBefore(uploadContainer, avatarPreview.nextSibling);
       
-      // Set initial random avatar and username
       let currentAvatar = localStorage.getItem('userAvatar') || generateRandomAvatar();
       let currentUsername = localStorage.getItem('username') || generateRandomUsername();
       updateUserDisplay(currentAvatar, currentUsername);
       
-      // Handle file selection
       fileInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file && file.type.match('image.*')) {
           const reader = new FileReader();
           reader.onload = function(event) {
             currentAvatar = event.target.result;
-            avatarPreview.innerHTML = `<img src="${currentAvatar}" alt="Avatar">`;
+            avatarPreview.innerHTML = `<img src="${currentAvatar}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">`;
           };
           reader.readAsDataURL(file);
         }
       });
       
-      // Save changes
       saveBtn.addEventListener('click', function() {
         currentUsername = usernameInput.value.trim() || generateRandomUsername();
         updateUserDisplay(currentAvatar, currentUsername);
         toggleUploadContainer();
       });
       
-      // Randomize All button
       randomizeAllBtn.addEventListener('click', function() {
         currentAvatar = generateRandomAvatar();
         currentUsername = generateRandomUsername();
         updateUserDisplay(currentAvatar, currentUsername);
       });
       
-      // Change avatar button
       changeAvatarBtn.addEventListener('click', toggleUploadContainer);
       
-      // Enter anonymously button
       enterAnonymouslyBtn.addEventListener('click', function() {
         modal.style.display = 'none';
         startBtn.style.display = 'block';
         saveToLocalStorage(currentAvatar, currentUsername);
       });
       
-      // Skip customization button
       skipCustomizationBtn.addEventListener('click', function() {
         modal.style.display = 'none';
         startBtn.style.display = 'block';
         saveToLocalStorage(generateRandomAvatar(), generateRandomUsername());
       });
       
-      // Login button
       loginBtn.addEventListener('click', function() {
         window.location.href = 'login.html';
       });
       
-      // Start battle button
-      startBtn.addEventListener('click', initializeSocketConnection);
-      
-      // Skip opponent button
-      skipBtn.addEventListener('click', function() {
-        if (socket) socket.emit('skip_opponent');
-        statusElement.textContent = "🔍 Finding new opponent...";
-      });
-      
-      // Send message button
-      sendBtn.addEventListener('click', sendMessage);
-      
-      // Handle Enter key in message input
       document.getElementById('messageInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') sendMessage();
+        if (e.key === 'Enter') document.getElementById('sendBtn').click();
       });
       
-      // Helper functions
       function toggleUploadContainer() {
         uploadContainer.style.display = uploadContainer.style.display === 'flex' ? 'none' : 'flex';
         changeAvatarBtn.textContent = uploadContainer.style.display === 'flex' ? 'Cancel' : 'Change Avatar';
       }
       
       function updateUserDisplay(avatar, username) {
-        avatarPreview.innerHTML = `<img src="${avatar}" alt="Avatar">`;
+        avatarPreview.innerHTML = `<img src="${avatar}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">`;
         usernameDisplay.textContent = username;
         usernameInput.value = username;
       }
@@ -796,113 +707,66 @@
         localStorage.setItem('userAvatar', avatar);
         localStorage.setItem('username', username);
       }
-      
-      function initializeSocketConnection() {
-        statusElement.textContent = "🌠 Connecting to roast servers...";
-     const socket = io("https://your-render-app-url.onrender.com", {
-  transports: ['websocket'], // Force WebSocket only
-  reconnection: true,
-  reconnectionAttempts: 5
-});
-
-
-        
-        socket.on('connect', () => {
-          statusElement.textContent = "✅ Connected! Finding opponents...";
-          const userData = {
-            avatar: localStorage.getItem('userAvatar'),
-            username: localStorage.getItem('username')
-          };
-          
-          const mode = new URLSearchParams(window.location.search).get('mode');
-          if (mode === 'private') {
-            document.querySelector('h1').textContent = "🔥 Private Roast Battle";
-            socket.emit('join_private', userData);
-          } else {
-            document.querySelector('h1').textContent = "🔥 Public Roast Arena";
-            socket.emit('join_public', userData);
-            skipBtn.style.display = 'block';
-          }
-        });
-        
-        socket.on('match_found', (data) => {
-          statusElement.textContent = `⚔️ Matched with ${data.opponentName}!`;
-        });
-        
-        socket.on('new_message', (data) => {
-          const chat = document.getElementById('chat');
-          const msgClass = data.sender === 'you' ? 'message you' : 'message stranger';
-          chat.innerHTML += `
-            <div class="${msgClass}">
-              <img src="${data.avatar}" width="30" style="border-radius:50%;margin-right:8px;">
-              <strong>${data.username}:</strong> ${data.text}
-            </div>`;
-          chat.scrollTop = chat.scrollHeight;
-        });
-      }
-      
-      function sendMessage() {
-        const messageInput = document.getElementById('messageInput');
-        const message = messageInput.value.trim();
-        if (message && socket) {
-          socket.emit('send_roast', { 
-            text: message,
-            avatar: localStorage.getItem('userAvatar'),
-            username: localStorage.getItem('username')
-          });
-          messageInput.value = '';
-        }
-      }
     });
   </script>
-  <!-- Firebase SDK (Modular v9+) -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  // 🔥 Your Firebase Config (Use YOUR project's config)
-  const firebaseConfig = {
-    apiKey: "AIzaSyCOZZStypUDTr6shxcB0kM6ddJ9HaNyM2Q",
-    authDomain: "roast-battle-arena-6658b.firebaseapp.com",
-    projectId: "roast-battle-arena-6658b",
-    storageBucket: "roast-battle-arena-6658b.firebasestorage.app",
-    messagingSenderId: "1004753319883",
-    appId: "1:1004753319883:web:ddcd82fa55d2db6ec8e84e"
-  };
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyCOZZStypUDTr6shxcB0kM6ddJ9HaNyM2Q",
+      authDomain: "roast-battle-arena-6658b.firebaseapp.com",
+      databaseURL: "https://roast-battle-arena-6658b-default-rtdb.firebaseio.com",
+      projectId: "roast-battle-arena-6658b",
+      storageBucket: "roast-battle-arena-6658b.appspot.com",
+      messagingSenderId: "1004753319883",
+      appId: "1:1004753319883:web:ddcd82fa55d2db6ec8e84e"
+    };
 
-  // 🌟 Send Roasts to Firebase
-  function sendRoast() {
-    const message = document.getElementById("messageInput").value;
-    const username = localStorage.getItem("username") || "Anonymous";
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
     
-    push(ref(db, "roasts/public"), {
-      text: message,
-      username: username,
-      timestamp: Date.now()
+    function sendRoast() {
+      const message = document.getElementById("messageInput").value.trim();
+      if (!message) return;
+      
+      const username = localStorage.getItem("username") || "Anonymous";
+      const avatar = localStorage.getItem("userAvatar") || generateRandomAvatar();
+      
+      push(ref(db, "roasts/public"), {
+        text: message,
+        username: username,
+        avatar: avatar,
+        timestamp: Date.now()
+      });
+      
+      document.getElementById("messageInput").value = "";
+    }
+
+    document.getElementById('sendBtn').addEventListener('click', sendRoast);
+
+    onChildAdded(ref(db, "roasts/public"), (snapshot) => {
+      const roast = snapshot.val();
+      const chat = document.getElementById("chat");
+      
+      chat.innerHTML += `
+        <div class="message stranger">
+          <div class="message-header">
+            <img src="${roast.avatar}" class="message-avatar">
+            <strong>${roast.username}</strong>
+          </div>
+          <div class="message-content">${roast.text}</div>
+        </div>`;
+      
+      chat.scrollTop = chat.scrollHeight;
     });
-    
-    document.getElementById("messageInput").value = ""; // Clear input
-  }
 
-  // 📡 Listen for New Roasts
-  onChildAdded(ref(db, "roasts/public"), (snapshot) => {
-    const roast = snapshot.val();
-    const chat = document.getElementById("chat");
-    
-    chat.innerHTML += `
-      <div class="message stranger">
-        <strong>${roast.username}:</strong> ${roast.text}
-      </div>`;
-    
-    chat.scrollTop = chat.scrollHeight; // Auto-scroll
-  });
-
-  // 🔄 Connect Send Button
-  document.getElementById("sendBtn").addEventListener("click", sendRoast);
-</script>
+    function generateRandomAvatar() {
+      const styles = ["bottts", "lorelei", "pixel-art", "avataaars"];
+      const style = styles[Math.floor(Math.random() * styles.length)];
+      return `https://api.dicebear.com/7.x/${style}/svg?seed=${Math.random().toString(36).substring(2, 15)}`;
+    }
+  </script>
 </body>
 </html>
