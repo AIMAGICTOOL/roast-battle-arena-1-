@@ -5,11 +5,7 @@ import {
   onChildAdded,
   query,
   limitToLast
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-import {
-  signInWithPopup,
-  onAuthStateChanged
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
 
 // ✅ Socket.IO Live Connection
 const socket = io('https://roast-battle-server.onrender.com', {
