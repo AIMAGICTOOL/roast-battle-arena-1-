@@ -710,63 +710,76 @@
     });
   </script>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCOZZStypUDTr6shxcB0kM6ddJ9HaNyM2Q",
-      authDomain: "roast-battle-arena-6658b.firebaseapp.com",
-      databaseURL: "https://roast-battle-arena-6658b-default-rtdb.firebaseio.com",
-      projectId: "roast-battle-arena-6658b",
-      storageBucket: "roast-battle-arena-6658b.appspot.com",
-      messagingSenderId: "1004753319883",
-      appId: "1:1004753319883:web:ddcd82fa55d2db6ec8e84e"
-    };
+<!-- Socket.IO CDN -->
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    
-    function sendRoast() {
-      const message = document.getElementById("messageInput").value.trim();
-      if (!message) return;
-      
-      const username = localStorage.getItem("username") || "Anonymous";
-      const avatar = localStorage.getItem("userAvatar") || generateRandomAvatar();
-      
-      push(ref(db, "roasts/public"), {
-        text: message,
-        username: username,
-        avatar: avatar,
-        timestamp: Date.now()
-      });
-      
-      document.getElementById("messageInput").value = "";
-    }
+<script>
+  const socket = io("https://roast-battle-arena-1.onrender.com");
 
-    document.getElementById('sendBtn').addEventListener('click', sendRoast);
+  socket.on("connect", () => {
+    console.log("✅ Connected to socket:", socket.id);
 
-    onChildAdded(ref(db, "roasts/public"), (snapshot) => {
-      const roast = snapshot.val();
-      const chat = document.getElementById("chat");
-      
-      chat.innerHTML += `
-        <div class="message stranger">
-          <div class="message-header">
-            <img src="${roast.avatar}" class="message-avatar">
-            <strong>${roast.username}</strong>
-          </div>
-          <div class="message-content">${roast.text}</div>
-        </div>`;
-      
-      chat.scrollTop = chat.scrollHeight;
+    socket.emit("join_public", {
+      username: localStorage.getItem("username") || "Anonymous",
+      avatar: localStorage.getItem("userAvatar") || "default.png"
     });
 
-    function generateRandomAvatar() {
-      const styles = ["bottts", "lorelei", "pixel-art", "avataaars"];
-      const style = styles[Math.floor(Math.random() * styles.length)];
-      return `https://api.dicebear.com/7.x/${style}/svg?seed=${Math.random().toString(36).substring(2, 15)}`;
-    }
-  </script>
+    document.getElementById("status").textContent = "✅ Connected! Waiting for opponent...";
+  });
+
+  socket.on("match_found", (strangerData) => {
+    console.log("🎯 Matched with:", strangerData);
+    document.getElementById("status").textContent = `🔥 Opponent found: ${strangerData.username}`;
+
+    const chat = document.getElementById("chat");
+    chat.innerHTML += `
+      <div class="message system">
+        Matched with <strong>${strangerData.username}</strong>!
+      </div>`;
+  });
+
+  socket.on("receive_roast", (data) => {
+    const chat = document.getElementById("chat");
+    chat.innerHTML += `
+      <div class="message stranger">
+        <div class="message-header">
+          <img src="${data.avatar}" class="message-avatar">
+          <strong>${data.username}</strong>
+        </div>
+        <div class="message-content">${data.text}</div>
+      </div>`;
+    chat.scrollTop = chat.scrollHeight;
+  });
+
+  document.getElementById("sendBtn").addEventListener("click", () => {
+    const input = document.getElementById("messageInput");
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    const roastData = {
+      username: localStorage.getItem("username") || "Anonymous",
+      avatar: localStorage.getItem("userAvatar") || "default.png",
+      text: msg
+    };
+
+    socket.emit("send_roast", roastData);
+
+    const chat = document.getElementById("chat");
+    chat.innerHTML += `
+      <div class="message you">
+        <div class="message-header">
+          <img src="${roastData.avatar}" class="message-avatar">
+          <strong>${roastData.username}</strong>
+        </div>
+        <div class="message-content">${roastData.text}</div>
+      </div>`;
+    chat.scrollTop = chat.scrollHeight;
+
+    input.value = "";
+  });
+</script>
 </body>
+
 </html>
