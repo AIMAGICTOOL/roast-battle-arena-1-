@@ -42,7 +42,7 @@ document.getElementById('loginBtn').addEventListener('click', () => {
 });
 
 startBtn.addEventListener('click', () => {
-  chat.innerHTML = ''; // clear old chat
+  chat.innerHTML = ''; // 🧼 Clear chat
   const u = {
     username: localStorage.getItem('username') || 'Anon',
     avatar: localStorage.getItem('userAvatar') || ''
@@ -51,7 +51,10 @@ startBtn.addEventListener('click', () => {
   status.textContent = '🔄 Looking for opponent...';
 });
 
-skipBtn.addEventListener('click', () => startBtn.click());
+skipBtn.addEventListener('click', () => {
+  chat.innerHTML = ''; // 🧼 Clear chat on skip too
+  startBtn.click();
+});
 
 sendBtn.addEventListener('click', () => {
   const text = input.value.trim();
@@ -72,7 +75,7 @@ sendBtn.addEventListener('click', () => {
 
 socket.on('match_found', (opp) => {
   status.textContent = `🔥 Matched with: ${opp.username}`;
-  chat.innerHTML = ''; // clear chat on match
+  chat.innerHTML = ''; // 🧼 Clear chat when matched
   skipBtn.style.display = 'inline-block';
 });
 
