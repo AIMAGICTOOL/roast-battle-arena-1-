@@ -69,11 +69,14 @@ function loadHistory() {
     const msg = snapshot.val();
 
     // ✅ Avoid duplicate if already added by sender
-    if (msg.username !== currentUser.username) {
-      appendMessage(msg, 'stranger');
-    }
-  });
+  // Prevent duplicate messages (only load old ones if chat is empty)
+if (!chat.innerHTML.includes(msg.text)) {
+  appendMessage(
+    msg,
+    msg.username === currentUser.username ? 'you' : 'stranger'
+  );
 }
+
 
 function appendMessage(msg, type) {
   const div = document.createElement('div');
