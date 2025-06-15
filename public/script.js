@@ -1,198 +1,89 @@
-// DOM Elements
-const elements = {
-  status: document.getElementById('status'),
-  roastQuote: document.getElementById('roast-quote'),
-  chat: document.getElementById('chat'),
-  typingIndicator: document.getElementById('typing-indicator'),
-  input: document.getElementById('messageInput'),
-  sendBtn: document.getElementById('sendBtn'),
-  startBtn: document.getElementById('startBtn'),
-  skipBtn: document.getElementById('skipBtn')
-};
+import { db, auth, provider } from "./firebase.js";
+import { ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Sound Setup
-const sounds = {
-  message: new Audio('sounds/message.mp3'),
-  connect: new Audio('sounds/connect.mp3'),
-  disconnect: new Audio('sounds/disconnect.mp3')
-};
-
-// Initialize audio
-document.addEventListener('click', () => {
-  Object.values(sounds).forEach(sound => {
-    sound.volume = 0.3;
-    sound.muted = false;
-    sound.play().then(() => sound.pause()).catch(e => console.log('Audio init error:', e));
-  });
-}, { once: true });
-
-// Socket.IO Connection
+// SOCKET SETUP
 const socket = io("https://roast-battle-arena-1.onrender.com", {
   transports: ["websocket"],
-  reconnectionAttempts: 5,
-  reconnectionDelay: 3000,
-  timeout: 10000
+  secure: true
 });
 
-// Typing elements
-const typingText = document.createElement('div');
-typingText.className = 'typing-text';
-typingText.textContent = 'is typing...';
-elements.typingIndicator.appendChild(typingText);
+const statusDiv = document.getElementById("status");
+const startBtn = document.getElementById("startBtn");
+const skipBtn = document.getElementById("skipBtn");
+const sendBtn = document.getElementById("sendBtn");
+const input = document.getElementById("messageInput");
+const chat = document.getElementById("chat");
 
-let currentPartner = null;
-let typingTimeout;
-const TYPING_DELAY = 1500;
-
-const QUOTES = {
-  waiting: [
-    "Training cyber-monkeys to find your match... 🐒💻",
-    "Quantum snails routing your connection... 🐌⚛️",
-    "Banana-powered servers warming up... 🍌🔥"
-  ],
-  roasting: [
-    "You code like a drunk octopus 🐙🍸",
-    "Your WiFi is powered by sleepy sloths 🦥⚡",
-    "That comeback died faster than my pet rock 🪨💀"
-  ]
+let currentUser = {
+  username: "",
+  avatar: "",
 };
 
-// UI Functions
-function resetUI() {
-  elements.roastQuote.textContent = '';
-  elements.chat.innerHTML = '';
-  elements.typingIndicator.style.opacity = '0';
-  elements.startBtn.style.display = 'block';
-  elements.skipBtn.style.display = 'none';
-  currentPartner = null;
-}
-
-function showRandomQuote(type) {
-  const quote = QUOTES[type][Math.floor(Math.random() * QUOTES[type].length)];
-  elements.roastQuote.textContent = quote;
-}
-
-function addMessage(text, sender) {
-  const msgDiv = document.createElement('div');
-  msgDiv.className = `message ${sender}`;
-  msgDiv.textContent = text;
-  elements.chat.appendChild(msgDiv);
-  elements.chat.scrollTop = elements.chat.scrollHeight;
-}
-
-function playSound(soundName) {
-  try {
-    sounds[soundName].currentTime = 0;
-    sounds[soundName].play().catch(e => console.log(`${soundName} sound error:`, e));
-  } catch (e) {
-    console.log('Sound play failed:', e);
-  }
-}
-
-function sendMessage() {
-  const msg = elements.input.value.trim();
-  if (!msg || !currentPartner) return;
-  
-  socket.emit('send_message', msg);
-  addMessage(msg, 'you');
-  elements.input.value = '';
-  playSound('message');
-  
-  socket.emit('stop_typing');
-  clearTimeout(typingTimeout);
-  elements.typingIndicator.style.opacity = '0';
-}
-
-// Typing detection
-elements.input.addEventListener('input', () => {
-  if (elements.input.value.trim().length > 0) {
-    socket.emit('typing');
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-      socket.emit('stop_typing');
-    }, TYPING_DELAY);
-  } else {
-    socket.emit('stop_typing');
+// LOGIN
+onAuthStateChanged(auth, user => {
+  if (user) {
+    currentUser.username = user.displayName;
+    currentUser.avatar = user.photoURL;
+    localStorage.setItem("username", currentUser.username);
+    localStorage.setItem("userAvatar", currentUser.avatar);
   }
 });
 
-// Socket Events
-socket.on('connection_update', (data) => {
-  elements.status.textContent = `⚡ ${data.message}`;
+document.getElementById("loginBtn").addEventListener("click", () => {
+  signInWithPopup(auth, provider).catch(err => console.error(err));
 });
 
-socket.on('connect', () => {
-  elements.status.textContent = "⚡ Connected to battle server";
-  showRandomQuote('waiting');
-  playSound('connect');
+// JOIN CHAT
+startBtn.addEventListener("click", () => {
+  const user = {
+    username: localStorage.getItem("username") || "Anonymous",
+    avatar: localStorage.getItem("userAvatar") || "default.png"
+  };
+  socket.emit("join_public", user);
+  statusDiv.textContent = "🔄 Looking for opponent...";
 });
 
-socket.on('connect_error', (err) => {
-  elements.status.textContent = `⚠️ Connection failed: ${err.message}`;
+// SKIP
+skipBtn.addEventListener("click", () => startBtn.click());
+
+// SEND MESSAGE
+sendBtn.addEventListener("click", () => {
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  const data = {
+    text: msg,
+    username: localStorage.getItem("username") || "Anonymous",
+    avatar: localStorage.getItem("userAvatar") || "default.png"
+  };
+
+  socket.emit("send_roast", data);
+  push(ref(db, "roasts/public"), data);
+
+  chat.innerHTML += formatMessage(data, "you");
+  input.value = "";
+  chat.scrollTop = chat.scrollHeight;
 });
 
-socket.on('waiting', () => {
-  elements.status.textContent = "🔍 Scanning for opponents...";
-  showRandomQuote('waiting');
-  resetUI();
+// SOCKET RECEIVE
+socket.on("receive_roast", data => {
+  chat.innerHTML += formatMessage(data, "stranger");
+  chat.scrollTop = chat.scrollHeight;
 });
 
-socket.on('chat_start', (data) => {
-  currentPartner = data.partnerId;
-  elements.status.textContent = "⚡ BATTLE MODE ACTIVATED!";
-  showRandomQuote('roasting');
-  elements.startBtn.style.display = 'none';
-  elements.skipBtn.style.display = 'block';
-  playSound('connect');
+socket.on("match_found", opponent => {
+  statusDiv.textContent = `🔥 Matched with: ${opponent.username}`;
+  skipBtn.style.display = "inline-block";
 });
 
-socket.on('receive_message', (msg) => {
-  addMessage(msg, 'stranger');
-  elements.typingIndicator.style.opacity = '0';
-  playSound('message');
-});
-
-socket.on('partner_left', (data) => {
-  elements.status.textContent = data.message;
-  showRandomQuote('waiting');
-  resetUI();
-  playSound('disconnect');
-});
-
-socket.on('partner_typing', () => {
-  elements.typingIndicator.style.opacity = '1';
-});
-
-socket.on('partner_stopped_typing', () => {
-  elements.typingIndicator.style.opacity = '0';
-});
-
-// Event Listeners
-elements.startBtn.addEventListener('click', () => {
-  socket.emit('start_chat');
-  elements.status.textContent = "🚀 Searching for opponent...";
-});
-
-elements.skipBtn.addEventListener('click', () => {
-  socket.emit('skip_partner');
-  elements.status.textContent = "🌀 Finding new opponent...";
-});
-
-elements.sendBtn.addEventListener('click', sendMessage);
-elements.input.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') sendMessage();
-});
-// Detect query param and auto-start for private mode
-const urlParams = new URLSearchParams(window.location.search);
-const mode = urlParams.get('mode');
-
-if (mode === 'private') {
-  elements.status.textContent = "🚀 Private 1v1 battle starting...";
-  socket.emit('start_chat', { mode: 'private' });
-  elements.startBtn.style.display = 'none';
-  elements.skipBtn.style.display = 'block';
-} else {
+function formatMessage(data, type) {
+  return `
+    <div class="message ${type}">
+      <div class="message-header">
+        <img src="${data.avatar}" class="message-avatar">
+        <strong>${data.username}</strong>
+      </div>
+      <div class="message-content">${data.text}</div>
+    </div>`;
 }
-
-// Initialize
-resetUI();
