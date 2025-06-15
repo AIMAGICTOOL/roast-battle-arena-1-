@@ -1,4 +1,4 @@
-import { db, auth, provider } from './firebase.js';
+
 import {
   ref,
   push,
