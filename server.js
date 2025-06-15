@@ -27,13 +27,13 @@ io.on('connection', (socket) => {
   socket.on('join_public', (user) => {
     socket.join('public_room');
     console.log(`👤 ${user.username} joined public_room`);
-    io.to('public_room').emit('match_found', user);
+    socket.to('public_room').emit('match_found', user); // ✅ only notify others
   });
 
   socket.on('send_roast', (msg) => {
     console.log('🔥 Roast sent:', msg);
-   socket.to('public_room').emit('match_found', user); // ✅ only send to others
-
+    io.to('public_room').emit('receive_roast', msg); // ✅ send to all in room
+  });
 
   socket.on('disconnect', () => {
     console.log('❌ Disconnected:', socket.id);
