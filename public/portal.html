@@ -211,6 +211,7 @@
       color: var(--accent-primary);
       text-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
       margin-bottom: 20px;
+      margin-top: 70px; /* Added space for friend icons */
     }
     #status {
       margin-bottom: 15px;
@@ -326,6 +327,7 @@
       display: flex;
       align-items: center;
       margin-bottom: 6px;
+      cursor: pointer;
     }
     .message-avatar {
       width: 28px;
@@ -451,6 +453,306 @@
       width: 80%;
       text-align: center;
     }
+
+    /* New Friend System Styles */
+    .friend-actions {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 999;
+      display: none;
+      background: rgba(27, 26, 46, 0.9);
+      padding: 10px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);
+    }
+    
+    .right-icons {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .friend-icon, .notification-icon, .history-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 80, 0, 0.8);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #1b1a2e;
+      color: #00f5d4;
+      font-size: 20px;
+      position: relative;
+    }
+    
+    .friend-icon:hover, .notification-icon:hover, .history-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(255, 120, 0, 1);
+    }
+    
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #f15bb5;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    /* Friend Modal Styles */
+    .friend-modal {
+      position: fixed;
+      top: 80px;
+      left: 20px;
+      background: #1b1a2e;
+      border-radius: 15px;
+      width: 300px;
+      max-height: 500px;
+      overflow-y: auto;
+      box-shadow: 0 0 30px rgba(0, 245, 212, 0.3);
+      z-index: 1001;
+      display: none;
+      padding: 15px;
+    }
+    
+    .friend-modal-header {
+      color: #00f5d4;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #2d2b4e;
+      padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .friend-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .friend-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .friend-item:hover {
+      background: #25233d;
+    }
+    
+    .friend-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+      object-fit: cover;
+    }
+    
+    .friend-name {
+      flex: 1;
+      font-weight: bold;
+    }
+    
+    .online-status {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #00f5d4;
+      margin-left: 10px;
+    }
+    
+    .offline {
+      background: #b8b8ff;
+    }
+    
+    .remove-friend {
+      color: #f15bb5;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    
+    /* User Action Modal */
+    .user-action-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #1b1a2e;
+      border-radius: 15px;
+      padding: 20px;
+      width: 300px;
+      z-index: 1002;
+      display: none;
+      box-shadow: 0 0 30px rgba(0, 245, 212, 0.3);
+    }
+    
+    .user-action-title {
+      color: #00f5d4;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    
+    .user-action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .user-action-btn {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .friend-request-btn {
+      background: #00f5d4;
+      color: #0f0e17;
+    }
+    
+    .block-btn {
+      background: #f15bb5;
+      color: white;
+    }
+    
+    .report-btn {
+      background: #6247aa;
+      color: white;
+    }
+    
+    .cancel-btn {
+      background: transparent;
+      color: #b8b8ff;
+      border: 1px solid #b8b8ff;
+    }
+    
+    /* Notification Modal */
+    .notification-modal {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: #1b1a2e;
+      border-radius: 15px;
+      width: 300px;
+      max-height: 500px;
+      overflow-y: auto;
+      box-shadow: 0 0 30px rgba(0, 245, 212, 0.3);
+      z-index: 1001;
+      display: none;
+      padding: 15px;
+    }
+    
+    .notification-item {
+      padding: 10px;
+      border-bottom: 1px solid #2d2b4e;
+      cursor: pointer;
+    }
+    
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+    
+    /* History Modal */
+    .history-modal {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: #1b1a2e;
+      border-radius: 15px;
+      width: 300px;
+      max-height: 500px;
+      overflow-y: auto;
+      box-shadow: 0 0 30px rgba(0, 245, 212, 0.3);
+      z-index: 1001;
+      display: none;
+      padding: 15px;
+    }
+    
+    .history-item {
+      padding: 10px;
+      border-bottom: 1px solid #2d2b4e;
+      cursor: pointer;
+    }
+    
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    
+    .premium-lock {
+      color: #f15bb5;
+      font-size: 12px;
+      margin-left: 5px;
+    }
+    
+    /* Confirmation Modal */
+    .confirmation-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #1b1a2e;
+      border-radius: 15px;
+      padding: 20px;
+      width: 300px;
+      z-index: 1003;
+      display: none;
+      box-shadow: 0 0 30px rgba(0, 245, 212, 0.3);
+      text-align: center;
+    }
+    
+    .confirmation-text {
+      margin-bottom: 20px;
+      color: #e2f3f5;
+    }
+    
+    .confirmation-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .confirm-btn {
+      background: #f15bb5;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .cancel-confirm-btn {
+      background: #25233d;
+      color: #b8b8ff;
+      padding: 8px 15px;
+      border-radius: 8px;
+      border: 1px solid #b8b8ff;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -505,10 +807,69 @@
     </div>
   </div>
 
-  <div class="auth-icons">
+  <!-- Friend System Icons -->
+  <div class="friend-actions" id="friendActions">
+    <div class="friend-icon" id="friendIcon" title="Friend List">👥
+      <div class="notification-badge" id="friendBadge" style="display: none;">0</div>
+    </div>
+  </div>
+
+  <!-- Right Side Icons -->
+  <div class="right-icons">
+    <div class="notification-icon" id="notificationIcon" title="Notifications">🔔
+      <div class="notification-badge" id="notificationBadge" style="display: none;">0</div>
+    </div>
+    <div class="history-icon" id="historyIcon" title="Chat History">📜</div>
     <a href="login.html" title="Login / Sign Up">
-      <img src="login-icon.png" alt="Login Icon" />
+      <img src="login-icon.png" alt="Login Icon" style="width: 50px; height: 50px; border-radius: 12px; box-shadow: 0 0 15px rgba(255, 80, 0, 0.8);" />
     </a>
+  </div>
+
+  <!-- Friend List Modal -->
+  <div class="friend-modal" id="friendModal">
+    <div class="friend-modal-header">
+      <span>Friends</span>
+      <span id="userStatus" style="font-size: 12px; color: #00f5d4;">Online</span>
+    </div>
+    <ul class="friend-list" id="friendList">
+      <!-- Friend items will be added here dynamically -->
+    </ul>
+  </div>
+
+  <!-- User Action Modal -->
+  <div class="user-action-modal" id="userActionModal">
+    <div class="user-action-title" id="userActionTitle">User Actions</div>
+    <div class="user-action-buttons">
+      <button class="user-action-btn friend-request-btn" id="sendRequestBtn">Add Friend</button>
+      <button class="user-action-btn block-btn" id="blockUserBtn">Block User</button>
+      <button class="user-action-btn report-btn" id="reportUserBtn">Report User</button>
+      <button class="user-action-btn cancel-btn" id="cancelActionBtn">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="confirmation-modal" id="confirmationModal">
+    <div class="confirmation-text" id="confirmationText">Are you sure you want to remove this friend?</div>
+    <div class="confirmation-buttons">
+      <button class="confirm-btn" id="confirmRemoveBtn">Yes, Remove</button>
+      <button class="cancel-confirm-btn" id="cancelRemoveBtn">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Notification Modal -->
+  <div class="notification-modal" id="notificationModal">
+    <div class="friend-modal-header">Notifications</div>
+    <div id="notificationList">
+      <!-- Notification items will be added here dynamically -->
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div class="history-modal" id="historyModal">
+    <div class="friend-modal-header">Chat History</div>
+    <div id="historyList">
+      <!-- History items will be added here dynamically -->
+    </div>
   </div>
 
   <h1>Roast Battle Arena</h1>
@@ -597,6 +958,352 @@
       return `https://api.dicebear.com/7.x/${style}/svg?seed=${Math.random().toString(36).substring(2, 15)}`;
     }
 
+    // Friend System Variables
+    let currentUser = {
+      username: '',
+      avatar: '',
+      isPremium: false,
+      isOnline: true
+    };
+    
+    let friends = [];
+    let friendRequests = [];
+    let notifications = [];
+    let chatHistory = [];
+    let selectedUser = null;
+    let friendToRemove = null;
+
+    // Initialize Friend System
+    function initFriendSystem() {
+      // Show friend actions after entering chat
+      document.getElementById('friendActions').style.display = 'block';
+      
+      // Set current user info
+      currentUser.username = localStorage.getItem('username') || generateRandomUsername();
+      currentUser.avatar = localStorage.getItem('userAvatar') || generateRandomAvatar();
+      
+      // Generate some dummy data for demo
+      generateDummyFriends();
+      generateDummyNotifications();
+      generateDummyHistory();
+      
+      // Update friend list
+      updateFriendList();
+      updateNotificationBadge();
+      
+      // Setup event listeners
+      setupFriendSystemListeners();
+    }
+    
+    // Generate dummy friends for demo
+    function generateDummyFriends() {
+      friends = [
+        { username: "EpicRoaster123", avatar: generateRandomAvatar(), isOnline: true },
+        { username: "BananaSlayer456", avatar: generateRandomAvatar(), isOnline: false },
+        { username: "TurboNinja789", avatar: generateRandomAvatar(), isOnline: true },
+        { username: "QuantumJester321", avatar: generateRandomAvatar(), isOnline: false },
+        { username: "ZestyWizard654", avatar: generateRandomAvatar(), isOnline: true }
+      ];
+    }
+    
+    // Generate dummy notifications for demo
+    function generateDummyNotifications() {
+      notifications = [
+        { type: "friend_request", username: "CoolRoaster99", avatar: generateRandomAvatar(), message: "wants to be your friend", timestamp: "2 mins ago" },
+        { type: "friend_accepted", username: "TurboNinja789", avatar: generateRandomAvatar(), message: "accepted your friend request", timestamp: "1 hour ago" },
+        { type: "new_message", username: "EpicRoaster123", avatar: generateRandomAvatar(), message: "sent you a message", timestamp: "3 hours ago" }
+      ];
+    }
+    
+    // Generate dummy chat history for demo
+    function generateDummyHistory() {
+      const historyUsers = [];
+      for (let i = 0; i < 50; i++) {
+        historyUsers.push({
+          username: generateRandomUsername(),
+          avatar: generateRandomAvatar(),
+          isAvailable: i < 10 // First 10 are available in free version
+        });
+      }
+      chatHistory = historyUsers;
+    }
+    
+    // Update friend list display
+    function updateFriendList() {
+      const friendList = document.getElementById('friendList');
+      friendList.innerHTML = '';
+      
+      // Add current user at the top
+      const currentUserItem = document.createElement('li');
+      currentUserItem.className = 'friend-item';
+      currentUserItem.innerHTML = `
+        <img src="${currentUser.avatar}" class="friend-avatar">
+        <span class="friend-name">${currentUser.username}</span>
+        <div class="online-status ${currentUser.isOnline ? '' : 'offline'}"></div>
+      `;
+      friendList.appendChild(currentUserItem);
+      
+      // Add friends
+      friends.forEach(friend => {
+        const friendItem = document.createElement('li');
+        friendItem.className = 'friend-item';
+        friendItem.innerHTML = `
+          <img src="${friend.avatar}" class="friend-avatar">
+          <span class="friend-name">${friend.username}</span>
+          <div class="online-status ${friend.isOnline ? '' : 'offline'}"></div>
+          <span class="remove-friend" data-username="${friend.username}">✕</span>
+        `;
+        friendList.appendChild(friendItem);
+        
+        // Add click event to remove friend
+        friendItem.querySelector('.remove-friend').addEventListener('click', function(e) {
+          e.stopPropagation();
+          showRemoveConfirmation(friend.username);
+        });
+      });
+    }
+    
+    // Show remove confirmation dialog
+    function showRemoveConfirmation(username) {
+      friendToRemove = username;
+      document.getElementById('confirmationText').textContent = `Are you sure you want to remove ${username} from your friends?`;
+      document.getElementById('confirmationModal').style.display = 'block';
+    }
+    
+    // Remove a friend after confirmation
+    function removeFriend() {
+      if (friendToRemove) {
+        friends = friends.filter(friend => friend.username !== friendToRemove);
+        updateFriendList();
+        
+        // Add notification
+        notifications.unshift({
+          type: "friend_removed",
+          username: friendToRemove,
+          avatar: generateRandomAvatar(),
+          message: "has been removed from your friends",
+          timestamp: "just now"
+        });
+        updateNotificationBadge();
+        
+        friendToRemove = null;
+        document.getElementById('confirmationModal').style.display = 'none';
+      }
+    }
+    
+    // Update notification badge
+    function updateNotificationBadge() {
+      const badge = document.getElementById('notificationBadge');
+      if (notifications.length > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = notifications.length;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+    
+    // Setup friend system event listeners
+    function setupFriendSystemListeners() {
+      // Friend icon click
+      document.getElementById('friendIcon').addEventListener('click', function() {
+        const modal = document.getElementById('friendModal');
+        modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        document.getElementById('notificationModal').style.display = 'none';
+        document.getElementById('historyModal').style.display = 'none';
+        document.getElementById('userActionModal').style.display = 'none';
+      });
+      
+      // Notification icon click
+      document.getElementById('notificationIcon').addEventListener('click', function() {
+        const modal = document.getElementById('notificationModal');
+        modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        document.getElementById('friendModal').style.display = 'none';
+        document.getElementById('historyModal').style.display = 'none';
+        document.getElementById('userActionModal').style.display = 'none';
+        updateNotificationList();
+      });
+      
+      // History icon click
+      document.getElementById('historyIcon').addEventListener('click', function() {
+        const modal = document.getElementById('historyModal');
+        modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        document.getElementById('friendModal').style.display = 'none';
+        document.getElementById('notificationModal').style.display = 'none';
+        document.getElementById('userActionModal').style.display = 'none';
+        updateHistoryList();
+      });
+      
+      // User action modal buttons
+      document.getElementById('sendRequestBtn').addEventListener('click', function() {
+        if (selectedUser) {
+          // Check if already friends
+          const isAlreadyFriend = friends.some(friend => friend.username === selectedUser.username);
+          if (isAlreadyFriend) {
+            alert(`${selectedUser.username} is already your friend!`);
+          } else {
+            // Send friend request
+            notifications.unshift({
+              type: "friend_request_sent",
+              username: selectedUser.username,
+              avatar: selectedUser.avatar,
+              message: "friend request sent",
+              timestamp: "just now"
+            });
+            updateNotificationBadge();
+            alert(`Friend request sent to ${selectedUser.username}`);
+          }
+          document.getElementById('userActionModal').style.display = 'none';
+        }
+      });
+      
+      document.getElementById('blockUserBtn').addEventListener('click', function() {
+        if (selectedUser) {
+          // Block user
+          notifications.unshift({
+            type: "user_blocked",
+            username: selectedUser.username,
+            avatar: selectedUser.avatar,
+            message: "has been blocked",
+            timestamp: "just now"
+          });
+          updateNotificationBadge();
+          alert(`${selectedUser.username} has been blocked`);
+          document.getElementById('userActionModal').style.display = 'none';
+        }
+      });
+      
+      document.getElementById('reportUserBtn').addEventListener('click', function() {
+        if (selectedUser) {
+          // Report user
+          notifications.unshift({
+            type: "user_reported",
+            username: selectedUser.username,
+            avatar: selectedUser.avatar,
+            message: "has been reported",
+            timestamp: "just now"
+          });
+          updateNotificationBadge();
+          alert(`${selectedUser.username} has been reported`);
+          document.getElementById('userActionModal').style.display = 'none';
+        }
+      });
+      
+      document.getElementById('cancelActionBtn').addEventListener('click', function() {
+        document.getElementById('userActionModal').style.display = 'none';
+      });
+      
+      // Confirmation modal buttons
+      document.getElementById('confirmRemoveBtn').addEventListener('click', removeFriend);
+      
+      document.getElementById('cancelRemoveBtn').addEventListener('click', function() {
+        friendToRemove = null;
+        document.getElementById('confirmationModal').style.display = 'none';
+      });
+      
+      // Click on message header to show user actions
+      document.addEventListener('click', function(e) {
+        if (e.target.closest('.message-header')) {
+          const message = e.target.closest('.message');
+          if (message.classList.contains('stranger')) {
+            const username = message.querySelector('.message-header strong').textContent;
+            const avatar = message.querySelector('.message-avatar').src;
+            
+            selectedUser = { username, avatar };
+            document.getElementById('userActionTitle').textContent = `Actions for ${username}`;
+            document.getElementById('userActionModal').style.display = 'block';
+            
+            // Hide other modals
+            document.getElementById('friendModal').style.display = 'none';
+            document.getElementById('notificationModal').style.display = 'none';
+            document.getElementById('historyModal').style.display = 'none';
+            document.getElementById('confirmationModal').style.display = 'none';
+          }
+        }
+      });
+      
+      // Close modals when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.friend-modal') && !e.target.closest('.friend-icon')) {
+          document.getElementById('friendModal').style.display = 'none';
+        }
+        
+        if (!e.target.closest('.notification-modal') && !e.target.closest('.notification-icon')) {
+          document.getElementById('notificationModal').style.display = 'none';
+        }
+        
+        if (!e.target.closest('.history-modal') && !e.target.closest('.history-icon')) {
+          document.getElementById('historyModal').style.display = 'none';
+        }
+        
+        if (!e.target.closest('.user-action-modal') && !e.target.closest('.message-header')) {
+          document.getElementById('userActionModal').style.display = 'none';
+        }
+        
+        if (!e.target.closest('.confirmation-modal')) {
+          document.getElementById('confirmationModal').style.display = 'none';
+        }
+      });
+    }
+    
+    // Update notification list
+    function updateNotificationList() {
+      const notificationList = document.getElementById('notificationList');
+      notificationList.innerHTML = '';
+      
+      notifications.forEach(notification => {
+        const notificationItem = document.createElement('div');
+        notificationItem.className = 'notification-item';
+        notificationItem.innerHTML = `
+          <div style="display: flex; align-items: center; margin-bottom: 5px;">
+            <img src="${notification.avatar}" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+            <strong>${notification.username}</strong>
+          </div>
+          <div style="font-size: 14px; color: #b8b8ff;">${notification.message}</div>
+          <div style="font-size: 12px; color: #6247aa; text-align: right;">${notification.timestamp}</div>
+        `;
+        notificationList.appendChild(notificationItem);
+      });
+      
+      // Clear notifications badge when viewing
+      notifications = [];
+      updateNotificationBadge();
+    }
+    
+    // Update history list
+    function updateHistoryList() {
+      const historyList = document.getElementById('historyList');
+      historyList.innerHTML = '';
+      
+      chatHistory.forEach((user, index) => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        
+        if (user.isAvailable || currentUser.isPremium) {
+          historyItem.innerHTML = `
+            <div style="display: flex; align-items: center;">
+              <img src="${user.avatar}" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+              <span>${user.username}</span>
+            </div>
+          `;
+          historyItem.style.cursor = 'pointer';
+          historyItem.addEventListener('click', function() {
+            alert(`Opening chat history with ${user.username}`);
+          });
+        } else {
+          historyItem.innerHTML = `
+            <div style="display: flex; align-items: center; opacity: 0.6;">
+              <img src="${user.avatar}" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px; filter: grayscale(100%);">
+              <span>${user.username}</span>
+              <span class="premium-lock">🔒 Premium Only</span>
+            </div>
+          `;
+          historyItem.style.cursor = 'not-allowed';
+        }
+        
+        historyList.appendChild(historyItem);
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       const modal = document.getElementById('entryModal');
       const avatarPreview = document.getElementById('avatarPreview');
@@ -676,12 +1383,14 @@
         modal.style.display = 'none';
         startBtn.style.display = 'block';
         saveToLocalStorage(currentAvatar, currentUsername);
+        initFriendSystem(); // Initialize friend system after entering chat
       });
       
       skipCustomizationBtn.addEventListener('click', function() {
         modal.style.display = 'none';
         startBtn.style.display = 'block';
         saveToLocalStorage(generateRandomAvatar(), generateRandomUsername());
+        initFriendSystem(); // Initialize friend system after entering chat
       });
       
       loginBtn.addEventListener('click', function() {
@@ -710,52 +1419,82 @@
     });
   </script>
 
-  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-<!-- Socket.IO CDN -->
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCOZZStypUDTr6shxcB0kM6ddJ9HaNyM2Q",
+      authDomain: "roast-battle-arena-6658b.firebaseapp.com",
+      databaseURL: "https://roast-battle-arena-6658b-default-rtdb.firebaseio.com",
+      projectId: "roast-battle-arena-6658b",
+      storageBucket: "roast-battle-arena-6658b.appspot.com",
+      messagingSenderId: "1004753319883",
+      appId: "1:1004753319883:web:ddcd82fa55d2db6ec8e84e"
+    };
 
-<script>
-  const socket = io("https://roast-battle-arena-1.onrender.com");
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    
+    function sendRoast() {
+      const message = document.getElementById("messageInput").value.trim();
+      if (!message) return;
+      
+      const username = localStorage.getItem("username") || "Anonymous";
+      const avatar = localStorage.getItem("userAvatar") || generateRandomAvatar();
+      
+      push(ref(db, "roasts/public"), {
+        text: message,
+        username: username,
+        avatar: avatar,
+        timestamp: Date.now()
+      });
+      
+      document.getElementById("messageInput").value = "";
+    }
 
-  socket.on("connect", () => {
-    console.log("✅ Connected to socket:", socket.id);
+    document.getElementById('sendBtn').addEventListener('click', sendRoast);
 
-    socket.emit("join_public", {
-      username: localStorage.getItem("username") || "Anonymous",
-      avatar: localStorage.getItem("userAvatar") || "default.png"
+    onChildAdded(ref(db, "roasts/public"), (snapshot) => {
+      const roast = snapshot.val();
+      const chat = document.getElementById("chat");
+      
+      chat.innerHTML += `
+        <div class="message stranger">
+          <div class="message-header">
+            <img src="${roast.avatar}" class="message-avatar">
+            <strong>${roast.username}</strong>
+          </div>
+          <div class="message-content">${roast.text}</div>
+        </div>`;
+      
+      chat.scrollTop = chat.scrollHeight;
     });
 
-    document.getElementById("status").textContent = "✅ Connected! Waiting for opponent...";
-  });
+    function generateRandomAvatar() {
+      const styles = ["bottts", "lorelei", "pixel-art", "avataaars"];
+      const style = styles[Math.floor(Math.random() * styles.length)];
+      return `https://api.dicebear.com/7.x/${style}/svg?seed=${Math.random().toString(36).substring(2, 15)}`;
+    }
+  </script>
 
-  socket.on("match_found", (strangerData) => {
-    console.log("🎯 Matched with:", strangerData);
-    document.getElementById("status").textContent = `🔥 Opponent found: ${strangerData.username}`;
+<!-- Socket.IO Integration -->
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+  const socket = io("https://roast-battle-arena-1.onrender.com", { transports: ["websocket"], secure: true });
 
-    const chat = document.getElementById("chat");
-    chat.innerHTML += `
-      <div class="message system">
-        Matched with <strong>${strangerData.username}</strong>!
-      </div>`;
-  });
+  const startBtn = document.getElementById("startBtn");
+  const skipBtn = document.getElementById("skipBtn");
+  const statusDiv = document.getElementById("status");
+  const chatDiv = document.getElementById("chat");
+  const messageInput = document.getElementById("messageInput");
+  const sendBtn = document.getElementById("sendBtn");
 
-  socket.on("receive_roast", (data) => {
-    const chat = document.getElementById("chat");
-    chat.innerHTML += `
-      <div class="message stranger">
-        <div class="message-header">
-          <img src="${data.avatar}" class="message-avatar">
-          <strong>${data.username}</strong>
-        </div>
-        <div class="message-content">${data.text}</div>
-      </div>`;
-    chat.scrollTop = chat.scrollHeight;
-  });
+  startBtn.addEventListener("click", joinArena);
+  skipBtn.addEventListener("click", joinArena);
 
-  document.getElementById("sendBtn").addEventListener("click", () => {
-    const input = document.getElementById("messageInput");
-    const msg = input.value.trim();
+  sendBtn.addEventListener("click", () => {
+    const msg = messageInput.value.trim();
     if (!msg) return;
 
     const roastData = {
@@ -766,8 +1505,7 @@
 
     socket.emit("send_roast", roastData);
 
-    const chat = document.getElementById("chat");
-    chat.innerHTML += `
+    chatDiv.innerHTML += `
       <div class="message you">
         <div class="message-header">
           <img src="${roastData.avatar}" class="message-avatar">
@@ -775,11 +1513,41 @@
         </div>
         <div class="message-content">${roastData.text}</div>
       </div>`;
-    chat.scrollTop = chat.scrollHeight;
-
-    input.value = "";
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+    messageInput.value = "";
   });
-</script>
-</body>
 
+  socket.on("connect", () => {
+    console.log("✅ Connected:", socket.id);
+    statusDiv.textContent = "✅ Connected! Ready to roast!";
+  });
+
+  socket.on("match_found", (opponent) => {
+    statusDiv.textContent = `🔥 Matched with: ${opponent.username}`;
+    skipBtn.style.display = "inline-block";
+  });
+
+  socket.on("receive_roast", (data) => {
+    chatDiv.innerHTML += `
+      <div class="message stranger">
+        <div class="message-header">
+          <img src="${data.avatar}" class="message-avatar">
+          <strong>${data.username}</strong>
+        </div>
+        <div class="message-content">${data.text}</div>
+      </div>`;
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+  });
+
+  function joinArena() {
+    const username = localStorage.getItem("username") || "Anonymous";
+    const avatar = localStorage.getItem("userAvatar") || "default.png";
+
+    socket.emit("join_public", { username, avatar });
+    statusDiv.textContent = "🔄 Looking for opponent...";
+    skipBtn.style.display = "none";
+  }
+</script>
+  <script type="module" src="./firebase.js"></script>
+</body>
 </html>
