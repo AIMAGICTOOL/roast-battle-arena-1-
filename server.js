@@ -16,18 +16,24 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 io.on('connection', (socket) => {
+  console.log('🔌 New connection:', socket.id);
+
   socket.on('join_public', (user) => {
+    console.log(`👤 ${user.username} (ID: ${socket.id}) wants to join`);
     socket.join('public_room', () => {
-      console.log(`🛡 ${user.username} joined public_room`);
-      socket.emit('joined_room');
-      socket.to('public_room').emit('match_found', user);
+      console.log(`✅ ${user.username} joined public_room`);
+      io.to('public_room').emit('match_found', user);
     });
   });
 
   socket.on('send_roast', (msg) => {
-    console.log('Roast sent:', msg);
+    console.log('🗣 Roast:', msg.text, 'from', msg.username);
     io.to('public_room').emit('receive_roast', msg);
   });
+
+  socket.on('disconnect', () =>
+    console.log('❌ Disconnected:', socket.id)
+  );
 });
 
 
