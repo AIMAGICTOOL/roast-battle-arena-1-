@@ -590,9 +590,7 @@
   </style>
 </head>
 <body>
-  <!-- Add this near other <script> tags -->
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script>
+ <script>
     // Age Verification Logic (ADD THIS AT THE START OF YOUR SCRIPT)
     const ageModal = document.getElementById('ageVerificationModal');
     const entryModal = document.getElementById('entryModal');
@@ -801,7 +799,7 @@
       
       function initializeSocketConnection() {
         statusElement.textContent = "🌠 Connecting to roast servers...";
-     const socket = io("https://roast-battle-arena-1.onrender.com", {
+     const socket = io("https://your-render-app-url.onrender.com", {
   transports: ['websocket'], // Force WebSocket only
   reconnection: true,
   reconnectionAttempts: 5
@@ -857,5 +855,54 @@
       }
     });
   </script>
+  <!-- Firebase SDK (Modular v9+) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+  // 🔥 Your Firebase Config (Use YOUR project's config)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCOZZStypUDTr6shxcB0kM6ddJ9HaNyM2Q",
+    authDomain: "roast-battle-arena-6658b.firebaseapp.com",
+    projectId: "roast-battle-arena-6658b",
+    storageBucket: "roast-battle-arena-6658b.firebasestorage.app",
+    messagingSenderId: "1004753319883",
+    appId: "1:1004753319883:web:ddcd82fa55d2db6ec8e84e"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // 🌟 Send Roasts to Firebase
+  function sendRoast() {
+    const message = document.getElementById("messageInput").value;
+    const username = localStorage.getItem("username") || "Anonymous";
+    
+    push(ref(db, "roasts/public"), {
+      text: message,
+      username: username,
+      timestamp: Date.now()
+    });
+    
+    document.getElementById("messageInput").value = ""; // Clear input
+  }
+
+  // 📡 Listen for New Roasts
+  onChildAdded(ref(db, "roasts/public"), (snapshot) => {
+    const roast = snapshot.val();
+    const chat = document.getElementById("chat");
+    
+    chat.innerHTML += `
+      <div class="message stranger">
+        <strong>${roast.username}:</strong> ${roast.text}
+      </div>`;
+    
+    chat.scrollTop = chat.scrollHeight; // Auto-scroll
+  });
+
+  // 🔄 Connect Send Button
+  document.getElementById("sendBtn").addEventListener("click", sendRoast);
+</script>
 </body>
 </html>
