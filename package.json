@@ -2,7 +2,7 @@
   "name": "roast-battle-arena",
   "type": "module",
   "version": "1.0.0",
-  "main": "server.js",            // ✅ CHANGED from index.js
+  "main": "server.js",           
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
