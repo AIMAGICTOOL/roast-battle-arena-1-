@@ -28,6 +28,7 @@ document.getElementById('loginBtn').addEventListener('click', () => {
 });
 
 startBtn.addEventListener('click', () => {
+  chat.innerHTML = ''; // ✅ This clears the old chat box
   const u = { username: localStorage.getItem('username') || 'Anon', avatar: localStorage.getItem('userAvatar') || '' };
   socket.emit('join_public', u);
   status.textContent = '🔄 Looking for opponent...';
