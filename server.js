@@ -1,3 +1,4 @@
+
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
@@ -34,8 +35,8 @@ io.on('connection', (socket) => {
       socket.data.room = room;
       opponent.data.room = room;
 
-      opponent.emit('match_found', user); // opponent sees you
-      socket.emit('match_found', opponent.data.user); // you see opponent
+      socket.emit('match_found', opponent.data.user);
+      opponent.emit('match_found', socket.data.user);
     } else {
       waitingUser = socket;
       socket.emit('waiting', 'Looking for opponent...');
