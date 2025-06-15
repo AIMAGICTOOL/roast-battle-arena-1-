@@ -22,14 +22,20 @@ io.on('connection', (socket) => {
 
   socket.on('join_public', (user) => {
     socket.data.user = user;
+
     if (waitingUser && waitingUser.id !== socket.id) {
       const opponent = waitingUser;
       waitingUser = null;
 
-      socket.join('battle_room');
-      opponent.join('battle_room');
+      const room = `battle_${socket.id}_${opponent.id}`;
+      socket.join(room);
+      opponent.join(room);
 
-      io.to('battle_room').emit('match_found', user);
+      socket.data.room = room;
+      opponent.data.room = room;
+
+      opponent.emit('match_found', user); // opponent sees you
+      socket.emit('match_found', opponent.data.user); // you see opponent
     } else {
       waitingUser = socket;
       socket.emit('waiting', 'Looking for opponent...');
@@ -37,7 +43,10 @@ io.on('connection', (socket) => {
   });
 
   socket.on('send_roast', (msg) => {
-    socket.to('battle_room').emit('receive_roast', msg);
+    const room = socket.data.room;
+    if (room) {
+      socket.to(room).emit('receive_roast', msg);
+    }
   });
 
   socket.on('disconnect', () => {
