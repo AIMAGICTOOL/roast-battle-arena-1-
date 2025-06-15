@@ -1,89 +1,79 @@
-import { db, auth, provider } from "./firebase.js";
-import { ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { db, auth, provider } from './firebase.js';
+import { ref, push, onChildAdded, query, limitToLast } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { signInWithPopup, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-// SOCKET SETUP
-const socket = io("https://roast-battle-arena-1.onrender.com", {
-  transports: ["websocket"],
-  secure: true
-});
+// Live server
+const socket = io('https://roast-battle-server.onrender.com', { transports:['websocket'], secure:true });
 
-const statusDiv = document.getElementById("status");
-const startBtn = document.getElementById("startBtn");
-const skipBtn = document.getElementById("skipBtn");
-const sendBtn = document.getElementById("sendBtn");
-const input = document.getElementById("messageInput");
-const chat = document.getElementById("chat");
+const status = document.getElementById('status');
+const startBtn = document.getElementById('startBtn');
+const skipBtn = document.getElementById('skipBtn');
+const sendBtn = document.getElementById('sendBtn');
+const input = document.getElementById('messageInput');
+const chat = document.getElementById('chat');
 
-let currentUser = {
-  username: "",
-  avatar: "",
-};
+let currentUser = {};
 
-// LOGIN
 onAuthStateChanged(auth, user => {
   if (user) {
-    currentUser.username = user.displayName;
-    currentUser.avatar = user.photoURL;
-    localStorage.setItem("username", currentUser.username);
-    localStorage.setItem("userAvatar", currentUser.avatar);
+    currentUser = { username: user.displayName, avatar: user.photoURL };
+    localStorage.setItem('username', currentUser.username);
+    localStorage.setItem('userAvatar', currentUser.avatar);
+    loadHistory();
   }
 });
 
-document.getElementById("loginBtn").addEventListener("click", () => {
-  signInWithPopup(auth, provider).catch(err => console.error(err));
+document.getElementById('loginBtn').addEventListener('click', () => {
+  signInWithPopup(auth, provider).catch(console.error);
 });
 
-// JOIN CHAT
-startBtn.addEventListener("click", () => {
-  const user = {
-    username: localStorage.getItem("username") || "Anonymous",
-    avatar: localStorage.getItem("userAvatar") || "default.png"
-  };
-  socket.emit("join_public", user);
-  statusDiv.textContent = "🔄 Looking for opponent...";
+startBtn.addEventListener('click', () => {
+  const u = { username: localStorage.getItem('username') || 'Anon', avatar: localStorage.getItem('userAvatar') || '' };
+  socket.emit('join_public', u);
+  status.textContent = '🔄 Looking for opponent...';
 });
 
-// SKIP
-skipBtn.addEventListener("click", () => startBtn.click());
+skipBtn.addEventListener('click', () => startBtn.click());
 
-// SEND MESSAGE
-sendBtn.addEventListener("click", () => {
-  const msg = input.value.trim();
-  if (!msg) return;
+sendBtn.addEventListener('click', () => {
+  const text = input.value.trim();
+  if (!text) return;
+  const msg = { text, ...currentUser };
 
-  const data = {
-    text: msg,
-    username: localStorage.getItem("username") || "Anonymous",
-    avatar: localStorage.getItem("userAvatar") || "default.png"
-  };
-
-  socket.emit("send_roast", data);
-  push(ref(db, "roasts/public"), data);
-
-  chat.innerHTML += formatMessage(data, "you");
-  input.value = "";
+  socket.emit('send_roast', msg);
+  push(ref(db, 'roasts/public'), msg);
+  appendMessage(msg, 'you');
+  input.value = '';
   chat.scrollTop = chat.scrollHeight;
 });
 
-// SOCKET RECEIVE
-socket.on("receive_roast", data => {
-  chat.innerHTML += formatMessage(data, "stranger");
+socket.on('match_found', opp => {
+  status.textContent = `🔥 Matched with: ${opp.username}`;
+  skipBtn.style.display = 'inline-block';
+});
+
+socket.on('receive_roast', msg => {
+  appendMessage(msg, 'stranger');
+});
+
+function loadHistory() {
+  const messagesRef = query(ref(db, 'roasts/public'), limitToLast(50));
+  onChildAdded(messagesRef, snapshot => {
+    const msg = snapshot.val();
+    appendMessage(msg, msg.username === currentUser.username ? 'you' : 'stranger');
+  });
+}
+
+function appendMessage(msg, type) {
+  const div = document.createElement('div');
+  div.className = `message ${type}`;
+  div.innerHTML = `
+    <div class="message-header">
+      <img src="${msg.avatar}" class="message-avatar">
+      <strong>${msg.username}</strong>
+    </div>
+    <div class="message-content">${msg.text}</div>
+  `;
+  chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
-});
-
-socket.on("match_found", opponent => {
-  statusDiv.textContent = `🔥 Matched with: ${opponent.username}`;
-  skipBtn.style.display = "inline-block";
-});
-
-function formatMessage(data, type) {
-  return `
-    <div class="message ${type}">
-      <div class="message-header">
-        <img src="${data.avatar}" class="message-avatar">
-        <strong>${data.username}</strong>
-      </div>
-      <div class="message-content">${data.text}</div>
-    </div>`;
 }
