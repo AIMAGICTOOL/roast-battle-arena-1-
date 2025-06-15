@@ -32,8 +32,8 @@ io.on('connection', (socket) => {
 
   socket.on('send_roast', (msg) => {
     console.log('🔥 Roast sent:', msg);
-    io.to('public_room').emit('receive_roast', msg);
-  });
+   socket.to('public_room').emit('match_found', user); // ✅ only send to others
+
 
   socket.on('disconnect', () => {
     console.log('❌ Disconnected:', socket.id);
